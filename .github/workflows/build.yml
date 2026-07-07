@@ -1,0 +1,47 @@
+name: build-site
+
+on:
+  schedule:
+    # 每小時 23 分：DOM 快照＋重建頁面（UTC；台北時間＝UTC+8）
+    - cron: "23 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-site
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: pip install requests
+
+      - name: DOM snapshot
+        run: python scripts/dom_snapshot.py
+
+      - name: Build report
+        run: python scripts/build_report.py
+
+      - name: Commit and push
+        run: |
+          git config user.name "market-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data docs
+          if git diff --cached --quiet; then
+            echo "no changes"
+          else
+            git commit -m "auto: $(date -u +'%Y-%m-%dT%H:%MZ')"
+            git pull --rebase origin main
+            git push
+          fi
