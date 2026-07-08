@@ -22,6 +22,8 @@ import time
 
 import requests
 
+import scoring
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT_DIR = os.path.join(ROOT, "docs")
 DOM_CSV = os.path.join(ROOT, "data", "dom_history.csv")
@@ -275,6 +277,12 @@ def build():
         tws, t86, t86_dates = [], {}, []
         fails.append(f"台股個股：{e}")
 
+    try:
+        scores, fg_val = scoring.score_all(cs, dom) if cs else ([], None)
+    except Exception as e:  # noqa: BLE001
+        scores, fg_val = [], None
+        fails.append(f"綜合評分：{e}")
+
     # ---- KPI 列 ----
     kpi = []
     cmap = {r["sym"]: r for r in cs}
@@ -305,6 +313,35 @@ def build():
                    f'<div class="v {cls}">{num(comp, 3)}</div>'
                    f'<div class="d">0.5＝買賣平衡</div></div>')
     parts.append(f'<div class="kpis">{"".join(kpi)}</div>')
+
+    # ---- 綜合評分 ----
+    if scores:
+        def _cell(v):
+            if v is None:
+                return '<td class="fl">缺</td>'
+            cls = "up" if v >= 60 else ("dn" if v <= 40 else "")
+            return f'<td class="{cls}">{v}</td>'
+        rows = []
+        for sc in scores:
+            tone = "up" if (sc["total"] or 50) >= 60 else ("dn" if (sc["total"] or 50) <= 45 else "")
+            rows.append(
+                f'<tr><td class="code">{esc(sc["sym"])}</td>'
+                f'<td class="{tone}"><b>{sc["total"] if sc["total"] is not None else "—"}</b></td>'
+                f'<td>{esc(sc["grade"])}</td>'
+                + _cell(sc["sub"]["tech"]) + _cell(sc["sub"]["depth"]) + _cell(sc["sub"]["chips"])
+                + _cell(sc["sub"]["fund"]) + _cell(sc["sub"]["news"])
+                + pct_cell(sc["chg7"])
+                + f'<td>{sc["heat"] if sc["heat"] is not None else "—"}</td></tr>')
+        w = scoring.WEIGHTS
+        fg_txt = f"｜Fear &amp; Greed 指數：{fg_val}" if fg_val is not None else "｜Fear &amp; Greed 取得失敗"
+        parts.append(
+            '<section><h2>加密貨幣綜合評分（24h 成交額前 10）</h2>'
+            f'<p class="sub">五面向 0–100 分、50 中性｜權重：技術 {w["tech"]}%・深度 {w["depth"]}%・'
+            f'籌碼 {w["chips"]}%・基本 {w["fund"]}%・新聞情緒 {w["news"]}%｜'
+            f'「缺」＝該面向資料源失敗，總分由其餘面向按權重重算{fg_txt}｜公式與限制見附錄</p>'
+            '<div class="tbl"><table><tr><th>標的</th><th>總分</th><th>評級</th><th>技術</th><th>深度</th>'
+            '<th>籌碼</th><th>基本</th><th>新聞</th><th>7 日</th><th>24h 新聞則數</th></tr>'
+            + "".join(rows) + '</table></div></section>')
 
     # ---- DOM 區 ----
     if dom:
@@ -410,6 +447,13 @@ def build():
     # ---- 附錄＋免責 ----
     parts.append(
         '<section class="appendix"><h2>附錄：指標定義與資料來源</h2><ul>'
+        '<li><b>綜合評分公式</b>：技術＝50±（vs MA20 ±15、vs MA60 ±15、排列 ±10、RSI 區間 +10/−15、量比 ±5）；'
+        '深度＝50±（±1% 失衡 ±25、24h 均值 ±10、價差 +10/−10、簿深規模 ±5）；'
+        '籌碼＝50±（資金費率健康 +5／擁擠 −8～−15／深負 +8、多空帳戶比極端 ±8～10、未平倉量變化×價格方向 ±8，Binance 合約、備援 OKX）；'
+        '基本＝50±（市值排名 +5～15/−10、量/市值比 ±5、流通/最大供給 ±5、離 ATH 距離 ±5，CoinGecko）；'
+        '新聞情緒＝50±（Fear&amp;Greed ≥80 → −10、≤20 → +10、40–70 → +5；Google News 24h 熱度 ≥15 則 → 順 7 日方向 ±8）。'
+        '<b>誠實限制</b>：無金鑰新聞源只能量化熱度，無法判讀單則新聞利多利空；'
+        '評分是「當下狀態描述」，不是買賣訊號，也未經回測驗證預測力。</li>'
         '<li><b>DOM 失衡比</b>＝mid ± X% 範圍內 買掛單價值 ÷（買＋賣掛單價值）。>0.55 買方厚、<0.45 賣方厚。'
         '掛單可撤可假（spoofing），單一快照僅供參考，趨勢（24h 均值）比單點可信。</li>'
         '<li><b>簿深覆蓋</b>：Binance 單次最多回傳 5000 檔掛單；若覆蓋範圍小於帶寬，該帶寬數字已飽和（偏低估）。</li>'
