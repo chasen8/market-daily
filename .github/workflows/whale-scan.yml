@@ -1,9 +1,9 @@
-name: build-site
+name: whale-scan
 
 on:
   schedule:
-    # 每小時 23 分：DOM 快照＋重建頁面（UTC；台北時間＝UTC+8）
-    - cron: "23 * * * *"
+    # 每 15 分鐘：全市場資金流向評分＋Discord 異動通知（UTC）
+    - cron: "*/15 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -14,9 +14,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
+  scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -27,21 +27,20 @@ jobs:
       - name: Install deps
         run: pip install requests
 
-      - name: DOM snapshot
-        run: python scripts/dom_snapshot.py
-
-      - name: Build report
-        run: python scripts/build_report.py
+      - name: Whale scan
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: python scripts/whale_scan.py
 
       - name: Commit and push
         run: |
           git config user.name "market-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data docs
+          git add data/whale_state.json docs/whales.html
           if git diff --cached --quiet; then
             echo "no changes"
           else
-            git commit -m "auto: $(date -u +'%Y-%m-%dT%H:%MZ')"
+            git commit -m "auto(whale): $(date -u +'%Y-%m-%dT%H:%MZ')"
             git pull --rebase origin main
             git push
           fi

@@ -471,7 +471,9 @@ def build():
             f'<span class="date">{now:%Y-%m-%d（%a）}</span>'
             f'<div class="chips"><span class="chip">產生 {now:%H:%M} 台北</span>'
             f'<span class="chip">加密＝即時</span><span class="chip">台股＝最近交易日</span>'
-            f'<span class="chip">紅漲綠跌</span></div></header>'
+            f'<span class="chip">紅漲綠跌</span>'
+            f'<span class="chip"><a href="./whales.html" style="color:inherit">主力資金雷達 →</a></span>'
+            f'</div></header>'
             + "".join(parts) +
             '<footer>由交易機器人專案自動產生｜資料抓取失敗的區塊會如實標示，不以舊資料充數</footer></div>'
             '</body></html>')
