@@ -257,17 +257,34 @@ def save_state(state):
         json.dump(state, f, ensure_ascii=False, indent=1)
 
 
+NOTABLE_GRADES = {"S", "A"}  # 只有進出這個「候選池」才值得通知；B↔C↔D 的日常波動是雜訊
+
+
 def build_alerts(results, prev_state, is_cold_start):
+    """只在下列情況通知，避免 B/C 交界來回跳動洗版 Discord：
+    1. 首次進入候選池（B/C/D → S/A）
+    2. 跌出候選池（S/A → B/C/D）
+    3. 候選池內部升降級（S↔A）
+    4. 風險分跨越 75 分（雙向）
+    冷啟動（第一次建檔，還沒有比對基準）與新納入掃描範圍的幣一律不通知。
+    """
     alerts = []
     if is_cold_start:
         return alerts
     for r in results:
         old = prev_state.get(r["symbol"])
         if old is None:
-            continue  # 幣種第一次被納入掃描範圍，只建檔不通知（避免冷啟動式洗版）
-        if old.get("grade") != r["grade"]:
-            direction = "升級" if GRADE_BOUNDS_INDEX(r["grade"]) < GRADE_BOUNDS_INDEX(old["grade"]) else "降級"
-            alerts.append({"type": "grade", "direction": direction, **r, "prev_grade": old["grade"]})
+            continue  # 幣種第一次被納入掃描範圍，只建檔不通知
+        old_grade, new_grade = old.get("grade"), r["grade"]
+        old_notable, new_notable = old_grade in NOTABLE_GRADES, new_grade in NOTABLE_GRADES
+        if old_grade != new_grade and (old_notable or new_notable):
+            if new_notable and not old_notable:
+                direction = "進入候選池"
+            elif old_notable and not new_notable:
+                direction = "跌出候選池"
+            else:
+                direction = "升級" if GRADE_BOUNDS_INDEX(new_grade) < GRADE_BOUNDS_INDEX(old_grade) else "降級"
+            alerts.append({"type": "grade", "direction": direction, **r, "prev_grade": old_grade})
         was_risky = old.get("risk", 0) >= 75
         if r["risk"] >= 75 and not was_risky:
             alerts.append({"type": "risk_on", **r})
