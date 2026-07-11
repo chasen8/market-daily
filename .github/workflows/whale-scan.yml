@@ -2,8 +2,9 @@ name: whale-scan
 
 on:
   schedule:
-    # 每 15 分鐘：全市場資金流向評分＋Discord 異動通知（UTC）
-    - cron: "*/15 * * * *"
+    # 每 5 分鐘：全市場資金流向評分＋Discord 異動通知（UTC）
+    # 5 分鐘是 GitHub Actions 排程的實際下限；異動偵測延遲從最多 15 分鐘縮到 5-10 分鐘
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 permissions:
