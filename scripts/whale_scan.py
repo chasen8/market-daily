@@ -52,7 +52,8 @@ FAPI_HOST = "https://fapi.binance.com"
 GATE_HOST = "https://api.gateio.ws/api/v4"
 HL_HOST = "https://api.hyperliquid.xyz/info"
 STABLE = {"USDC", "FDUSD", "TUSD", "DAI", "EUR", "USDP", "BUSD", "USD1", "EURI",
-          "XUSD", "PAX", "GUSD", "USDD", "EURT", "RLUSD", "USDE", "USDY"}
+          "XUSD", "PAX", "GUSD", "USDD", "EURT", "RLUSD", "USDE", "USDY",
+          "BFUSD", "USDS", "U"}
 LEV_SUFFIX = ("UP", "DOWN", "BULL", "BEAR")
 WHALE_TRADE_USD = 10_000
 MANIP_MIN_NOTIONAL = 50_000
@@ -177,6 +178,15 @@ def fetch_hl_snapshot():
         return out
     except Exception:  # noqa: BLE001 - 這是額外參考欄，失敗就整批缺
         return {}
+
+
+def fetch_fear_greed():
+    try:
+        r = requests.get("https://api.alternative.me/fng/?limit=1", headers=H, timeout=TIMEOUT)
+        r.raise_for_status()
+        return int(r.json()["data"][0]["value"])
+    except Exception:  # noqa: BLE001
+        return None
 
 
 # ---------- 2) 單一幣種指標：Binance ----------
@@ -330,6 +340,7 @@ def score_symbol(row, futures_syms, hl_map, do_dom):
         except Exception:  # noqa: BLE001
             pass
 
+    ratio, oi_chg = None, None
     if exch == "binance" and symbol in futures_syms:
         try:
             oi_chg, ratio = oi_and_ratio_binance(symbol)
@@ -339,6 +350,9 @@ def score_symbol(row, futures_syms, hl_map, do_dom):
                 sub["oi"] = round(mag if same_dir else -mag) if oi_chg else 0
             if ratio is not None and ratio >= 2.5:
                 tags.append("散戶多單擁擠")
+            elif ratio is not None and ratio <= 0.5 and (
+                    (sub["whale"] or 0) > 0 or (sub["cvd"] or 0) > 0):
+                tags.append("軋空候選")
         except Exception:  # noqa: BLE001
             pass
 
@@ -370,10 +384,13 @@ def score_symbol(row, futures_syms, hl_map, do_dom):
     if sub["manip"] < 0:
         risk += 15
     risk = clamp(risk, 0, 100)
+    has_futures = exch == "binance" and symbol in futures_syms
 
     return {"symbol": symbol, "base": base, "exch": exch, "close": row["close"],
             "chg24h": row["chg24h"], "qv": qv, "sub": sub, "hl_crowd": hl_crowd,
-            "total": total, "grade": grade_of(total), "risk": risk, "tags": tags}
+            "total": total, "grade": grade_of(total), "risk": risk, "tags": tags,
+            "raw": {"pullback": pullback, "double_top": double_top, "ratio": ratio,
+                    "oi_chg": oi_chg, "has_futures": has_futures}}
 
 
 def resonance_tags(r):
@@ -390,6 +407,65 @@ def resonance_tags(r):
     if whale is not None and 0 < whale <= 20 and abs(r["chg24h"]) < 3:
         tags.append("蓄勢")
     return tags
+
+
+def risk_label(risk):
+    """風險分文字分級，純展示用（數字才是真正的判準）。"""
+    if risk >= 90:
+        return "即將崩跌"
+    if risk >= 75:
+        return "高風險"
+    if risk >= 50:
+        return "看跌觀察"
+    if risk >= 25:
+        return "留意"
+    return "觀望"
+
+
+def quality_score(r):
+    """品質分（長期體質，非動能）：流動性層級＋是否有永續合約＋近期有無結構性破壞。
+    這不是基本面分析（沒有團隊/營收等資料可查），只是「流動性與結構穩健度」的規則統計，
+    刻意跟主力評分（動能）分開，動能會變、這個相對穩定。"""
+    s = 50
+    qv = r["qv"]
+    s += 25 if qv >= 10_000_000 else (15 if qv >= 1_000_000 else (5 if qv >= 300_000 else -10))
+    if r["raw"]["has_futures"]:
+        s += 15
+    if r["raw"]["double_top"]:
+        s -= 20
+    if r["raw"]["pullback"] is not None and r["raw"]["pullback"] >= 15:
+        s -= 15
+    if any(t in r["tags"] for t in ("單筆成交佔比異常",)):
+        s -= 15
+    return clamp(round(s), 0, 100)
+
+
+def flow_score(r):
+    """FLOW（先行指標）：只看鯨魚／CVD 這兩個「快」訊號，且刻意在價格還沒大動時
+    給滿權重——目的是搶在主力評分（需要更多子分數同時到位）觸發之前先標記「正在蓄積」
+    的候選，價格已經大動的就打折（不再是「先行」，價值降低）。"""
+    whale, cvd = r["sub"]["whale"], r["sub"]["cvd"]
+    vals = [v for v in (whale, cvd) if v is not None and v > 0]
+    if not vals:
+        return 0
+    raw = sum(vals) / len(vals)
+    discount = 1.0 if abs(r["chg24h"]) < 5 else (0.5 if abs(r["chg24h"]) < 10 else 0.2)
+    return round(raw * discount)
+
+
+def behavior_label(r):
+    """行為標籤：優先序規則，每檔只取一個最顯著的描述。"""
+    if r["risk"] >= 90:
+        return "即將崩跌"
+    if "軋空候選" in r["tags"]:
+        return "軋空候選"
+    if r["risk"] >= 75:
+        return "看跌警示"
+    if r["grade"] in ("S", "A"):
+        return "動能強"
+    if flow_score(r) >= 15 and r["grade"] not in NOTABLE_GRADES:
+        return "蓄勢"
+    return "觀望"
 
 
 def action_suggestion(alert, r):
@@ -450,6 +526,45 @@ def build_alerts(results, prev_state, is_cold_start):
     return alerts
 
 
+def build_all_transitions(results, prev_state, is_cold_start):
+    """頁面用的完整事件摘要：所有評級變動（含 B/C/D 之間的日常波動），
+    不像 build_alerts 只挑候選池/風險開關——這個給人看，Discord 不用（避免洗版）。"""
+    out = []
+    if is_cold_start:
+        return out
+    for r in results:
+        old = prev_state.get(r["symbol"])
+        if old is None or old.get("grade") == r["grade"]:
+            continue
+        direction = "升級" if grade_rank(r["grade"]) < grade_rank(old.get("grade", "D")) else "降級"
+        out.append({"base": r["base"], "prev_grade": old.get("grade"), "grade": r["grade"],
+                    "direction": direction, "total": r["total"]})
+    return out
+
+
+def market_overview(results, all_transitions, fg):
+    """大盤總覽：整體風向、廣度、山寨強弱 vs BTC。全部從已算好的 results 彙總，不额外打 API。"""
+    btc = next((r for r in results if r["base"] == "BTC"), None)
+    eth = next((r for r in results if r["base"] == "ETH"), None)
+    avg_total = round(sum(r["total"] for r in results) / len(results), 1) if results else 0
+    up = sum(1 for t in all_transitions if t["direction"] == "升級")
+    down = sum(1 for t in all_transitions if t["direction"] == "降級")
+    if up > down * 1.5:
+        bias = "多頭強勢"
+    elif down > up * 1.5:
+        bias = "空頭強勢"
+    else:
+        bias = "中性"
+    alts = [r for r in results if r["base"] not in ("BTC",)]
+    if alts:
+        alt_med = sorted(r["chg24h"] for r in alts)[len(alts) // 2]
+        excess = alt_med - (btc["chg24h"] if btc else 0)
+    else:
+        alt_med, excess = None, None
+    return {"btc": btc, "eth": eth, "avg_total": avg_total, "up": up, "down": down,
+            "bias": bias, "fg": fg, "alt_median_chg": alt_med, "alt_excess_vs_btc": excess}
+
+
 def update_tracking(results, prev_state, alerted_symbols, now_iso):
     """維護候選池追蹤：入池時間/價、期間高低、通知次數。跌出後凍結直到重新入池。"""
     new_state = {}
@@ -498,7 +613,7 @@ def send_discord(webhook, alerts):
                 icon = "🟢" if a["direction"] == "進入候選池" else ("🟠" if a["direction"] == "跌出候選池" else "🟡")
                 title = f'{icon} {a["base"]}．主力評分 {a["prev_grade"]}→{a["grade"]}（{a["direction"]}）'
             elif a["type"] == "risk_on":
-                title = f'🔴 {a["base"]}．風險警示：評分 {a["risk"]}（高風險）'
+                title = f'🔴 {a["base"]}．{risk_label(a["risk"])}：風險評分 {a["risk"]}'
             else:
                 title = f'⚪ {a["base"]}．風險警示解除（{a["risk"]}）'
             track = ""
@@ -537,12 +652,14 @@ def card_html(r):
     track = ""
     if r.get("pool_entry_ts") and r.get("pool_entry_price"):
         pe_px, hi, lo = r["pool_entry_price"], r.get("high_since", r["close"]), r.get("low_since", r["close"])
-        track = (f'<div class="track">入池 {esc(r["pool_entry_ts"][5:16])}・${pe_px:g}　'
+        track = (f'<div class="track">入池 {esc(r["pool_entry_ts"][5:16])}・${pe_px:g}（MFE/MAE）　'
                  f'最高 {(hi/pe_px-1)*100:+.1f}%　最低 {(lo/pe_px-1)*100:+.1f}%　'
                  f'異動 {r.get("alert_count", 0)} 次</div>')
     tags = "、".join(resonance_tags(r) + r["tags"]) or "—"
+    risk_line = f'{r["risk"]}・{esc(risk_label(r["risk"]))}' if r["risk"] >= 25 else f'{r["risk"]}'
     return (f'<div class="card {tone}"><div class="chead"><b class="sym">{esc(r["base"])}</b>'
             f'<span class="grade {tone}">{r["grade"]}</span>'
+            f'<span class="beh">{esc(r["behavior"])}</span>'
             f'<span class="px">${r["close"]:g}<span class="{"up" if r["chg24h"]>=0 else "dn"}">'
             f'{r["chg24h"]:+.1f}%</span></span></div>'
             f'<div class="bar"><div class="fill {tone}" style="width:{clamp((r["total"]+50),0,100)}%"></div>'
@@ -550,16 +667,31 @@ def card_html(r):
             f'<div class="grid"><span>鯨魚 {s(sub["whale"])}</span><span>CVD {s(sub["cvd"])}</span>'
             f'<span>OI×價 {s(sub["oi"])}</span><span>DOM {s(sub["dom"])}</span>'
             f'<span>HL擁擠 {r["hl_crowd"] if r["hl_crowd"] is not None else "缺"}</span>'
-            f'<span>操縱 {sub["manip"]:+d}</span></div>'
+            f'<span>操縱 {sub["manip"]:+d}</span>'
+            f'<span>品質 {r["quality"]}</span><span>FLOW {r["flow"]}</span>'
+            f'<span>風險 {risk_line}</span></div>'
             + track +
             f'<div class="tags">{esc(tags)}</div>'
             f'<div class="exch">來源：{esc(r["exch"])}</div></div>')
 
 
-def render_page(results, alerts, universe_n, min_qv, now, exch_counts):
+def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, now, exch_counts):
     pool = [r for r in results if r["grade"] in NOTABLE_GRADES or r["risk"] >= 75]
     pool.sort(key=lambda r: -r["total"])
     cards = "".join(card_html(r) for r in pool) or '<p class="sub">目前無候選池成員或高風險標的。</p>'
+
+    flow_candidates = sorted(
+        (r for r in results if r["grade"] not in NOTABLE_GRADES and r["flow"] >= 10),
+        key=lambda r: -r["flow"])[:10]
+    flow_rows = "".join(
+        f'<li><b>{esc(r["base"])}</b>・FLOW {r["flow"]}・{esc(r["behavior"])}'
+        f'（現價 ${r["close"]:g}，24h {r["chg24h"]:+.1f}%）</li>' for r in flow_candidates
+    ) or "<li>目前沒有明顯的先行蓄積訊號。</li>"
+
+    quality_top = sorted(results, key=lambda r: -r["quality"])[:10]
+    quality_rows = "".join(
+        f'<li><b>{esc(r["base"])}</b>・品質 {r["quality"]}・{esc(r["behavior"])}</li>'
+        for r in quality_top) or "<li>—</li>"
 
     def sub_cell(v):
         if v is None:
@@ -576,16 +708,25 @@ def render_page(results, alerts, universe_n, min_qv, now, exch_counts):
             f'<td class="{tone}"><b>{r["grade"]}</b>（{r["total"]:+d}）</td>'
             + sub_cell(r["sub"]["whale"]) + sub_cell(r["sub"]["cvd"])
             + sub_cell(r["sub"]["oi"]) + sub_cell(r["sub"]["dom"])
-            + f'<td class="{risk_tone}">{r["risk"]}</td>'
+            + f'<td class="{risk_tone}">{r["risk"]}・{esc(risk_label(r["risk"]))}</td>'
+            f'<td>{r["quality"]}</td><td>{r["flow"]}</td><td>{esc(r["behavior"])}</td>'
             f'<td>{esc("、".join(r["tags"]) if r["tags"] else "—")}</td>'
             f'<td>{r["chg24h"]:+.2f}%</td></tr>')
 
+    # Discord 有推播的異動（候選池進出/風險開關）
     alert_rows = "".join(
         f'<li>{esc(a["base"])}：' + (
             f'{esc(a["prev_grade"])} → {esc(a["grade"])}（{esc(a["direction"])}）'
             if a["type"] == "grade" else
             (f'風險升至 {a["risk"]}（高風險）' if a["type"] == "risk_on" else f'風險警示解除（{a["risk"]}）')
-        ) + '</li>' for a in alerts) or "<li>本輪無評級／風險狀態變動</li>"
+        ) + '</li>' for a in alerts) or "<li>本輪無候選池／風險開關異動（Discord 不會推播）</li>"
+
+    # 全市場所有評級變動（含日常 B/C/D 波動，只在頁面顯示、不推 Discord，避免洗版）
+    trans_rows = "".join(
+        f'<li>{"🔻" if t["direction"]=="降級" else "🔺"} {esc(t["base"])}　'
+        f'{esc(t["prev_grade"])}→{esc(t["grade"])}（{esc(t["direction"])}，{t["total"]:+d}）</li>'
+        for t in sorted(all_transitions, key=lambda t: t["base"])[:60]
+    ) or "<li>本輪全市場無評級變動。</li>"
 
     css = """
     :root{--bg:#FAFAF7;--card:#FFFFFF;--ink:#23262B;--muted:#676D76;--line:#E3E1DB;--accent:#3E5C8A;--chip:#EEF1F5;
@@ -630,6 +771,13 @@ def render_page(results, alerts, universe_n, min_qv, now, exch_counts):
     .track{font-size:.74rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:6px;margin-top:6px}
     .tags{font-size:.76rem;margin-top:4px}
     .exch{font-size:.7rem;color:var(--muted);margin-top:4px}
+    .chead .beh{font-size:.7rem;color:var(--muted);background:var(--chip);border-radius:6px;padding:1px 6px}
+    .ov{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+    .ov .kpi{border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+    .ov .kpi .l{font-size:.72rem;color:var(--muted)}
+    .ov .kpi .v{font-size:1.15rem;font-weight:700;font-variant-numeric:tabular-nums}
+    .cols{columns:2;column-gap:24px}
+    .cols li{break-inside:avoid}
     """
     return (f'<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">'
             f'<meta name="viewport" content="width=device-width,initial-scale=1">'
@@ -639,14 +787,38 @@ def render_page(results, alerts, universe_n, min_qv, now, exch_counts):
             f'Gate.io {exch_counts.get("gate",0)}・24h額≥${min_qv:,.0f}）</span>'
             f'<span class="chip">更新 {now:%Y-%m-%d %H:%M} UTC</span>'
             f'<span class="chip"><a href="./index.html">← 回每日市場觀察</a></span></header>'
+            f'<section><h2>大盤總覽</h2>'
+            f'<p class="sub">全部從本輪已算好的 {universe_n} 檔彙總，不額外打 API</p>'
+            f'<div class="ov">'
+            f'<div class="kpi"><div class="l">整體風向（升/降家數）</div>'
+            f'<div class="v">{esc(overview["bias"])}</div>'
+            f'<div class="l">升 {overview["up"]}・降 {overview["down"]}</div></div>'
+            f'<div class="kpi"><div class="l">全市場平均主力分</div><div class="v">{overview["avg_total"]:+.1f}</div></div>'
+            f'<div class="kpi"><div class="l">Fear &amp; Greed</div>'
+            f'<div class="v">{overview["fg"] if overview["fg"] is not None else "缺"}</div></div>'
+            f'<div class="kpi"><div class="l">BTC / ETH 24h</div>'
+            f'<div class="v">{(str(round(overview["btc"]["chg24h"],1))+"%") if overview["btc"] else "缺"} / '
+            f'{(str(round(overview["eth"]["chg24h"],1))+"%") if overview["eth"] else "缺"}</div></div>'
+            f'<div class="kpi"><div class="l">山寨中位數 24h（超額 vs BTC）</div>'
+            f'<div class="v">{(str(round(overview["alt_median_chg"],1))+"%") if overview["alt_median_chg"] is not None else "缺"}'
+            f'（{overview["alt_excess_vs_btc"]:+.1f}pp）</div></div></div></section>'
             f'<section><h2>候選池（S/A 級或高風險）</h2>'
-            f'<p class="sub">下方卡片即時反映目前在池內的標的；入池追蹤（時間/價格/期間高低）持續累積</p>'
+            f'<p class="sub">下方卡片即時反映目前在池內的標的；入池追蹤（時間/價格/期間高低＝MFE/MAE）持續累積</p>'
             f'<div class="cards">{cards}</div></section>'
-            f'<section><h2>本輪評級／風險異動</h2><ul>{alert_rows}</ul></section>'
+            f'<section><h2>先行・點火前資金流（FLOW，未進候選池）</h2>'
+            f'<p class="sub">只看鯨魚／CVD 這兩個快訊號，且價格還沒大動時給滿權重——目的是搶在主力評分'
+            f'觸發前先標記「正在蓄積」的候選，不保證會真的觸發</p><ul class="cols">{flow_rows}</ul></section>'
+            f'<section><h2>品質分排行（長期體質，非動能）</h2>'
+            f'<p class="sub">流動性層級＋有無永續合約＋近期有無結構性破壞的規則統計，跟主力評分分開看</p>'
+            f'<ul class="cols">{quality_rows}</ul></section>'
+            f'<section><h2>候選池／風險開關異動（Discord 有推播）</h2><ul>{alert_rows}</ul></section>'
+            f'<section><h2>全市場評級異動摘要（僅頁面顯示，含日常 B/C/D 波動）</h2>'
+            f'<ul class="cols">{trans_rows}</ul></section>'
             f'<section><h2>全市場評分（顯示前 200，依總分排序）</h2>'
             f'<p class="sub">評級：總分 ≥50 S・≥25 A・≥0 B・≥-25 C・其餘 D｜「缺」＝該幣無此資料源</p>'
             f'<div class="tbl"><table><tr><th>標的</th><th>來源</th><th>評級</th><th>鯨魚</th><th>CVD</th>'
-            f'<th>OI×價</th><th>DOM</th><th>風險</th><th>訊號標籤</th><th>24h</th></tr>'
+            f'<th>OI×價</th><th>DOM</th><th>風險</th><th>品質</th><th>FLOW</th><th>行為</th>'
+            f'<th>訊號標籤</th><th>24h</th></tr>'
             + "".join(rows) +
             '</table></div></section>'
             '<section class="appendix"><h2>公式與誠實限制</h2><ul>'
@@ -664,6 +836,20 @@ def render_page(results, alerts, universe_n, min_qv, now, exch_counts):
             '<li><b>DOM</b>：只對本輪分數最高的前 40 檔額外抓深度算失衡比，其餘顯示「缺」。'
             '掛單可撤可假，僅供參考。</li>'
             '<li><b>操縱警示／雙頂形態</b>：簡單啟發式規則，是提示不是證據；低流動性幣的操縱檢查會跳過。</li>'
+            '<li><b>品質分</b>：50 起跳，流動性層級 -10~+25、有 Binance 永續合約 +15、'
+            '近期雙頂 -20、近期高點回落 ≥15% -15、有操縱警示 -15。<b>這不是基本面分析</b>'
+            '（沒有團隊/營收/白皮書等資料可查），只是流動性與結構穩健度的規則統計，'
+            '跟主力評分（動能，會快速變化）刻意分開看。</li>'
+            '<li><b>FLOW（先行指標）</b>：只取鯨魚／CVD 兩個「反應快」的子分數平均，'
+            '24h 漲跌在 ±5% 內給滿權重、±5~10% 打五折、超過 ±10% 只算兩成——'
+            '概念是「動作還沒被價格證實前」的早期蓄積訊號，<b>不保證會真的觸發主力評分</b>，'
+            '很多 FLOW 訊號最後不了了之。</li>'
+            '<li><b>行為標籤／風險文字分級</b>：純展示用的規則對照（如風險≥90＝「即將崩跌」、'
+            '多空比≤0.5 且資金淨流入＝「軋空候選」），數字本身才是判準，文字只是好讀。</li>'
+            '<li><b>大盤總覽</b>：全部彙總自本輪已算好的 results，不另外打 API；「升/降家數」'
+            '統計全市場（不限候選池）本輪評級變動方向；「山寨超額」＝山寨 24h 漲跌中位數－BTC 24h。</li>'
+            '<li><b>尚未做（誠實列出）</b>：板塊輪動（DeFi/GameFi 等資金板塊分析）需要幣種分類資料源，'
+            '目前免費 API 沒有整合，屬於下一階段的候選功能，還沒做。</li>'
             '<li><b>建議行動</b>：規則生成的操作語句（如「試倉 2-5%」），是既定規則輸出，'
             '<b>不是投資建議</b>，不構成任何形式的個人化建議。</li>'
             '<li>總分＝可得子分數的加權平均（子分數越少，總分越保守打折）；'
@@ -696,6 +882,7 @@ def main():
 
     futures_syms = fetch_futures_symbols()
     hl_map = fetch_hl_snapshot()
+    fg = fetch_fear_greed()
     dom_set = {r["symbol"] for r in universe[:args.dom_top]}
 
     results, errors = [], 0
@@ -707,10 +894,17 @@ def main():
             except Exception:  # noqa: BLE001
                 errors += 1
 
+    for r in results:
+        r["quality"] = quality_score(r)
+        r["flow"] = flow_score(r)
+        r["behavior"] = behavior_label(r)
+
     prev_state = load_state()
     is_cold_start = not prev_state
     alerts = build_alerts(results, prev_state, is_cold_start)
     alerted_symbols = {a["symbol"] for a in alerts}
+    all_transitions = build_all_transitions(results, prev_state, is_cold_start)
+    overview = market_overview(results, all_transitions, fg)
 
     # 把追蹤資訊（入池時間/價、期間高低）附加回 alert 物件，供 Discord/頁面顯示
     tracking_preview = update_tracking(results, prev_state, alerted_symbols, now.isoformat())
@@ -727,7 +921,8 @@ def main():
     if not args.dry_run:
         send_discord(webhook, alerts)
 
-    html_out = render_page(results, alerts, len(universe), args.min_quote_vol, now, exch_counts)
+    html_out = render_page(results, alerts, all_transitions, overview, len(universe),
+                           args.min_quote_vol, now, exch_counts)
     os.makedirs(os.path.dirname(DOCS_PATH), exist_ok=True)
     with open(DOCS_PATH, "w", encoding="utf-8") as f:
         f.write(html_out)
