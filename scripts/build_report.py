@@ -91,7 +91,7 @@ def crypto_scan():
         rows.append({"sym": sym[:-4], "close": last, "vs20": (last / ma20 - 1) * 100,
                      "vs60": (last / ma60 - 1) * 100, "bull": ma20 > ma60, "rsi": rsi,
                      "volr": volr, "atr": sum(trs) / 14, "chg7": (last / closes[-8] - 1) * 100,
-                     "qv_m": qv / 1e6})
+                     "qv_m": qv / 1e6, "_ohlcv": (highs, lows, closes, vols)})
         time.sleep(0.12)
     return rows
 
@@ -447,7 +447,9 @@ def build():
     # ---- 附錄＋免責 ----
     parts.append(
         '<section class="appendix"><h2>附錄：指標定義與資料來源</h2><ul>'
-        '<li><b>綜合評分公式</b>：技術＝50±（vs MA20 ±15、vs MA60 ±15、排列 ±10、RSI 區間 +10/−15、量比 ±5）；'
+        '<li><b>綜合評分公式</b>：技術＝均線排列/RSI/MACD/KD/布林通道/成交量比六個常見指標'
+        '各自量化成 -100~100 分後合成，再換算回本頁 0~100 慣例（獨立模組 ta_scoring.py，'
+        '同一套公式也用在主力資金雷達頁面，公式細節見該檔案）；'
         '深度＝50±（±1% 失衡 ±25、24h 均值 ±10、價差 +10/−10、簿深規模 ±5）；'
         '籌碼＝50±（資金費率健康 +5／擁擠 −8～−15／深負 +8、多空帳戶比極端 ±8～10、未平倉量變化×價格方向 ±8，Binance 合約、備援 OKX）；'
         '基本＝50±（市值排名 +5～15/−10、量/市值比 ±5、流通/最大供給 ±5、離 ATH 距離 ±5，CoinGecko）；'

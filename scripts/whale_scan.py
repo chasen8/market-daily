@@ -9,14 +9,17 @@
   超小型幣，只能給主流幣一個「未平倉/日量」擁擠度參考，對長尾幣種沒有幫助。
   這是免費 API 的硬限制，不是我們的篩選限制。
 
-== 五大子分數（決定總分，來源依交易所而異）==
+== 六大子分數（決定總分，來源依交易所而異；v4 新增「技術」）==
 - 鯨魚（大額成交淨流向）：Binance 用 aggTrades（isBuyerMaker 推斷方向）；
   Gate.io 用 trades（side 欄位直接給方向，更可靠）。都是「大單掛單行為」
-  的統計近似，**不是真實錢包持倉**。
+  的統計近似，**不是真實錢包持倉**。門檻依 24h 成交額分層（BTC/ETH 等
+  高流動性幣門檻遠高於長尾小幣，見 whale_threshold()），不是齊頭式固定值。
 - CVD：Binance 用 K 線 taker-buy 欄位；Gate.io 沒有這個欄位，改用近期
   逐筆成交方向加總近似，方法不同、意義相近。
 - OI×價：僅 Binance 有永續合約資料時才有；Gate.io 尚未整合期貨，一律缺。
 - DOM 市場深度：只對本輪分數最高的前 40 檔額外抓五檔深度。
+- 技術：均線/RSI/MACD/KD/布林/量比六個常見指標的量化合成分（ta_scoring.py），
+  跟前面幾項是完全不同的資料來源（K線 vs 逐筆成交/合約），互為獨立驗證。
 - 操縱警示：簡單啟發式（單筆佔比過高），只在成交量夠厚時評估。
 
 == 額外顯示（不計入總分，純參考）==
@@ -42,8 +45,13 @@ import sys
 
 import requests
 
+import ta_scoring as ta
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATE_PATH = os.path.join(ROOT, "data", "whale_state.json")
+MAJORS_PATH = os.path.join(ROOT, "data", "majors_history.json")
+MAJORS = ["BTC", "ETH", "SOL", "BNB", "XRP"]  # 主流幣資金強度專區固定追蹤這幾檔
+MAJORS_HISTORY_LEN = 24  # 5 分鐘一輪，24 筆＝近 2 小時基準
 DOCS_PATH = os.path.join(ROOT, "docs", "whales.html")
 
 H = {"User-Agent": "Mozilla/5.0"}
@@ -55,7 +63,21 @@ STABLE = {"USDC", "FDUSD", "TUSD", "DAI", "EUR", "USDP", "BUSD", "USD1", "EURI",
           "XUSD", "PAX", "GUSD", "USDD", "EURT", "RLUSD", "USDE", "USDY",
           "BFUSD", "USDS", "U"}
 LEV_SUFFIX = ("UP", "DOWN", "BULL", "BEAR")
-WHALE_TRADE_USD = 10_000
+# 鯨魚門檻改成流動性分層：固定 $10,000 對 BTC（日均量數十億）根本是雜訊，
+# 對一個 $30 萬量的長尾幣卻可能大到永遠觸發不了。門檻依 24h 成交額分層，
+# 讓「大額成交」在每個流動性量級都代表真正的異常，不是齊頭式假平等。
+WHALE_TIERS = [(500_000_000, 200_000), (100_000_000, 75_000),
+              (20_000_000, 25_000), (2_000_000, 8_000)]
+WHALE_TRADE_FLOOR = 3_000
+
+
+def whale_threshold(qv_24h):
+    for qv_min, th in WHALE_TIERS:
+        if qv_24h >= qv_min:
+            return th
+    return WHALE_TRADE_FLOOR
+
+
 MANIP_MIN_NOTIONAL = 50_000
 GRADE_BOUNDS = [(50, "S"), (25, "A"), (0, "B"), (-25, "C")]
 NOTABLE_GRADES = {"S", "A"}
@@ -190,7 +212,7 @@ def fetch_fear_greed():
 
 
 # ---------- 2) 單一幣種指標：Binance ----------
-def whale_flow_binance(symbol):
+def whale_flow_binance(symbol, threshold):
     trades = sget("/api/v3/aggTrades", {"symbol": symbol, "limit": 500})
     buy = sell = whale_buy = whale_sell = 0.0
     max_single = 0.0
@@ -198,26 +220,31 @@ def whale_flow_binance(symbol):
         notional = float(t["p"]) * float(t["q"])
         if t["m"]:
             sell += notional
-            if notional >= WHALE_TRADE_USD:
+            if notional >= threshold:
                 whale_sell += notional
         else:
             buy += notional
-            if notional >= WHALE_TRADE_USD:
+            if notional >= threshold:
                 whale_buy += notional
         max_single = max(max_single, notional)
     total = buy + sell
     return whale_buy - whale_sell, total, (max_single / total if total else 0), len(trades)
 
 
-def cvd_and_pullback_binance(symbol):
-    kl = sget("/api/v3/klines", {"symbol": symbol, "interval": "1h", "limit": 24})
-    cvd6, highs = 0.0, []
+def binance_kline_metrics(symbol):
+    """一次抓 80 根 1h K 線，同時供 CVD/雙頂偵測與 ta_scoring 技術面分析使用
+    （避免重複打 API）。80 根足夠 MA60、MACD(26+9)、布林(20) 都有資料。"""
+    kl = sget("/api/v3/klines", {"symbol": symbol, "interval": "1h", "limit": 80})
+    highs = [float(k[2]) for k in kl]
+    lows = [float(k[3]) for k in kl]
+    closes = [float(k[4]) for k in kl]
+    volumes = [float(k[5]) for k in kl]
+    cvd6 = 0.0
     for i, k in enumerate(kl):
         qv, taker_buy_qv = float(k[7]), float(k[10])
         if i >= len(kl) - 6:
             cvd6 += 2 * taker_buy_qv - qv
-        highs.append(float(k[2]))
-    last_close = float(kl[-1][4])
+    last_close = closes[-1]
     recent_high = max(highs[-6:]) if len(highs) >= 6 else max(highs)
     pullback_pct = (recent_high - last_close) / recent_high * 100 if recent_high else 0
     double_top = False
@@ -227,7 +254,7 @@ def cvd_and_pullback_binance(symbol):
         h1, h2 = highs[h1_idx], highs[h2_idx]
         if h1 > 0 and abs(h1 - h2) / h1 < 0.015 and last_close < min(h1, h2) * 0.97:
             double_top = True
-    return cvd6, pullback_pct, double_top
+    return cvd6, pullback_pct, double_top, (highs, lows, closes, volumes)
 
 
 def oi_and_ratio_binance(symbol):
@@ -245,7 +272,7 @@ def dom_imbalance_binance(symbol):
 
 
 # ---------- 2b) 單一幣種指標：Gate.io（長尾幣種）----------
-def whale_and_cvd_gate(cp):
+def whale_and_cvd_gate(cp, threshold):
     """Gate.io trades 有明確 side 欄位，一次抓同時算鯨魚淨流向與短期 CVD 近似。"""
     trades = gget("/spot/trades", {"currency_pair": cp, "limit": 500})
     buy = sell = whale_buy = whale_sell = 0.0
@@ -254,11 +281,11 @@ def whale_and_cvd_gate(cp):
         notional = float(t["price"]) * float(t["amount"])
         if t["side"] == "sell":
             sell += notional
-            if notional >= WHALE_TRADE_USD:
+            if notional >= threshold:
                 whale_sell += notional
         else:
             buy += notional
-            if notional >= WHALE_TRADE_USD:
+            if notional >= threshold:
                 whale_buy += notional
         max_single = max(max_single, notional)
     total = buy + sell
@@ -266,10 +293,15 @@ def whale_and_cvd_gate(cp):
     return whale_buy - whale_sell, total, (max_single / total if total else 0), len(trades), cvd_proxy
 
 
-def pullback_gate(cp):
-    kl = gget("/spot/candlesticks", {"currency_pair": cp, "interval": "1h", "limit": 24})
+def gate_kline_metrics(cp):
+    """同 binance_kline_metrics：一次抓 80 根 1h K 線供雙頂偵測與 ta_scoring 共用。
+    Gate 格式：[timestamp, quote_vol, close, high, low, open, base_vol, ...]。"""
+    kl = gget("/spot/candlesticks", {"currency_pair": cp, "interval": "1h", "limit": 80})
     highs = [float(k[3]) for k in kl]
-    last_close = float(kl[-1][2])
+    lows = [float(k[4]) for k in kl]
+    closes = [float(k[2]) for k in kl]
+    volumes = [float(k[6]) for k in kl]
+    last_close = closes[-1]
     recent_high = max(highs[-6:]) if len(highs) >= 6 else max(highs)
     pullback_pct = (recent_high - last_close) / recent_high * 100 if recent_high else 0
     double_top = False
@@ -279,7 +311,7 @@ def pullback_gate(cp):
         h1, h2 = highs[h1_idx], highs[h2_idx]
         if h1 > 0 and abs(h1 - h2) / h1 < 0.015 and last_close < min(h1, h2) * 0.97:
             double_top = True
-    return pullback_pct, double_top
+    return pullback_pct, double_top, (highs, lows, closes, volumes)
 
 
 def dom_imbalance_gate(cp):
@@ -304,15 +336,16 @@ def _dom_from_book(bids, asks):
 # ---------- 3) 單幣綜合評分 ----------
 def score_symbol(row, futures_syms, hl_map, do_dom):
     symbol, base, qv, exch = row["symbol"], row["base"], row["qv"], row["exch"]
-    sub = {"whale": None, "cvd": None, "oi": None, "dom": None, "manip": 0}
+    sub = {"whale": None, "cvd": None, "oi": None, "dom": None, "ta": None, "manip": 0}
     tags = []
     pullback, double_top = None, False
+    threshold = whale_threshold(qv)
 
     try:
         if exch == "binance":
-            net, total_notional, max_ratio, ntr = whale_flow_binance(symbol)
+            net, total_notional, max_ratio, ntr = whale_flow_binance(symbol, threshold)
         else:
-            net, total_notional, max_ratio, ntr, cvd_raw = whale_and_cvd_gate(symbol)
+            net, total_notional, max_ratio, ntr, cvd_raw = whale_and_cvd_gate(symbol, threshold)
             if qv > 0:
                 sub["cvd"] = clamp(round(cvd_raw / qv * 300))
         if total_notional > 0:
@@ -325,18 +358,22 @@ def score_symbol(row, futures_syms, hl_map, do_dom):
 
     if exch == "binance":
         try:
-            cvd6, pullback, double_top = cvd_and_pullback_binance(symbol)
+            cvd6, pullback, double_top, ohlcv = binance_kline_metrics(symbol)
             if qv > 0:
                 sub["cvd"] = clamp(round(cvd6 / qv * 300))
             if double_top:
                 tags.append("雙頂形態")
+            ta_result = ta.analyze(*ohlcv)
+            sub["ta"] = ta_result["total"]
         except Exception:  # noqa: BLE001
             pass
     else:
         try:
-            pullback, double_top = pullback_gate(symbol)
+            pullback, double_top, ohlcv = gate_kline_metrics(symbol)
             if double_top:
                 tags.append("雙頂形態")
+            ta_result = ta.analyze(*ohlcv)
+            sub["ta"] = ta_result["total"]
         except Exception:  # noqa: BLE001
             pass
 
@@ -594,11 +631,102 @@ def update_tracking(results, prev_state, alerted_symbols, now_iso):
     return new_state
 
 
+# ---------- 4b) 主流幣資金強度（相對自己歷史基準，不是絕對分數）----------
+def load_majors_history():
+    if os.path.exists(MAJORS_PATH):
+        with open(MAJORS_PATH, encoding="utf-8") as f:
+            d = json.load(f)
+        return d.get("series", {}), d.get("last_flows", {})
+    return {}, {}
+
+
+def save_majors_history(series, last_flows):
+    os.makedirs(os.path.dirname(MAJORS_PATH), exist_ok=True)
+    with open(MAJORS_PATH, "w", encoding="utf-8") as f:
+        json.dump({"series": series, "last_flows": last_flows}, f, ensure_ascii=False, indent=1)
+
+
+def strength_label(delta):
+    if delta >= 30:
+        return "資金流入顯著放大"
+    if delta >= 15:
+        return "資金流入轉強"
+    if delta <= -30:
+        return "資金流出顯著放大"
+    if delta <= -15:
+        return "資金流出轉強"
+    return "正常波動範圍"
+
+
+def compute_major_flows(results, prev_hist):
+    """BTC/SOL 這種高流動性幣，固定 $10,000 門檻的鯨魚分數本身雖然已經改成分層
+    （見 whale_threshold），但單一快照的分數還是不足以判斷「現在是不是真的資金
+    大量流入」——BTC 隨時都有大單進出，重點是「跟它自己平常比是不是明顯放大」。
+    這裡對每檔主流幣維護近 2 小時（24 筆×5分鐘）的鯨魚分數歷史，用「當前值 減去
+    扣掉當前這筆之後的歷史平均」當作相對強度，而不是拿不同幣的絕對分數互相比較。
+    """
+    by_base = {r["base"]: r for r in results}
+    new_hist, flows = {}, []
+    for base in MAJORS:
+        r = by_base.get(base)
+        if r is None:
+            continue
+        series = list(prev_hist.get(base, []))
+        baseline = round(sum(series) / len(series), 1) if series else None
+        current = r["sub"]["whale"] if r["sub"]["whale"] is not None else 0
+        delta = round(current - baseline, 1) if baseline is not None else None
+        series.append(current)
+        new_hist[base] = series[-MAJORS_HISTORY_LEN:]
+        flows.append({"base": base, "close": r["close"], "chg24h": r["chg24h"],
+                      "whale_now": current, "baseline": baseline, "delta": delta,
+                      "label": strength_label(delta) if delta is not None else "累積基準中",
+                      "samples": len(series)})
+    return flows, new_hist
+
+
+def build_major_alerts(flows, prev_last_flows):
+    """主流幣資金強度異常放大/縮小時單獨推 Discord，跟候選池/風險開關是平行的第三種觸發源。
+    只在「進入顯著放大狀態」的瞬間推播一次（用上一輪記錄的 label 判斷邊界），
+    停留在顯著放大狀態的後續輪次不重複通知，離開後才可能再次觸發。
+    """
+    alerts = []
+    for f in flows:
+        if f["delta"] is None:
+            continue
+        was_notable = prev_last_flows.get(f["base"]) in (
+            "資金流入顯著放大", "資金流出顯著放大")
+        now_notable = f["label"] in ("資金流入顯著放大", "資金流出顯著放大")
+        if now_notable and not was_notable:
+            alerts.append(dict(f))
+    return alerts
+
+
 # ---------- 5) Discord ----------
 def bar(v, width=10):
     v = clamp(v, -50, 50)
     filled = round((v + 50) / 100 * width)
     return "▓" * filled + "░" * (width - filled)
+
+
+def send_major_flow_discord(webhook, major_alerts):
+    if not webhook or not major_alerts:
+        return
+    embeds = []
+    for f in major_alerts:
+        inflow = "流入" in f["label"]
+        title = f'{"🟢" if inflow else "🔴"} {f["base"]}．{f["label"]}'
+        desc = (f'現價 ${f["close"]:g}・24h {f["chg24h"]:+.1f}%\n'
+                f'目前鯨魚分 {f["whale_now"]:+.0f}（近 2 小時基準 {f["baseline"]:+.1f}，'
+                f'樣本 {f["samples"]} 筆）\n'
+                f'相對強度 {f["delta"]:+.1f}（跟自己平常比，不是跟其他幣比）\n'
+                '主流幣鯨魚門檻本就遠高於長尾小幣，這裡看的是「比它自己平常更異常」。\n'
+                '程式規則生成，非投資建議。')
+        embeds.append({"title": title, "description": desc,
+                       "color": 0x187A4D if inflow else 0xB02B40})
+    try:
+        requests.post(webhook, json={"embeds": embeds}, timeout=TIMEOUT)
+    except Exception as e:  # noqa: BLE001
+        print(f"[WARN] 主流幣資金強度 Discord 推播失敗: {e}")
 
 
 def send_discord(webhook, alerts):
@@ -629,7 +757,8 @@ def send_discord(webhook, alerts):
                     f'鯨魚 {sub["whale"] if sub["whale"] is not None else "缺"}　'
                     f'CVD {sub["cvd"] if sub["cvd"] is not None else "缺"}　'
                     f'OI×價 {sub["oi"] if sub["oi"] is not None else "缺"}　'
-                    f'DOM {sub["dom"] if sub["dom"] is not None else "缺"}\n'
+                    f'DOM {sub["dom"] if sub["dom"] is not None else "缺"}　'
+                    f'技術 {sub["ta"] if sub["ta"] is not None else "缺"}\n'
                     f'風險 {a["risk"]}　交易所 {a["exch"]}'
                     + track + tag_line
                     + f'\n➡ {action_suggestion(a, a)}'
@@ -666,6 +795,7 @@ def card_html(r):
             f'<span>{r["total"]:+d}</span></div>'
             f'<div class="grid"><span>鯨魚 {s(sub["whale"])}</span><span>CVD {s(sub["cvd"])}</span>'
             f'<span>OI×價 {s(sub["oi"])}</span><span>DOM {s(sub["dom"])}</span>'
+            f'<span>技術 {s(sub["ta"])}</span>'
             f'<span>HL擁擠 {r["hl_crowd"] if r["hl_crowd"] is not None else "缺"}</span>'
             f'<span>操縱 {sub["manip"]:+d}</span>'
             f'<span>品質 {r["quality"]}</span><span>FLOW {r["flow"]}</span>'
@@ -675,10 +805,20 @@ def card_html(r):
             f'<div class="exch">來源：{esc(r["exch"])}</div></div>')
 
 
-def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, now, exch_counts):
+def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, now, exch_counts, major_flows):
     pool = [r for r in results if r["grade"] in NOTABLE_GRADES or r["risk"] >= 75]
     pool.sort(key=lambda r: -r["total"])
     cards = "".join(card_html(r) for r in pool) or '<p class="sub">目前無候選池成員或高風險標的。</p>'
+
+    def major_row(f):
+        tone = "up" if (f["delta"] or 0) > 0 else ("dn" if (f["delta"] or 0) < 0 else "")
+        base_txt = f'{f["baseline"]:+.1f}' if f["baseline"] is not None else "累積中"
+        delta_txt = f'{f["delta"]:+.1f}' if f["delta"] is not None else "—"
+        return (f'<tr><td class="code">{esc(f["base"])}</td><td>${f["close"]:g}</td>'
+                f'<td>{f["chg24h"]:+.2f}%</td><td>{f["whale_now"]:+.0f}</td>'
+                f'<td>{base_txt}</td><td class="{tone}"><b>{delta_txt}</b></td>'
+                f'<td>{esc(f["label"])}</td><td>{f["samples"]}</td></tr>')
+    major_rows = "".join(major_row(f) for f in major_flows) or "<tr><td colspan=8>—</td></tr>"
 
     flow_candidates = sorted(
         (r for r in results if r["grade"] not in NOTABLE_GRADES and r["flow"] >= 10),
@@ -707,7 +847,7 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
             f'<tr><td class="code">{esc(r["base"])}</td><td>{esc(r["exch"])}</td>'
             f'<td class="{tone}"><b>{r["grade"]}</b>（{r["total"]:+d}）</td>'
             + sub_cell(r["sub"]["whale"]) + sub_cell(r["sub"]["cvd"])
-            + sub_cell(r["sub"]["oi"]) + sub_cell(r["sub"]["dom"])
+            + sub_cell(r["sub"]["oi"]) + sub_cell(r["sub"]["dom"]) + sub_cell(r["sub"]["ta"])
             + f'<td class="{risk_tone}">{r["risk"]}・{esc(risk_label(r["risk"]))}</td>'
             f'<td>{r["quality"]}</td><td>{r["flow"]}</td><td>{esc(r["behavior"])}</td>'
             f'<td>{esc("、".join(r["tags"]) if r["tags"] else "—")}</td>'
@@ -802,6 +942,13 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
             f'<div class="kpi"><div class="l">山寨中位數 24h（超額 vs BTC）</div>'
             f'<div class="v">{(str(round(overview["alt_median_chg"],1))+"%") if overview["alt_median_chg"] is not None else "缺"}'
             f'（{overview["alt_excess_vs_btc"]:+.1f}pp）</div></div></div></section>'
+            f'<section><h2>主流幣資金強度（相對自己基準，不是跟其他幣比）</h2>'
+            f'<p class="sub">固定幣種{" / ".join(MAJORS)}，鯨魚門檻本就依流動性分層更高；'
+            f'這裡再拿「現在」跟「這檔幣自己近 2 小時的平均」比，抓真正異常放大的資金流，'
+            f'不是絕對分數高低（見附錄）</p>'
+            f'<div class="tbl"><table><tr><th>幣種</th><th>現價</th><th>24h</th>'
+            f'<th>當前鯨魚分</th><th>近2h基準</th><th>相對強度</th><th>判讀</th><th>樣本數</th></tr>'
+            + major_rows + '</table></div></section>'
             f'<section><h2>候選池（S/A 級或高風險）</h2>'
             f'<p class="sub">下方卡片即時反映目前在池內的標的；入池追蹤（時間/價格/期間高低＝MFE/MAE）持續累積</p>'
             f'<div class="cards">{cards}</div></section>'
@@ -817,16 +964,24 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
             f'<section><h2>全市場評分（顯示前 200，依總分排序）</h2>'
             f'<p class="sub">評級：總分 ≥50 S・≥25 A・≥0 B・≥-25 C・其餘 D｜「缺」＝該幣無此資料源</p>'
             f'<div class="tbl"><table><tr><th>標的</th><th>來源</th><th>評級</th><th>鯨魚</th><th>CVD</th>'
-            f'<th>OI×價</th><th>DOM</th><th>風險</th><th>品質</th><th>FLOW</th><th>行為</th>'
+            f'<th>OI×價</th><th>DOM</th><th>技術</th><th>風險</th><th>品質</th><th>FLOW</th><th>行為</th>'
             f'<th>訊號標籤</th><th>24h</th></tr>'
             + "".join(rows) +
             '</table></div></section>'
             '<section class="appendix"><h2>公式與誠實限制</h2><ul>'
             '<li><b>涵蓋範圍</b>：Binance 現貨 USDT（主要）＋ Gate.io 現貨 USDT（只收 Binance 沒有的長尾幣，'
             '約 130 檔，含 TAG 這類極小型迷因幣）。兩者都套 24h 成交額 ≥$30萬 的流動性門檻。</li>'
-            '<li><b>鯨魚（大額成交淨流向）</b>：近 500 筆逐筆成交中單筆 ≥$10,000 者的買賣淨額。'
-            'Binance 用 isBuyerMaker 推斷方向；Gate.io 用其 trades 的明確 side 欄位。'
-            '<b>這不是真實錢包持倉</b>，只是大單掛單行為的統計近似。</li>'
+            '<li><b>鯨魚（大額成交淨流向）</b>：近 500 筆逐筆成交中「單筆金額 ≥ 門檻」者的買賣淨額。'
+            '<b>門檻依 24h 成交額分層</b>，不是齊頭式固定 $10,000——固定門檻對 BTC/ETH 這種'
+            '日均量數十億的幣毫無意義（$10,000 只是雜訊），對長尾小幣卻可能大到永遠觸發不了。'
+            '分層：24h額≥$5億→門檻$200,000；≥$1億→$75,000；≥$2000萬→$25,000；'
+            '≥$200萬→$8,000；其餘→$3,000。Binance 用 isBuyerMaker 推斷方向；'
+            'Gate.io 用其 trades 的明確 side 欄位。<b>這不是真實錢包持倉</b>，'
+            '只是大單掛單行為的統計近似。</li>'
+            '<li><b>技術</b>：均線排列／RSI／MACD／KD／布林通道／成交量比六個常見技術指標'
+            '各自量化成 -100~100 連續分數後合成（獨立模組 ta_scoring.py，同時供日報頁面使用，'
+            '公式細節見該檔案 docstring）。跟「鯨魚/CVD/OI/DOM」是完全不同的資料來源'
+            '（K 線 vs 逐筆成交/合約資料），互相獨立、互為驗證。</li>'
             '<li><b>CVD</b>：Binance 用近 6 小時 K 線的主動買賣量差；Gate.io 沒有這個欄位，'
             '改用近 500 筆成交的淨方向近似，兩者方法不同、意義相近。</li>'
             '<li><b>OI×價</b>：僅 Binance 有永續合約的幣才有資料；Gate.io 尚未整合期貨資料，一律缺。</li>'
@@ -848,6 +1003,13 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
             '多空比≤0.5 且資金淨流入＝「軋空候選」），數字本身才是判準，文字只是好讀。</li>'
             '<li><b>大盤總覽</b>：全部彙總自本輪已算好的 results，不另外打 API；「升/降家數」'
             '統計全市場（不限候選池）本輪評級變動方向；「山寨超額」＝山寨 24h 漲跌中位數－BTC 24h。</li>'
+            f'<li><b>主流幣資金強度</b>：固定追蹤 {"/".join(MAJORS)}。鯨魚門檻已依流動性分層'
+            '（見上方鯨魚說明），但 BTC/ETH 這種幣隨時都有大單進出，單一快照的鯨魚分數'
+            '無法判斷「現在算不算異常」。這裡額外維護每檔幣近 2 小時（24 筆×5分鐘）的'
+            '鯨魚分數歷史，用「當前值－扣除當前這筆後的歷史平均」當相對強度：'
+            '≥+30＝資金流入顯著放大、≥+15＝轉強，對稱定義流出；未達門檻＝正常波動範圍。'
+            '只在「進入顯著放大」的瞬間推 Discord，停留在該狀態不重複通知。'
+            '<b>樣本數 &lt; 24 代表歷史還在累積中，基準尚不穩定，判讀僅供參考。</b></li>'
             '<li><b>尚未做（誠實列出）</b>：板塊輪動（DeFi/GameFi 等資金板塊分析）需要幣種分類資料源，'
             '目前免費 API 沒有整合，屬於下一階段的候選功能，還沒做。</li>'
             '<li><b>建議行動</b>：規則生成的操作語句（如「試倉 2-5%」），是既定規則輸出，'
@@ -906,6 +1068,11 @@ def main():
     all_transitions = build_all_transitions(results, prev_state, is_cold_start)
     overview = market_overview(results, all_transitions, fg)
 
+    prev_series, prev_last_flows = load_majors_history()
+    major_flows, new_majors_series = compute_major_flows(results, prev_series)
+    major_alerts = [] if is_cold_start else build_major_alerts(major_flows, prev_last_flows)
+    save_majors_history(new_majors_series, {f["base"]: f["label"] for f in major_flows})
+
     # 把追蹤資訊（入池時間/價、期間高低）附加回 alert 物件，供 Discord/頁面顯示
     tracking_preview = update_tracking(results, prev_state, alerted_symbols, now.isoformat())
     for a in alerts:
@@ -920,16 +1087,18 @@ def main():
     webhook = os.environ.get("DISCORD_WEBHOOK_URL", "").strip()
     if not args.dry_run:
         send_discord(webhook, alerts)
+        send_major_flow_discord(webhook, major_alerts)
 
     html_out = render_page(results, alerts, all_transitions, overview, len(universe),
-                           args.min_quote_vol, now, exch_counts)
+                           args.min_quote_vol, now, exch_counts, major_flows)
     os.makedirs(os.path.dirname(DOCS_PATH), exist_ok=True)
     with open(DOCS_PATH, "w", encoding="utf-8") as f:
         f.write(html_out)
 
     print(f"universe={len(universe)}(binance={exch_counts['binance']},gate={exch_counts['gate']}) "
-          f"scored={len(results)} errors={errors} alerts={len(alerts)} cold_start={is_cold_start} "
-          f"hl_symbols={len(hl_map)} discord={'on' if webhook else 'off(dry/no-secret)'}")
+          f"scored={len(results)} errors={errors} alerts={len(alerts)} major_alerts={len(major_alerts)} "
+          f"cold_start={is_cold_start} hl_symbols={len(hl_map)} "
+          f"discord={'on' if webhook else 'off(dry/no-secret)'}")
     return 0
 
 

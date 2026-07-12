@@ -12,6 +12,8 @@ import xml.etree.ElementTree as ET
 
 import requests
 
+import ta_scoring as ta
+
 TIMEOUT = 25
 H = {"User-Agent": "Mozilla/5.0"}
 WEIGHTS = {"tech": 30, "depth": 20, "chips": 20, "fund": 15, "news": 15}
@@ -32,24 +34,17 @@ def clamp(v, lo=0, hi=100):
 
 # ---------- 技術面（輸入：build_report 的 crypto_scan 一列） ----------
 def score_tech(r):
-    s = 50
-    s += 15 if r["vs20"] > 0 else -15          # 收盤 vs MA20
-    s += 15 if r["vs60"] > 0 else -15          # 收盤 vs MA60
-    s += 10 if r["bull"] else -10              # MA20 vs MA60 排列
-    rsi = r["rsi"]
-    if rsi > 75:
-        s -= 15                                # 過熱
-    elif rsi < 30:
-        s -= 10                                # 破底動能
-    elif 45 <= rsi <= 70:
-        s += 10                                # 健康動能區
-    volr = r.get("volr")
-    if volr is not None:
-        if volr >= 1.2:
-            s += 5
-        elif volr <= 0.7:
-            s -= 5
-    return clamp(s)
+    """委派給共用模組 ta_scoring.py（均線/RSI/MACD/KD/布林/量比六指標量化合成），
+    不再是這裡自己的 vs20/vs60/RSI 三段式土砲公式。ta_scoring 用 -100~100、0中性，
+    這裡轉回本頁沿用的 0~100、50中性慣例（50 + total/2），維持頁面顯示不變。
+    """
+    ohlcv = r.get("_ohlcv")
+    if not ohlcv:
+        return None
+    result = ta.analyze(*ohlcv)
+    if result["total"] is None:
+        return None
+    return clamp(round(50 + result["total"] / 2))
 
 
 # ---------- 市場深度（輸入：dom_latest 的一列；無 DOM 資料 → None） ----------
