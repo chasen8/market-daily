@@ -865,10 +865,15 @@ def build_major_alerts(flows, prev_last_flows):
 
 
 # ---------- 5) Discord ----------
-# 純文字訊息（不用 embed 色條），格式照使用者提供的參考截圖：
-# ▼/▲/⚠ 分類・幣種・子標題：趨勢符號，接著反引號包住的數字、粗體百分比、
-# 反引號文字進度條，最後一行用 > 引言區塊放備註。
-GRADE_DOT = {"S": "🟢", "A": "🟢", "B": "⚪", "C": "🟠", "D": "🔴"}
+# 用 embed（不是純文字 content）：Discord 對同一機器人短時間內連發的純文字訊息
+# 會自動合併、不重複顯示大頭貼也沒有卡片分隔線，連續好幾則會糊成一坨
+# （2026-07-13 實測抓到，改回 embed 才有參考截圖那種「每則獨立色條卡片」的效果）。
+# 內文排版沿用 markdown 慣例：反引號包數字、粗體百分比、反引號文字進度條、
+# > 引言區塊放備註。
+GRADE_DOT = {"S": "🟡", "A": "🟢", "B": "⚪", "C": "🟠", "D": "🔴"}  # S 用金/黃圈區隔頂級
+EMBED_COLOR = {"opportunity_long": 0xD4AF37, "opportunity_short": 0xA83E54,
+              "movement": 0x8A8172, "risk_on": 0xA83E54, "risk_off": 0x8A8172,
+              "major": 0xD4AF37}
 DISCORD_SEND_DELAY = 0.4  # 逐則發送間隔，避免撞 webhook 速率限制
 
 
@@ -890,10 +895,12 @@ def trend_emoji(chg):
     return "📈" if chg >= 0 else "📉"
 
 
-def _post_discord_messages(webhook, messages):
-    for msg in messages:
+def _post_discord_embeds(webhook, embeds):
+    """每批最多 10 個 embed（Discord API 上限），批次之間留間隔避免撞速率限制。"""
+    for i in range(0, len(embeds), 10):
+        batch = embeds[i:i + 10]
         try:
-            requests.post(webhook, json={"content": msg}, timeout=TIMEOUT)
+            requests.post(webhook, json={"embeds": batch}, timeout=TIMEOUT)
         except Exception as e:  # noqa: BLE001
             print(f"[WARN] Discord 推播失敗: {e}")
         time.sleep(DISCORD_SEND_DELAY)
@@ -902,63 +909,64 @@ def _post_discord_messages(webhook, messages):
 def send_major_flow_discord(webhook, major_alerts):
     if not webhook or not major_alerts:
         return
-    messages = []
+    embeds = []
     for f in major_alerts:
         inflow = "流入" in f["label"]
         head = "▲" if inflow else "▼"
-        msg = (f'{head} 主流強度・{f["base"]}・{"🟢" if inflow else "🔴"} {f["label"]}：{trend_emoji(f["chg24h"])}\n'
-              f'現價 `${f["close"]:g}` · 24h **{f["chg24h"]:+.1f}%**\n'
-              f'鯨魚分 `{f["whale_now"]:+.0f}` · 近2h基準 `{f["baseline"]:+.1f}` · '
-              f'相對強度 **{f["delta"]:+.1f}**\n'
-              f'> 跟自己平常比，不是跟其他幣比較｜程式規則生成，非投資建議')
-        messages.append(msg)
-    _post_discord_messages(webhook, messages)
+        title = f'{head} 主流強度・{f["base"]}・{"🟢" if inflow else "🔴"} {f["label"]}：{trend_emoji(f["chg24h"])}'
+        desc = (f'現價 `${f["close"]:g}` · 24h **{f["chg24h"]:+.1f}%**\n'
+                f'鯨魚分 `{f["whale_now"]:+.0f}` · 近2h基準 `{f["baseline"]:+.1f}` · '
+                f'相對強度 **{f["delta"]:+.1f}**\n'
+                '> 跟自己平常比，不是跟其他幣比較\n程式規則生成，非投資建議')
+        embeds.append({"title": title, "description": desc,
+                       "color": EMBED_COLOR["major"] if inflow else 0xA83E54})
+    _post_discord_embeds(webhook, embeds)
 
 
 def send_discord(webhook, alerts):
     if not webhook or not alerts:
         return
-    messages = []
+    embeds = []
     for a in alerts:
-        sub = a["sub"]
         tags_text = "、".join(a.get("tags", []))
+        ckey = a["type"]
         if a["type"] == "opportunity":
             is_long = a["pool_direction"] == "long"
+            ckey = "opportunity_long" if is_long else "opportunity_short"
             head = "▲" if is_long else "▼"
             call = "🟢 做多點" if is_long else "🔴 做空點"
             quote = f'{tags_text}｜{action_suggestion(a, a)}' if tags_text else action_suggestion(a, a)
-            msg = (f'{head} 機會・{a["base"]}・{call}：{trend_emoji(a["chg24h"])}\n'
-                  f'進場價 `${a["close"]:g}` · 24h **{a["chg24h"]:+.1f}%**\n'
-                  f'總分 `{bar(a["total"])}` **{a["total"]:+d}** · '
-                  f'品質 `{a["quality"]}` · {GRADE_DOT.get(a["grade"],"⚪")}**{a["grade"]}**\n'
-                  f'> {quote}')
+            title = f'{head} 機會・{a["base"]}・{call}：{trend_emoji(a["chg24h"])}'
+            desc = (f'進場價 `${a["close"]:g}` · 24h **{a["chg24h"]:+.1f}%**\n'
+                    f'總分 `{bar(a["total"])}` **{a["total"]:+d}** · '
+                    f'品質 `{a["quality"]}` · {GRADE_DOT.get(a["grade"],"⚪")}**{a["grade"]}**\n'
+                    f'> {quote}')
         elif a["type"] == "movement":
             icon = "🟠" if a["change"] == "跌出候選池" else "⚡"
             quote = tags_text or action_suggestion(a, a)
-            msg = (f'{icon} 異動・{a["base"]}・{a["prev_grade"]}→{a["grade"]}（{a["change"]}）：'
-                  f'{trend_emoji(a["chg24h"])}\n'
-                  f'現價 `${a["close"]:g}` · **{a["chg24h"]:+.1f}%** · 篩選分 `{a["quality"]}` · '
-                  f'{GRADE_DOT.get(a["grade"],"⚪")}**{a["grade"]}** `{a["total"]:+d}`\n'
-                  f'> {quote}')
+            title = f'{icon} 異動・{a["base"]}・{a["prev_grade"]}→{a["grade"]}（{a["change"]}）：{trend_emoji(a["chg24h"])}'
+            desc = (f'現價 `${a["close"]:g}` · **{a["chg24h"]:+.1f}%** · 篩選分 `{a["quality"]}` · '
+                    f'{GRADE_DOT.get(a["grade"],"⚪")}**{a["grade"]}** `{a["total"]:+d}`\n'
+                    f'> {quote}')
         elif a["type"] == "risk_on":
-            msg = (f'▼ 風險・{a["base"]}・🔴 {risk_label(a["risk"])}：{trend_emoji(a["chg24h"])}\n'
-                  f'現價 `${a["close"]:g}` · **{a["chg24h"]:+.1f}%**\n'
-                  f'風險評分 `{bar100(a["risk"])}` **{a["risk"]}** · {risk_label(a["risk"])}\n'
-                  f'> {action_suggestion(a, a)}')
+            title = f'▼ 風險・{a["base"]}・🔴 {risk_label(a["risk"])}：{trend_emoji(a["chg24h"])}'
+            desc = (f'現價 `${a["close"]:g}` · **{a["chg24h"]:+.1f}%**\n'
+                    f'風險評分 `{bar100(a["risk"])}` **{a["risk"]}** · {risk_label(a["risk"])}\n'
+                    f'> {action_suggestion(a, a)}')
         else:
-            msg = (f'▲ 風險・{a["base"]}・⚪ 警示解除：{trend_emoji(a["chg24h"])}\n'
-                  f'現價 `${a["close"]:g}` · **{a["chg24h"]:+.1f}%**\n'
-                  f'風險評分 `{bar100(a["risk"])}` **{a["risk"]}**\n'
-                  f'> {action_suggestion(a, a)}')
+            title = f'▲ 風險・{a["base"]}・⚪ 警示解除：{trend_emoji(a["chg24h"])}'
+            desc = (f'現價 `${a["close"]:g}` · **{a["chg24h"]:+.1f}%**\n'
+                    f'風險評分 `{bar100(a["risk"])}` **{a["risk"]}**\n'
+                    f'> {action_suggestion(a, a)}')
         pe_ts, pe_px = a.get("pool_entry_ts"), a.get("pool_entry_price")
         if pe_ts and pe_px and a["type"] in ("opportunity", "movement"):
             hi, lo = a.get("high_since", pe_px), a.get("low_since", pe_px)
-            msg += (f'\n入池 `{pe_ts[5:16]}` · `${pe_px:g}` · '
-                   f'最高 **{(hi/pe_px-1)*100:+.1f}%** · 最低 **{(lo/pe_px-1)*100:+.1f}%** · '
-                   f'異動 `{a.get("alert_count", 1)}` 次')
-        msg += "\n程式規則生成，非投資建議"
-        messages.append(msg)
-    _post_discord_messages(webhook, messages)
+            desc += (f'\n入池 `{pe_ts[5:16]}` · `${pe_px:g}` · '
+                    f'最高 **{(hi/pe_px-1)*100:+.1f}%** · 最低 **{(lo/pe_px-1)*100:+.1f}%** · '
+                    f'異動 `{a.get("alert_count", 1)}` 次')
+        desc += "\n程式規則生成，非投資建議"
+        embeds.append({"title": title, "description": desc, "color": EMBED_COLOR.get(ckey, 0x8A8172)})
+    _post_discord_embeds(webhook, embeds)
 
 
 # ---------- 6) 網頁 ----------
@@ -1119,65 +1127,76 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
         for t in sorted(all_transitions, key=lambda t: t["base"])[:60]
     ) or "<li>本輪全市場無評級變動。</li>"
 
+    # 黑金主題：刻意固定一套視覺（不跟隨系統亮暗），2026-07-13 應使用者要求改版。
+    # 金色只用在版面裝飾/強調（標題、邊框、S 級徽章），漲跌語意色維持獨立的
+    # 綠/紅（已過色盲驗證 ΔE 14.1），不會拿金色混充漲跌，避免語意衝突。
     css = """
-    :root{--bg:#FAFAF7;--card:#FFFFFF;--ink:#23262B;--muted:#676D76;--line:#E3E1DB;--accent:#3E5C8A;--chip:#EEF1F5;
-     --up:#187A4D;--dn:#B02B40;--flat:#8A8F98}
-    @media (prefers-color-scheme: dark){:root{--bg:#14161A;--card:#1C1F25;--ink:#E8E6E1;--muted:#9AA0A8;--line:#2C3037;
-     --accent:#93ADD6;--chip:#252A32;--up:#3FBF8A;--dn:#E4677B;--flat:#8A8F98}}
-    :root[data-theme="dark"]{--bg:#14161A;--card:#1C1F25;--ink:#E8E6E1;--muted:#9AA0A8;--line:#2C3037;
-     --accent:#93ADD6;--chip:#252A32;--up:#3FBF8A;--dn:#E4677B;--flat:#8A8F98}
-    :root[data-theme="light"]{--bg:#FAFAF7;--card:#FFFFFF;--ink:#23262B;--muted:#676D76;--line:#E3E1DB;
-     --accent:#3E5C8A;--chip:#EEF1F5;--up:#187A4D;--dn:#B02B40;--flat:#8A8F98}
+    :root{--bg:#0B0A08;--card:#17140F;--card2:#1D1811;--ink:#ECE4D3;--muted:#A79A7E;
+     --line:rgba(212,175,55,.22);--gold:#D4AF37;--gold-soft:#E8CD6B;--chip:#221D14;
+     --up:#2EA673;--dn:#A83E54;--flat:#8A8172}
     *{box-sizing:border-box}
-    body{background:var(--bg);color:var(--ink);margin:0;font-family:"Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
-    .wrap{max-width:1160px;margin:0 auto;padding:28px 20px 60px;display:flex;flex-direction:column;gap:24px}
-    .mast{border-bottom:2px solid var(--ink);padding-bottom:14px;display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 16px}
-    .mast h1{font-size:1.4rem;margin:0;letter-spacing:.1em}
-    .chip{background:var(--chip);color:var(--muted);border-radius:999px;padding:2px 12px;font-size:.74rem}
-    section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px 22px}
-    h2{font-size:1.0rem;margin:0 0 4px;color:var(--accent);letter-spacing:.1em}
-    .sub{font-size:.8rem;color:var(--muted);margin:0 0 14px}
+    body{background:var(--bg);color:var(--ink);margin:0;
+     font-family:"Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
+    .wrap{max-width:1160px;margin:0 auto;padding:32px 20px 64px;display:flex;flex-direction:column;gap:22px}
+    .mast{border-bottom:1px solid var(--gold);padding-bottom:16px;display:flex;flex-wrap:wrap;
+     align-items:baseline;gap:8px 16px}
+    .mast h1{font-size:1.5rem;margin:0;letter-spacing:.16em;color:var(--gold);font-weight:700}
+    .chip{background:var(--chip);color:var(--muted);border:1px solid var(--line);
+     border-radius:999px;padding:3px 13px;font-size:.72rem}
+    section{background:linear-gradient(180deg,var(--card),var(--card) 60%,var(--card2));
+     border:1px solid var(--line);border-radius:12px;padding:22px 24px;
+     box-shadow:0 1px 0 rgba(212,175,55,.06) inset}
+    h2{font-size:.92rem;margin:0 0 6px;color:var(--gold-soft);letter-spacing:.16em;
+     font-weight:700;text-transform:uppercase;padding-left:12px;
+     border-left:3px solid var(--gold)}
+    .sub{font-size:.8rem;color:var(--muted);margin:0 0 16px;line-height:1.6}
     .tbl{overflow-x:auto}
     table{border-collapse:collapse;width:100%;font-size:.82rem;white-space:nowrap}
-    th{color:var(--muted);text-align:right;padding:6px 10px;border-bottom:1px solid var(--line);font-size:.74rem}
-    td{padding:6px 10px;text-align:right;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+    th{color:var(--gold-soft);text-align:right;padding:7px 11px;border-bottom:1px solid var(--line);
+     font-size:.7rem;letter-spacing:.06em;font-weight:600;text-transform:uppercase}
+    td{padding:7px 11px;text-align:right;border-bottom:1px solid var(--line);
+     font-variant-numeric:tabular-nums}
     th:first-child,td:first-child{text-align:left}
+    tbody tr:hover td{background:rgba(212,175,55,.05)}
     .code{font-family:ui-monospace,Consolas,monospace}
     .up{color:var(--up)}.dn{color:var(--dn)}.fl{color:var(--flat)}
-    .appendix li,.appendix p{font-size:.82rem;color:var(--muted)}
-    a{color:var(--accent)}
-    .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
-    .card{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:var(--bg)}
+    .appendix li,.appendix p{font-size:.82rem;color:var(--muted);line-height:1.7}
+    a{color:var(--gold-soft)}
+    .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+    .card{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:var(--card2);
+     transition:border-color .15s}
     .card.up{border-color:var(--up)}.card.dn{border-color:var(--dn)}
-    .chead{display:flex;align-items:baseline;gap:8px;margin-bottom:6px}
-    .chead .sym{font-size:1.05rem}
-    .grade{font-weight:700;padding:1px 9px;border-radius:6px;background:var(--chip);
-     display:inline-block;font-size:.82rem;line-height:1.5}
-    .grade.gS{background:var(--up);color:#fff}
-    .grade.gA{background:color-mix(in srgb, var(--up) 24%, var(--chip));color:var(--up)}
+    .chead{display:flex;align-items:baseline;gap:8px;margin-bottom:8px}
+    .chead .sym{font-size:1.08rem;font-weight:700;letter-spacing:.02em}
+    .grade{font-weight:700;padding:2px 10px;border-radius:6px;background:var(--chip);
+     display:inline-block;font-size:.8rem;line-height:1.5}
+    .grade.gS{background:var(--gold);color:#0B0A08}
+    .grade.gA{background:color-mix(in srgb, var(--up) 26%, var(--chip));color:var(--up)}
     .grade.gB{background:var(--chip);color:var(--ink)}
-    .grade.gC{background:color-mix(in srgb, var(--dn) 24%, var(--chip));color:var(--dn)}
+    .grade.gC{background:color-mix(in srgb, var(--dn) 26%, var(--chip));color:var(--dn)}
     .grade.gD{background:var(--dn);color:#fff}
     .chead .px{margin-left:auto;font-size:.82rem;font-variant-numeric:tabular-nums}
-    .card .bar{position:relative;background:var(--chip);border-radius:6px;height:16px;margin:6px 0;overflow:hidden}
+    .card .bar{position:relative;background:var(--chip);border-radius:6px;height:15px;margin:8px 0;overflow:hidden}
     .card .bar .fill{position:absolute;left:0;top:0;bottom:0;background:var(--flat)}
     .card .bar .fill.up{background:var(--up)}.card .bar .fill.dn{background:var(--dn)}
-    .card .bar span{position:relative;font-size:.7rem;line-height:16px;padding-left:6px;font-variant-numeric:tabular-nums}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 10px;font-size:.78rem;color:var(--muted);margin:6px 0}
-    .track{font-size:.74rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:6px;margin-top:6px}
-    .tags{font-size:.76rem;margin-top:4px}
-    .exch{font-size:.7rem;color:var(--muted);margin-top:4px}
-    .chead .beh{font-size:.7rem;color:var(--muted);background:var(--chip);border-radius:6px;padding:1px 6px}
+    .card .bar span{position:relative;font-size:.68rem;line-height:15px;padding-left:6px;
+     font-variant-numeric:tabular-nums;color:#fff;font-weight:700;
+     text-shadow:0 1px 2px rgba(0,0,0,.75),0 0 1px rgba(0,0,0,.9)}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:3px 10px;font-size:.78rem;color:var(--muted);margin:8px 0}
+    .track{font-size:.74rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px;margin-top:8px}
+    .tags{font-size:.76rem;margin-top:4px;color:var(--gold-soft)}
+    .exch{font-size:.68rem;color:var(--muted);margin-top:6px}
+    .chead .beh{font-size:.68rem;color:var(--gold-soft);background:var(--chip);
+     border-radius:6px;padding:2px 8px;border:1px solid var(--line)}
     .ov{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
-    .ov .kpi{border:1px solid var(--line);border-radius:8px;padding:10px 12px}
-    .ov .kpi .l{font-size:.72rem;color:var(--muted)}
-    .ov .kpi .v{font-size:1.15rem;font-weight:700;font-variant-numeric:tabular-nums}
+    .ov .kpi{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--card2)}
+    .ov .kpi .l{font-size:.7rem;color:var(--muted);letter-spacing:.03em}
+    .ov .kpi .v{font-size:1.2rem;font-weight:700;font-variant-numeric:tabular-nums;color:var(--gold-soft)}
     .cols{columns:2;column-gap:24px}
     .cols li{break-inside:avoid}
     .muted{color:var(--muted)}
-    .logtbl{border-collapse:separate;border-spacing:0 4px}
-    .logtbl td{background:var(--bg);border-bottom:none;border-top:1px solid var(--line);
-     border-bottom:1px solid var(--line)}
+    .logtbl{border-collapse:separate;border-spacing:0 5px}
+    .logtbl td{background:var(--card2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
     .logtbl td:first-child{border-left:1px solid var(--line);border-radius:8px 0 0 8px}
     .logtbl td:last-child{border-right:1px solid var(--line);border-radius:0 8px 8px 0}
     .logsym{display:flex;flex-direction:column;line-height:1.25}
@@ -1185,23 +1204,12 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
     .logsym span{font-size:.66rem;color:var(--muted);font-family:ui-monospace,Consolas,monospace}
     .timecell{display:flex;flex-direction:column;line-height:1.4;font-size:.78rem}
     .timecell span{font-size:.68rem;color:var(--muted)}
-    .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;
+    .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 11px;border-radius:999px;
      font-size:.74rem;font-weight:700;white-space:nowrap}
-    .badge.win{background:rgba(24,122,77,.16);color:var(--up)}
-    .badge.loss{background:rgba(176,43,64,.16);color:var(--dn)}
+    .badge.win{background:rgba(46,166,115,.18);color:var(--up)}
+    .badge.loss{background:rgba(168,62,84,.18);color:var(--dn)}
     td.mono{font-family:ui-monospace,Consolas,monospace}
     """
-    css_dark_badge = """
-    @media (prefers-color-scheme:dark){
-      .badge.win{background:rgba(63,191,138,.18)}
-      .badge.loss{background:rgba(228,103,123,.18)}
-    }
-    :root[data-theme="dark"] .badge.win{background:rgba(63,191,138,.18)}
-    :root[data-theme="dark"] .badge.loss{background:rgba(228,103,123,.18)}
-    :root[data-theme="light"] .badge.win{background:rgba(24,122,77,.16)}
-    :root[data-theme="light"] .badge.loss{background:rgba(176,43,64,.16)}
-    """
-    css += css_dark_badge
     return (f'<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">'
             f'<meta name="viewport" content="width=device-width,initial-scale=1">'
             f'<title>加密訊息 {now:%Y-%m-%d %H:%M}</title><style>{css}</style></head><body>'
