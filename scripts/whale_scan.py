@@ -28,11 +28,15 @@
 - HL 未平倉擁擠度：Hyperliquid 未平倉量／當日名目量，只有該幣在 HL 上架
   才有，多數長尾幣一律顯示「缺」。
 
-== 候選池與追蹤 ==
-- 候選池＝總分達 S/A 級。首次進入會記錄「入池時間／入池價」，之後每輪更新
-  期間最高／最低價；跌出候選池後這些數字會凍結，直到下次重新進入才歸零重記。
-- 只有「進出候選池」「候選池內 S↔A 升降」「風險分跨越 75」才推 Discord，
-  一般 B/C/D 之間的日常波動不通知（見 2026-07-10 lessons：曾經因為沒有這條
+== 候選池與追蹤（v5 新增空方，對稱多方）==
+- 多方候選池＝總分達 S/A 級（建議做多）；空方候選池＝總分 < -25 的 D 級
+  （建議做空，2026-07-12 新增，之前只有多方）。首次進入記錄「入池時間／入池價／
+  方向」，之後每輪更新期間最高／最低價；跌出候選池後這些數字會凍結，直到
+  下次重新進入才歸零重記；多空方向切換視為新一輪（重置追蹤數字，不沿用）。
+- Discord 通知分三類：**機會**＝首次進入任一候選池（唯一會明講「建議做多／
+  做空」的類型）；**異動**＝候選池內升降級、跌出候選池（純狀態追蹤）；
+  **風險**＝反轉/崩跌警示（風險分跨越 75），跟候選池是平行系統。
+  一般 B/C 之間的日常波動不通知（見 2026-07-10 lessons：曾經因為沒有這條
   規則在 265 檔裡洗出 69 則通知）。
 
 == 推送紀錄與績效（v4 新增，data/signal_log.json）==
@@ -92,7 +96,9 @@ def whale_threshold(qv_24h):
 MANIP_MIN_NOTIONAL = 50_000
 DOM_CONF_FULL_RATIO = 0.02  # ±1% 簿深佔 24h 成交額達此比例，DOM 分數才給滿信心權重
 GRADE_BOUNDS = [(50, "S"), (25, "A"), (0, "B"), (-25, "C")]
-NOTABLE_GRADES = {"S", "A"}
+LONG_GRADES = {"S", "A"}   # 多方機會候選池（做多）
+SHORT_GRADES = {"D"}       # 空方機會候選池（做空）——跟多方對稱新增，之前完全沒有
+POOL_GRADES = LONG_GRADES | SHORT_GRADES
 _GRADE_ORDER = ["S", "A", "B", "C", "D"]
 TIMEOUT = 20
 
@@ -114,6 +120,17 @@ def grade_of(total):
 
 def grade_rank(g):
     return _GRADE_ORDER.index(g)
+
+
+def direction_of(grade):
+    """做多／做空／None（不在任何機會候選池）。空方只有 D 一級，沒有多方 S/A
+    那樣的兩段分級——GRADE_BOUNDS 本來就沒有對稱切出「強空/普通空」兩層，
+    這是誠實的限制，不是假裝對稱（見附錄）。"""
+    if grade in LONG_GRADES:
+        return "long"
+    if grade in SHORT_GRADES:
+        return "short"
+    return None
 
 
 def grade_class(g):
@@ -531,28 +548,36 @@ def behavior_label(r):
         return "軋空候選"
     if r["risk"] >= 75:
         return "看跌警示"
-    if r["grade"] in ("S", "A"):
-        return "動能強"
-    if flow_score(r) >= 15 and r["grade"] not in NOTABLE_GRADES:
+    if r["grade"] in LONG_GRADES:
+        return "動能強（做多）"
+    if r["grade"] in SHORT_GRADES:
+        return "動能強（做空）"
+    if flow_score(r) >= 15 and r["grade"] not in POOL_GRADES:
         return "蓄勢"
     return "觀望"
 
 
 def action_suggestion(alert, r):
     """建議行動：規則生成的操作語句，非投資建議，僅供參考。"""
-    grade, direction = r["grade"], alert.get("direction", "")
-    if alert["type"] == "risk_on":
+    grade = r["grade"]
+    atype = alert["type"]
+    if atype == "risk_on":
         return "風險分觸頂：建議減碼／緊止損，觀察後續是否止穩。"
-    if alert["type"] == "risk_off":
+    if atype == "risk_off":
         return "風險警示解除：可觀察是否重新站穩，暫不建議追價。"
-    if direction == "跌出候選池":
-        return "資金流轉弱：建議降低倉位或觀望，等待重新確認動能。"
-    if grade == "S":
-        return "升 S 級（強）：資金流最集中，若無背離可續抱，仍需設止損。"
-    if grade == "A" and direction == "進入候選池":
-        return "升 A 初期：可少量試倉（2-5%），止損設在入池價下方，觀察是否延續。"
-    if grade == "A":
-        return "候選池內續強：可維持既有倉位，追蹤是否升至 S。"
+    if atype == "opportunity":
+        if alert["pool_direction"] == "long":
+            if grade == "S":
+                return "建議：做多。S 級，資金流最集中，可試倉，止損設在入池價下方，留意背離。"
+            return "建議：做多。A 級初期，可少量試倉（2-5%），止損設在入池價下方，觀察是否延續。"
+        return "建議：做空。D 級，多項指標同向偏空，可試倉，止損設在入池價上方，留意反彈背離。"
+    # movement
+    change = alert.get("change", "")
+    if change == "跌出候選池":
+        pool_dir = "多方" if alert.get("pool_direction") == "long" else "空方"
+        return f"資金流轉弱：跌出{pool_dir}候選池，建議降低倉位或觀望，等待重新確認動能。"
+    if change == "升級":
+        return "候選池內續強：可維持既有倉位／部位，追蹤是否進一步強化。"
     return "評級變動，建議先觀察一輪確認方向，不建議立即動作。"
 
 
@@ -571,6 +596,12 @@ def save_state(state):
 
 
 def build_alerts(results, prev_state, is_cold_start):
+    """三分類通知：
+    - 機會（opportunity）：首次進入多方或空方候選池，是唯一會明確講「建議做多／做空」的類型。
+    - 異動（movement）：候選池內的升降級、跌出候選池——單純狀態變化，不重複給方向建議。
+    - 風險（risk_on/risk_off）：既有部位的反轉/崩跌警示，跟機會候選池是平行、獨立的系統
+      （風險分是雙頂/回落/操縱等結構性訊號，不是「有沒有進出候選池」）。
+    """
     alerts = []
     if is_cold_start:
         return alerts
@@ -579,15 +610,22 @@ def build_alerts(results, prev_state, is_cold_start):
         if old is None:
             continue
         old_grade, new_grade = old.get("grade"), r["grade"]
-        old_notable, new_notable = old_grade in NOTABLE_GRADES, new_grade in NOTABLE_GRADES
-        if old_grade != new_grade and (old_notable or new_notable):
-            if new_notable and not old_notable:
-                direction = "進入候選池"
-            elif old_notable and not new_notable:
-                direction = "跌出候選池"
-            else:
-                direction = "升級" if grade_rank(new_grade) < grade_rank(old_grade) else "降級"
-            alerts.append({"type": "grade", "direction": direction, **r, "prev_grade": old_grade})
+        old_dir, new_dir = direction_of(old_grade), direction_of(new_grade)
+        if old_grade != new_grade:
+            if new_dir and not old_dir:
+                alerts.append({"type": "opportunity", "pool_direction": new_dir, **r, "prev_grade": old_grade})
+            elif old_dir and not new_dir:
+                alerts.append({"type": "movement", "change": "跌出候選池",
+                              "pool_direction": old_dir, **r, "prev_grade": old_grade})
+            elif old_dir and new_dir and old_dir != new_dir:
+                # 直接從多方池跳到空方池（或反過來）：先記一筆跌出、再記一筆新機會
+                alerts.append({"type": "movement", "change": "跌出候選池",
+                              "pool_direction": old_dir, **r, "prev_grade": old_grade})
+                alerts.append({"type": "opportunity", "pool_direction": new_dir, **r, "prev_grade": old_grade})
+            elif old_dir and new_dir:
+                change = "升級" if grade_rank(new_grade) < grade_rank(old_grade) else "降級"
+                alerts.append({"type": "movement", "change": change,
+                              "pool_direction": new_dir, **r, "prev_grade": old_grade})
         was_risky = old.get("risk", 0) >= 75
         if r["risk"] >= 75 and not was_risky:
             alerts.append({"type": "risk_on", **r})
@@ -636,26 +674,31 @@ def market_overview(results, all_transitions, fg):
 
 
 def update_tracking(results, prev_state, alerted_symbols, now_iso):
-    """維護候選池追蹤：入池時間/價、期間高低、通知次數。跌出後凍結直到重新入池。"""
+    """維護候選池追蹤：入池時間/價/方向、期間高低、通知次數。跌出後凍結直到重新入池。
+    多方→空方（或反過來）直接切換視為新一輪episode（重置入池價/高低），
+    不會沿用舊方向的追蹤數字。"""
     new_state = {}
     for r in results:
         sym = r["symbol"]
         old = prev_state.get(sym, {})
-        in_pool = r["grade"] in NOTABLE_GRADES
-        was_in_pool = old.get("grade") in NOTABLE_GRADES
+        direction = direction_of(r["grade"])
+        old_direction = direction_of(old.get("grade"))
+        in_pool = direction is not None
+        same_episode = in_pool and old_direction == direction
         entry = {"grade": r["grade"], "total": r["total"], "risk": r["risk"], "ts": now_iso}
-        if in_pool and not was_in_pool:
-            entry.update(pool_entry_ts=now_iso, pool_entry_price=r["close"],
+        if in_pool and not same_episode:
+            entry.update(pool_direction=direction, pool_entry_ts=now_iso, pool_entry_price=r["close"],
                          high_since=r["close"], low_since=r["close"], alert_count=0)
-        elif in_pool and was_in_pool:
-            entry.update(pool_entry_ts=old.get("pool_entry_ts", now_iso),
+        elif same_episode:
+            entry.update(pool_direction=direction,
+                         pool_entry_ts=old.get("pool_entry_ts", now_iso),
                          pool_entry_price=old.get("pool_entry_price", r["close"]),
                          high_since=max(old.get("high_since", r["close"]), r["close"]),
                          low_since=min(old.get("low_since", r["close"]), r["close"]),
                          alert_count=old.get("alert_count", 0))
         else:
             # 跌出或本來就不在池內：凍結既有追蹤紀錄（若有），不重置
-            for k in ("pool_entry_ts", "pool_entry_price", "high_since", "low_since", "alert_count"):
+            for k in ("pool_direction", "pool_entry_ts", "pool_entry_price", "high_since", "low_since", "alert_count"):
                 if k in old:
                     entry[k] = old[k]
         if sym in alerted_symbols:
@@ -693,26 +736,28 @@ def update_signal_log(results, prev_state, log, now_iso):
     for r in results:
         sym = r["symbol"]
         old = prev_state.get(sym, {})
-        in_pool = r["grade"] in NOTABLE_GRADES
-        was_in_pool = old.get("grade") in NOTABLE_GRADES
+        direction = direction_of(r["grade"])
+        old_direction = direction_of(old.get("grade"))
+        in_pool = direction is not None
+        same_episode = in_pool and old_direction == direction and sym in open_idx
 
-        if in_pool and not was_in_pool:
+        if in_pool and not same_episode:
             log.append({
-                "symbol": sym, "base": r["base"], "exch": r["exch"],
+                "symbol": sym, "base": r["base"], "exch": r["exch"], "direction": direction,
                 "entry_ts": now_iso, "entry_price": r["close"], "entry_grade": r["grade"],
                 "last_ts": now_iso, "last_price": r["close"],
                 "high_since": r["close"], "low_since": r["close"],
                 "push_count": 1, "status": "open",
             })
             open_idx[sym] = len(log) - 1
-        elif in_pool and was_in_pool and sym in open_idx:
+        elif same_episode:
             rec = log[open_idx[sym]]
             rec["last_ts"] = now_iso
             rec["last_price"] = r["close"]
             rec["high_since"] = max(rec["high_since"], r["close"])
             rec["low_since"] = min(rec["low_since"], r["close"])
             rec["push_count"] += 1
-        elif not in_pool and was_in_pool and sym in open_idx:
+        elif not in_pool and sym in open_idx:
             rec = log[open_idx[sym]]
             rec["status"] = "closed"
             rec["closed_ts"] = now_iso
@@ -724,16 +769,24 @@ def update_signal_log(results, prev_state, log, now_iso):
 
 
 def signal_result(rec):
-    return "上漲有效" if rec["last_price"] >= rec["entry_price"] else "反向走跌"
+    """回傳 (中文結果字串, 是否成功)。做多＝現價≥推送價才算成功；
+    做空方向相反＝現價≤推送價才算成功——這是空方候選池新增後，結果判定
+    一定要對稱處理的地方，不能整批沿用做多的判準。"""
+    direction = rec.get("direction", "long")
+    if direction == "short":
+        ok = rec["last_price"] <= rec["entry_price"]
+        return ("下跌有效" if ok else "反向走升"), ok
+    ok = rec["last_price"] >= rec["entry_price"]
+    return ("上漲有效" if ok else "反向走跌"), ok
 
 
 def signal_stats(log):
     """整份紀錄的勝率統計——這是驗證整套評分系統有沒有用的唯一誠實方法：
-    真實訊號事後追蹤，不是回測、不是自吹自擂。"""
+    真實訊號事後追蹤，不是回測、不是自吹自擂。多空合併計算總勝率。"""
     closed = [r for r in log if r["status"] == "closed"]
     if not closed:
         return {"n": 0, "win_rate": None, "avg_gain": None, "avg_drawdown": None}
-    wins = sum(1 for r in closed if signal_result(r) == "上漲有效")
+    wins = sum(1 for r in closed if signal_result(r)[1])
     avg_gain = sum((r["high_since"] / r["entry_price"] - 1) * 100 for r in closed) / len(closed)
     avg_dd = sum((r["low_since"] / r["entry_price"] - 1) * 100 for r in closed) / len(closed)
     return {"n": len(closed), "win_rate": round(wins / len(closed) * 100, 1),
@@ -841,18 +894,25 @@ def send_major_flow_discord(webhook, major_alerts):
 def send_discord(webhook, alerts):
     if not webhook or not alerts:
         return
-    color = {"grade": 0x3E5C8A, "risk_on": 0xC7364C, "risk_off": 0x8A8F98}
+    color = {"opportunity_long": 0x187A4D, "opportunity_short": 0xB02B40,
+            "movement": 0x8A8F98, "risk_on": 0xC7364C, "risk_off": 0x8A8F98}
     for i in range(0, len(alerts), 10):
         embeds = []
         for a in alerts[i:i + 10]:
             sub = a["sub"]
-            if a["type"] == "grade":
-                icon = "🟢" if a["direction"] == "進入候選池" else ("🟠" if a["direction"] == "跌出候選池" else "🟡")
-                title = f'{icon} {a["base"]}．主力評分 {a["prev_grade"]}→{a["grade"]}（{a["direction"]}）'
+            ckey = a["type"]
+            if a["type"] == "opportunity":
+                is_long = a["pool_direction"] == "long"
+                ckey = "opportunity_long" if is_long else "opportunity_short"
+                call = "做多" if is_long else "做空"
+                title = f'{"🟢" if is_long else "🔴"} 機會．{a["base"]}．建議{call}（{a["prev_grade"]}→{a["grade"]}）'
+            elif a["type"] == "movement":
+                icon = "🟠" if a["change"] == "跌出候選池" else "⚡"
+                title = f'{icon} 異動．{a["base"]}．{a["prev_grade"]}→{a["grade"]}（{a["change"]}）'
             elif a["type"] == "risk_on":
-                title = f'🔴 {a["base"]}．{risk_label(a["risk"])}：風險評分 {a["risk"]}'
+                title = f'🔴 風險．{a["base"]}．{risk_label(a["risk"])}：風險評分 {a["risk"]}'
             else:
-                title = f'⚪ {a["base"]}．風險警示解除（{a["risk"]}）'
+                title = f'⚪ 風險．{a["base"]}．風險警示解除（{a["risk"]}）'
             track = ""
             pe_ts, pe_px = a.get("pool_entry_ts"), a.get("pool_entry_price")
             if pe_ts and pe_px:
@@ -872,7 +932,7 @@ def send_discord(webhook, alerts):
                     + track + tag_line
                     + f'\n➡ {action_suggestion(a, a)}'
                     + "\n程式規則生成，非投資建議")
-            embeds.append({"title": title, "description": desc, "color": color.get(a["type"], 0x676D76)})
+            embeds.append({"title": title, "description": desc, "color": color.get(ckey, 0x676D76)})
         try:
             requests.post(webhook, json={"embeds": embeds}, timeout=TIMEOUT)
         except Exception as e:  # noqa: BLE001
@@ -882,7 +942,13 @@ def send_discord(webhook, alerts):
 # ---------- 6) 網頁 ----------
 def card_html(r):
     sub = r["sub"]
-    tone = "up" if r["grade"] in ("S", "A") else ("dn" if r["risk"] >= 75 else "")
+    direction = direction_of(r["grade"])
+    if direction == "long":
+        tone = "up"
+    elif direction == "short":
+        tone = "dn"
+    else:
+        tone = "dn" if r["risk"] >= 75 else ""
 
     def s(v):
         return "缺" if v is None else f"{v:+d}"
@@ -929,8 +995,10 @@ def fmt_duration(start_iso, end_iso):
 
 
 def signal_row(rec):
-    result = signal_result(rec)
-    ok = result == "上漲有效"
+    result, ok = signal_result(rec)
+    direction = rec.get("direction", "long")
+    dir_txt = "做多" if direction == "long" else "做空"
+    dir_cls = "up" if direction == "long" else "dn"
     gain_pct = (rec["high_since"] / rec["entry_price"] - 1) * 100
     dd_pct = (rec["low_since"] / rec["entry_price"] - 1) * 100
     dur = fmt_duration(rec["entry_ts"], rec["last_ts"])
@@ -940,6 +1008,7 @@ def signal_row(rec):
     return (
         '<tr>'
         f'<td><div class="logsym"><b>{esc(rec["base"])}</b><span>{esc(rec["symbol"])}</span></div></td>'
+        f'<td><span class="{dir_cls}">{dir_txt}</span></td>'
         f'<td><span class="grade {grade_class(rec["entry_grade"])}">{esc(rec["entry_grade"])}</span></td>'
         f'<td><span class="badge {badge_cls}">{badge_icon} {esc(result)}</span></td>'
         f'<td><div class="timecell">{rec["entry_ts"][5:16]} → {rec["last_ts"][5:16]}'
@@ -955,12 +1024,12 @@ def signal_row(rec):
 
 def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, now, exch_counts,
                 major_flows, signal_log, stats):
-    pool = [r for r in results if r["grade"] in NOTABLE_GRADES or r["risk"] >= 75]
+    pool = [r for r in results if r["grade"] in POOL_GRADES or r["risk"] >= 75]
     pool.sort(key=lambda r: -r["total"])
     cards = "".join(card_html(r) for r in pool) or '<p class="sub">目前無候選池成員或高風險標的。</p>'
 
     signal_rows_sorted = sorted(signal_log, key=lambda r: r["last_ts"], reverse=True)[:100]
-    signal_rows_html = "".join(signal_row(r) for r in signal_rows_sorted) or '<tr><td colspan="9">尚無推送紀錄。</td></tr>'
+    signal_rows_html = "".join(signal_row(r) for r in signal_rows_sorted) or '<tr><td colspan="10">尚無推送紀錄。</td></tr>'
     win_rate_txt = f'{stats["win_rate"]}%' if stats["win_rate"] is not None else "累積中"
     avg_gain_txt = f'+{stats["avg_gain"]}%' if stats["avg_gain"] is not None else "—"
     avg_dd_txt = f'{stats["avg_drawdown"]}%' if stats["avg_drawdown"] is not None else "—"
@@ -976,7 +1045,7 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
     major_rows = "".join(major_row(f) for f in major_flows) or "<tr><td colspan=8>—</td></tr>"
 
     flow_candidates = sorted(
-        (r for r in results if r["grade"] not in NOTABLE_GRADES and r["flow"] >= 10),
+        (r for r in results if r["grade"] not in POOL_GRADES and r["flow"] >= 10),
         key=lambda r: -r["flow"])[:10]
     flow_rows = "".join(
         f'<li><b>{esc(r["base"])}</b>・FLOW {r["flow"]}・{esc(r["behavior"])}'
@@ -1008,13 +1077,18 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
             f'<td>{esc("、".join(r["tags"]) if r["tags"] else "—")}</td>'
             f'<td>{r["chg24h"]:+.2f}%</td></tr>')
 
-    # Discord 有推播的異動（候選池進出/風險開關）
-    alert_rows = "".join(
-        f'<li>{esc(a["base"])}：' + (
-            f'{esc(a["prev_grade"])} → {esc(a["grade"])}（{esc(a["direction"])}）'
-            if a["type"] == "grade" else
-            (f'風險升至 {a["risk"]}（高風險）' if a["type"] == "risk_on" else f'風險警示解除（{a["risk"]}）')
-        ) + '</li>' for a in alerts) or "<li>本輪無候選池／風險開關異動（Discord 不會推播）</li>"
+    # Discord 有推播的異動（機會／異動／風險三分類）
+    def alert_line(a):
+        if a["type"] == "opportunity":
+            call = "做多" if a["pool_direction"] == "long" else "做空"
+            return f'🎯 機會・{esc(a["base"])}：{esc(a["prev_grade"])}→{esc(a["grade"])}，建議{call}'
+        if a["type"] == "movement":
+            return f'⚡ 異動・{esc(a["base"])}：{esc(a["prev_grade"])}→{esc(a["grade"])}（{esc(a["change"])}）'
+        if a["type"] == "risk_on":
+            return f'🔴 風險・{esc(a["base"])}：升至 {a["risk"]}（{esc(risk_label(a["risk"]))}）'
+        return f'⚪ 風險解除・{esc(a["base"])}：{a["risk"]}'
+    alert_rows = "".join(f'<li>{alert_line(a)}</li>' for a in alerts) \
+        or "<li>本輪無機會／異動／風險開關（Discord 不會推播）</li>"
 
     # 全市場所有評級變動（含日常 B/C/D 波動，只在頁面顯示、不推 Discord，避免洗版）
     trans_rows = "".join(
@@ -1142,7 +1216,7 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
             f'<div class="kpi"><div class="l">平均最大回落</div>'
             f'<div class="v">{avg_dd_txt}</div></div>'
             f'</div>'
-            f'<div class="tbl" style="margin-top:14px"><table class="logtbl"><tr><th>幣種</th><th>評級</th><th>結果</th>'
+            f'<div class="tbl" style="margin-top:14px"><table class="logtbl"><tr><th>幣種</th><th>方向</th><th>評級</th><th>結果</th>'
             f'<th>首推→最新</th><th>推送價</th><th>現價/結案價</th><th>漲幅(高點)</th>'
             f'<th>跌幅(低點)</th><th>推送次數</th><th>來源</th></tr>'
             + signal_rows_html + '</table></div></section>'
@@ -1153,8 +1227,9 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
             f'<div class="tbl"><table><tr><th>幣種</th><th>現價</th><th>24h</th>'
             f'<th>當前鯨魚分</th><th>近2h基準</th><th>相對強度</th><th>判讀</th><th>樣本數</th></tr>'
             + major_rows + '</table></div></section>'
-            f'<section><h2>候選池（S/A 級或高風險）</h2>'
-            f'<p class="sub">下方卡片即時反映目前在池內的標的；入池追蹤（時間/價格/期間高低＝MFE/MAE）持續累積</p>'
+            f'<section><h2>機會候選池（多方 S/A・空方 D・或高風險）</h2>'
+            f'<p class="sub">綠框＝多方機會（建議做多）、紅框＝空方機會（建議做空）或高風險警示；'
+            f'入池追蹤（時間/價格/期間高低＝MFE/MAE）持續累積</p>'
             f'<div class="cards">{cards}</div></section>'
             f'<section><h2>先行・點火前資金流（FLOW，未進候選池）</h2>'
             f'<p class="sub">只看鯨魚／CVD 這兩個快訊號，且價格還沒大動時給滿權重——目的是搶在主力評分'
@@ -1162,7 +1237,7 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
             f'<section><h2>品質分排行（長期體質，非動能）</h2>'
             f'<p class="sub">流動性層級＋有無永續合約＋近期有無結構性破壞的規則統計，跟主力評分分開看</p>'
             f'<ul class="cols">{quality_rows}</ul></section>'
-            f'<section><h2>候選池／風險開關異動（Discord 有推播）</h2><ul>{alert_rows}</ul></section>'
+            f'<section><h2>機會／異動／風險（Discord 有推播）</h2><ul>{alert_rows}</ul></section>'
             f'<section><h2>全市場評級異動摘要（僅頁面顯示，含日常 B/C/D 波動）</h2>'
             f'<ul class="cols">{trans_rows}</ul></section>'
             f'<section><h2>全市場評分（顯示前 200，依總分排序）</h2>'
@@ -1216,13 +1291,21 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
             '≥+30＝資金流入顯著放大、≥+15＝轉強，對稱定義流出；未達門檻＝正常波動範圍。'
             '只在「進入顯著放大」的瞬間推 Discord，停留在該狀態不重複通知。'
             '<b>樣本數 &lt; 24 代表歷史還在累積中，基準尚不穩定，判讀僅供參考。</b></li>'
-            '<li><b>推送紀錄與績效</b>：每次「進入候選池」開一筆紀錄，追蹤到「跌出候選池」結案。'
-            '「結果」用最新價（開放中）或結案價（已結案）對比推送價判定，只有二元「上漲有效／'
-            '反向走跌」；「漲幅(高點)」「跌幅(低點)」是這段期間的最高/最低價對比推送價，'
-            '<b>不是進場就能拿到高點</b>，只是紀錄這段期間價格曾經去過哪裡。上漲有效率統計'
-            '只計已結案訊號，開放中的不計入（避免拿還沒有結果的訊號灌水勝率）。'
-            '<b>這是唯一能誠實驗證整套評分系統有沒有用的地方</b>：如果上漲有效率長期接近或低於'
-            '50%，代表評分系統沒有真正的預測力，該重新檢討公式，不是繼續加指標。</li>'
+            '<li><b>機會／異動／風險三分類（Discord）</b>：<b>機會</b>＝首次進入多方（S/A）或空方（D）'
+            '候選池，是唯一會明確講「建議做多／做空」的通知；<b>異動</b>＝候選池內的升降級、跌出候選池，'
+            '純狀態追蹤不重複給方向建議；<b>風險</b>＝既有的反轉/崩跌警示（雙頂、大幅回落、操縱嫌疑），'
+            '跟機會候選池是兩套獨立系統——風險警示不代表「機會」消失，是另一個維度的訊號。</li>'
+            '<li><b>空方候選池（做空機會）</b>：2026-07-12 新增，對稱多方候選池——總分 &lt;-25（D 級）'
+            '首次觸發視為做空機會。<b>誠實限制</b>：多方有 S（&gt;=50）/A（&gt;=25~50）兩層分級，'
+            '空方目前只有 D 一層（&lt;-25，範圍比多方任一層都寬），沒有對稱切出「強空/普通空」——'
+            '這是評分公式原本的門檻設計就不對稱，不是假裝對稱又藏起這個落差。</li>'
+            '<li><b>推送紀錄與績效</b>：每次進入機會候選池（多方或空方）開一筆紀錄，跌出時結案。'
+            '「結果」依方向判定：做多＝現價（開放中）或結案價（已結案）≥推送價才算「上漲有效」；'
+            '做空則相反，現價≤推送價才算「下跌有效」——<b>兩個方向的成功定義互為鏡像，不能只套用'
+            '做多的判準</b>。「漲幅(高點)」「跌幅(低點)」不分方向，都是這段期間最高/最低價對比推送價的'
+            '客觀紀錄，<b>不是進場就能拿到高點</b>。上漲/下跌有效率統計只計已結案訊號，開放中的不計入'
+            '（避免拿還沒有結果的訊號灌水勝率）。<b>這是唯一能誠實驗證整套評分系統有沒有用的地方</b>：'
+            '如果長期勝率接近或低於 50%，代表評分系統沒有真正的預測力，該重新檢討公式，不是繼續加指標。</li>'
             '<li><b>尚未做（誠實列出）</b>：板塊輪動（DeFi/GameFi 等資金板塊分析）需要幣種分類資料源，'
             '目前免費 API 沒有整合，屬於下一階段的候選功能，還沒做。</li>'
             '<li><b>建議行動</b>：規則生成的操作語句（如「試倉 2-5%」），是既定規則輸出，'
