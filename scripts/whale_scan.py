@@ -55,6 +55,7 @@ import html
 import json
 import os
 import sys
+import time
 
 import requests
 
@@ -864,79 +865,100 @@ def build_major_alerts(flows, prev_last_flows):
 
 
 # ---------- 5) Discord ----------
-def bar(v, width=10):
-    v = clamp(v, -50, 50)
-    filled = round((v + 50) / 100 * width)
+# 純文字訊息（不用 embed 色條），格式照使用者提供的參考截圖：
+# ▼/▲/⚠ 分類・幣種・子標題：趨勢符號，接著反引號包住的數字、粗體百分比、
+# 反引號文字進度條，最後一行用 > 引言區塊放備註。
+GRADE_DOT = {"S": "🟢", "A": "🟢", "B": "⚪", "C": "🟠", "D": "🔴"}
+DISCORD_SEND_DELAY = 0.4  # 逐則發送間隔，避免撞 webhook 速率限制
+
+
+def bar(v, width=12):
+    """-100~100 置中進度條，供總分（機會/異動）使用。"""
+    v = clamp(v, -100, 100)
+    filled = round((v + 100) / 200 * width)
     return "▓" * filled + "░" * (width - filled)
+
+
+def bar100(v, width=12):
+    """0~100 進度條，供品質分/風險分這種非置中量表使用。"""
+    v = clamp(v, 0, 100)
+    filled = round(v / 100 * width)
+    return "▓" * filled + "░" * (width - filled)
+
+
+def trend_emoji(chg):
+    return "📈" if chg >= 0 else "📉"
+
+
+def _post_discord_messages(webhook, messages):
+    for msg in messages:
+        try:
+            requests.post(webhook, json={"content": msg}, timeout=TIMEOUT)
+        except Exception as e:  # noqa: BLE001
+            print(f"[WARN] Discord 推播失敗: {e}")
+        time.sleep(DISCORD_SEND_DELAY)
 
 
 def send_major_flow_discord(webhook, major_alerts):
     if not webhook or not major_alerts:
         return
-    embeds = []
+    messages = []
     for f in major_alerts:
         inflow = "流入" in f["label"]
-        title = f'{"🟢" if inflow else "🔴"} {f["base"]}．{f["label"]}'
-        desc = (f'現價 ${f["close"]:g}・24h {f["chg24h"]:+.1f}%\n'
-                f'目前鯨魚分 {f["whale_now"]:+.0f}（近 2 小時基準 {f["baseline"]:+.1f}，'
-                f'樣本 {f["samples"]} 筆）\n'
-                f'相對強度 {f["delta"]:+.1f}（跟自己平常比，不是跟其他幣比）\n'
-                '主流幣鯨魚門檻本就遠高於長尾小幣，這裡看的是「比它自己平常更異常」。\n'
-                '程式規則生成，非投資建議。')
-        embeds.append({"title": title, "description": desc,
-                       "color": 0x187A4D if inflow else 0xB02B40})
-    try:
-        requests.post(webhook, json={"embeds": embeds}, timeout=TIMEOUT)
-    except Exception as e:  # noqa: BLE001
-        print(f"[WARN] 主流幣資金強度 Discord 推播失敗: {e}")
+        head = "▲" if inflow else "▼"
+        msg = (f'{head} 主流強度・{f["base"]}・{"🟢" if inflow else "🔴"} {f["label"]}：{trend_emoji(f["chg24h"])}\n'
+              f'現價 `${f["close"]:g}` · 24h **{f["chg24h"]:+.1f}%**\n'
+              f'鯨魚分 `{f["whale_now"]:+.0f}` · 近2h基準 `{f["baseline"]:+.1f}` · '
+              f'相對強度 **{f["delta"]:+.1f}**\n'
+              f'> 跟自己平常比，不是跟其他幣比較｜程式規則生成，非投資建議')
+        messages.append(msg)
+    _post_discord_messages(webhook, messages)
 
 
 def send_discord(webhook, alerts):
     if not webhook or not alerts:
         return
-    color = {"opportunity_long": 0x187A4D, "opportunity_short": 0xB02B40,
-            "movement": 0x8A8F98, "risk_on": 0xC7364C, "risk_off": 0x8A8F98}
-    for i in range(0, len(alerts), 10):
-        embeds = []
-        for a in alerts[i:i + 10]:
-            sub = a["sub"]
-            ckey = a["type"]
-            if a["type"] == "opportunity":
-                is_long = a["pool_direction"] == "long"
-                ckey = "opportunity_long" if is_long else "opportunity_short"
-                call = "做多" if is_long else "做空"
-                title = f'{"🟢" if is_long else "🔴"} 機會．{a["base"]}．建議{call}（{a["prev_grade"]}→{a["grade"]}）'
-            elif a["type"] == "movement":
-                icon = "🟠" if a["change"] == "跌出候選池" else "⚡"
-                title = f'{icon} 異動．{a["base"]}．{a["prev_grade"]}→{a["grade"]}（{a["change"]}）'
-            elif a["type"] == "risk_on":
-                title = f'🔴 風險．{a["base"]}．{risk_label(a["risk"])}：風險評分 {a["risk"]}'
-            else:
-                title = f'⚪ 風險．{a["base"]}．風險警示解除（{a["risk"]}）'
-            track = ""
-            pe_ts, pe_px = a.get("pool_entry_ts"), a.get("pool_entry_price")
-            if pe_ts and pe_px:
-                hi, lo = a.get("high_since", pe_px), a.get("low_since", pe_px)
-                hi_pct, lo_pct = (hi / pe_px - 1) * 100, (lo / pe_px - 1) * 100
-                track = (f'\n入池 {pe_ts[5:16]}・${pe_px:g}\n'
-                        f'最高 {hi_pct:+.1f}%　最低 {lo_pct:+.1f}%　異動 {a.get("alert_count", 1)} 次')
-            tag_line = f'\n標籤：{"、".join(a["tags"])}' if a.get("tags") else ""
-            desc = (f'現價 ${a["close"]:g}・{a["chg24h"]:+.1f}%\n'
-                    f'總分 [{bar(a["total"])}] {a["total"]:+d}\n'
-                    f'鯨魚 {sub["whale"] if sub["whale"] is not None else "缺"}　'
-                    f'CVD {sub["cvd"] if sub["cvd"] is not None else "缺"}　'
-                    f'OI×價 {sub["oi"] if sub["oi"] is not None else "缺"}　'
-                    f'DOM {sub["dom"] if sub["dom"] is not None else "缺"}　'
-                    f'技術 {sub["ta"] if sub["ta"] is not None else "缺"}\n'
-                    f'風險 {a["risk"]}　交易所 {a["exch"]}'
-                    + track + tag_line
-                    + f'\n➡ {action_suggestion(a, a)}'
-                    + "\n程式規則生成，非投資建議")
-            embeds.append({"title": title, "description": desc, "color": color.get(ckey, 0x676D76)})
-        try:
-            requests.post(webhook, json={"embeds": embeds}, timeout=TIMEOUT)
-        except Exception as e:  # noqa: BLE001
-            print(f"[WARN] Discord 推播失敗: {e}")
+    messages = []
+    for a in alerts:
+        sub = a["sub"]
+        tags_text = "、".join(a.get("tags", []))
+        if a["type"] == "opportunity":
+            is_long = a["pool_direction"] == "long"
+            head = "▲" if is_long else "▼"
+            call = "🟢 做多點" if is_long else "🔴 做空點"
+            quote = f'{tags_text}｜{action_suggestion(a, a)}' if tags_text else action_suggestion(a, a)
+            msg = (f'{head} 機會・{a["base"]}・{call}：{trend_emoji(a["chg24h"])}\n'
+                  f'進場價 `${a["close"]:g}` · 24h **{a["chg24h"]:+.1f}%**\n'
+                  f'總分 `{bar(a["total"])}` **{a["total"]:+d}** · '
+                  f'品質 `{a["quality"]}` · {GRADE_DOT.get(a["grade"],"⚪")}**{a["grade"]}**\n'
+                  f'> {quote}')
+        elif a["type"] == "movement":
+            icon = "🟠" if a["change"] == "跌出候選池" else "⚡"
+            quote = tags_text or action_suggestion(a, a)
+            msg = (f'{icon} 異動・{a["base"]}・{a["prev_grade"]}→{a["grade"]}（{a["change"]}）：'
+                  f'{trend_emoji(a["chg24h"])}\n'
+                  f'現價 `${a["close"]:g}` · **{a["chg24h"]:+.1f}%** · 篩選分 `{a["quality"]}` · '
+                  f'{GRADE_DOT.get(a["grade"],"⚪")}**{a["grade"]}** `{a["total"]:+d}`\n'
+                  f'> {quote}')
+        elif a["type"] == "risk_on":
+            msg = (f'▼ 風險・{a["base"]}・🔴 {risk_label(a["risk"])}：{trend_emoji(a["chg24h"])}\n'
+                  f'現價 `${a["close"]:g}` · **{a["chg24h"]:+.1f}%**\n'
+                  f'風險評分 `{bar100(a["risk"])}` **{a["risk"]}** · {risk_label(a["risk"])}\n'
+                  f'> {action_suggestion(a, a)}')
+        else:
+            msg = (f'▲ 風險・{a["base"]}・⚪ 警示解除：{trend_emoji(a["chg24h"])}\n'
+                  f'現價 `${a["close"]:g}` · **{a["chg24h"]:+.1f}%**\n'
+                  f'風險評分 `{bar100(a["risk"])}` **{a["risk"]}**\n'
+                  f'> {action_suggestion(a, a)}')
+        pe_ts, pe_px = a.get("pool_entry_ts"), a.get("pool_entry_price")
+        if pe_ts and pe_px and a["type"] in ("opportunity", "movement"):
+            hi, lo = a.get("high_since", pe_px), a.get("low_since", pe_px)
+            msg += (f'\n入池 `{pe_ts[5:16]}` · `${pe_px:g}` · '
+                   f'最高 **{(hi/pe_px-1)*100:+.1f}%** · 最低 **{(lo/pe_px-1)*100:+.1f}%** · '
+                   f'異動 `{a.get("alert_count", 1)}` 次')
+        msg += "\n程式規則生成，非投資建議"
+        messages.append(msg)
+    _post_discord_messages(webhook, messages)
 
 
 # ---------- 6) 網頁 ----------
