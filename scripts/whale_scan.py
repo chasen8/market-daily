@@ -17,7 +17,9 @@
 - CVD：Binance 用 K 線 taker-buy 欄位；Gate.io 沒有這個欄位，改用近期
   逐筆成交方向加總近似，方法不同、意義相近。
 - OI×價：僅 Binance 有永續合約資料時才有；Gate.io 尚未整合期貨，一律缺。
-- DOM 市場深度：只對本輪分數最高的前 40 檔額外抓五檔深度。
+- DOM 市場深度：只對本輪分數最高的前 40 檔額外抓五檔深度，分數再乘上
+  「簿深佔 24h 量比例」當信心係數，避免大幣（簿深絕對值大但佔自己日量比例小）
+  被過度判斷（見 score_dom()）。
 - 技術：均線/RSI/MACD/KD/布林/量比六個常見指標的量化合成分（ta_scoring.py），
   跟前面幾項是完全不同的資料來源（K線 vs 逐筆成交/合約），互為獨立驗證。
 - 操縱警示：簡單啟發式（單筆佔比過高），只在成交量夠厚時評估。
@@ -79,6 +81,7 @@ def whale_threshold(qv_24h):
 
 
 MANIP_MIN_NOTIONAL = 50_000
+DOM_CONF_FULL_RATIO = 0.02  # ±1% 簿深佔 24h 成交額達此比例，DOM 分數才給滿信心權重
 GRADE_BOUNDS = [(50, "S"), (25, "A"), (0, "B"), (-25, "C")]
 NOTABLE_GRADES = {"S", "A"}
 _GRADE_ORDER = ["S", "A", "B", "C", "D"]
@@ -322,15 +325,31 @@ def dom_imbalance_gate(cp):
 
 
 def _dom_from_book(bids, asks):
+    """回傳 (失衡比, ±1% 內總簿深金額)。總簿深要一起回傳，
+    因為信心係數需要拿它跟 24h 成交額比（見 score_symbol 的 DOM 段落）。"""
     bids = [(float(p), float(q)) for p, q in bids]
     asks = [(float(p), float(q)) for p, q in asks]
     if not bids or not asks:
-        return None
+        return None, None
     mid = (bids[0][0] + asks[0][0]) / 2
     lo, hi = mid * 0.99, mid * 1.01
     b = sum(p * q for p, q in bids if p >= lo)
     a = sum(p * q for p, q in asks if p <= hi)
-    return b / (a + b) if a + b else None
+    total = a + b
+    return (b / total if total else None), total
+
+
+def score_dom(imb, depth_usd, qv_24h):
+    """DOM 失衡分數乘上「信心係數」（簿深佔 24h 成交額的比例）：BTC/ETH 這種幣
+    ±1% 內的絕對簿深金額雖然龐大，但相對於自己動輒數十億的日成交量，佔比其實很小，
+    容易被做市商瞬時報價雜訊主導，直接照失衡比給滿分會對大幣過度判斷；
+    比例越低分數依比例打折，比例達 DOM_CONF_FULL_RATIO（2%）以上才給滿權重。
+    """
+    if imb is None or not depth_usd or not qv_24h:
+        return None
+    raw = clamp(round((imb - 0.5) * 200))
+    confidence = clamp(depth_usd / qv_24h / DOM_CONF_FULL_RATIO, 0, 1)
+    return round(raw * confidence)
 
 
 # ---------- 3) 單幣綜合評分 ----------
@@ -395,9 +414,8 @@ def score_symbol(row, futures_syms, hl_map, do_dom):
 
     if do_dom:
         try:
-            imb = dom_imbalance_binance(symbol) if exch == "binance" else dom_imbalance_gate(symbol)
-            if imb is not None:
-                sub["dom"] = clamp(round((imb - 0.5) * 200))
+            imb, depth_usd = dom_imbalance_binance(symbol) if exch == "binance" else dom_imbalance_gate(symbol)
+            sub["dom"] = score_dom(imb, depth_usd, qv)
         except Exception:  # noqa: BLE001
             pass
 
@@ -989,7 +1007,9 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
             'Hyperliquid 只有約 231 檔主流永續合約，<b>完全不含 TAG/VANRY/RIF 這類長尾迷因幣</b>，'
             '對這類標的這欄必定顯示「缺」——這是免費 API 的硬限制，不是我們刻意不做。</li>'
             '<li><b>DOM</b>：只對本輪分數最高的前 40 檔額外抓深度算失衡比，其餘顯示「缺」。'
-            '掛單可撤可假，僅供參考。</li>'
+            '分數會再乘上「信心係數」＝±1% 簿深金額 ÷ 24h 成交額，比例 &lt;2% 依比例打折——'
+            'BTC/ETH 這種幣簿深絕對金額雖大，佔自己日成交量的比例其實很小，容易被做市商'
+            '瞬時報價雜訊主導，不打折會對大幣的 DOM 訊號過度判斷。掛單本身也可撤可假，僅供參考。</li>'
             '<li><b>操縱警示／雙頂形態</b>：簡單啟發式規則，是提示不是證據；低流動性幣的操縱檢查會跳過。</li>'
             '<li><b>品質分</b>：50 起跳，流動性層級 -10~+25、有 Binance 永續合約 +15、'
             '近期雙頂 -20、近期高點回落 ≥15% -15、有操縱警示 -15。<b>這不是基本面分析</b>'
