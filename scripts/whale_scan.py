@@ -929,14 +929,22 @@ def signal_row(rec):
     dd_pct = (rec["low_since"] / rec["entry_price"] - 1) * 100
     dur = fmt_duration(rec["entry_ts"], rec["last_ts"])
     status_txt = "開放中" if rec["status"] == "open" else "已結案"
+    badge_cls = "win" if ok else "loss"
+    badge_icon = "✓" if ok else "✗"
     return (
-        f'<tr><td class="code">{esc(rec["base"])}</td>'
-        f'<td>{esc(rec["entry_grade"])}</td>'
-        f'<td class="{"up" if ok else "dn"}">{"✓" if ok else "✗"} {esc(result)}</td>'
-        f'<td>{rec["entry_ts"][5:16]} → {rec["last_ts"][5:16]}<br><span class="muted">歷時 {dur}・{status_txt}</span></td>'
-        f'<td>${rec["entry_price"]:g}</td><td>${rec["last_price"]:g}</td>'
-        f'<td class="up">+{gain_pct:.2f}%</td><td class="dn">{dd_pct:.2f}%</td>'
-        f'<td>{rec["push_count"]}</td><td>{esc(rec["exch"])}</td></tr>')
+        '<tr>'
+        f'<td><div class="logsym"><b>{esc(rec["base"])}</b><span>{esc(rec["symbol"])}</span></div></td>'
+        f'<td><span class="{"up" if ok else "dn"}">{esc(rec["entry_grade"])}</span></td>'
+        f'<td><span class="badge {badge_cls}">{badge_icon} {esc(result)}</span></td>'
+        f'<td><div class="timecell">{rec["entry_ts"][5:16]} → {rec["last_ts"][5:16]}'
+        f'<span>歷時 {dur}・{status_txt}</span></div></td>'
+        f'<td class="mono">${rec["entry_price"]:g}</td>'
+        f'<td class="mono">${rec["last_price"]:g}</td>'
+        f'<td class="mono up">+{gain_pct:.2f}%</td>'
+        f'<td class="mono dn">{dd_pct:.2f}%</td>'
+        f'<td class="mono">{rec["push_count"]}</td>'
+        f'<td><span class="chip" style="font-size:.68rem">{esc(rec["exch"])}</span></td>'
+        '</tr>')
 
 
 def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, now, exch_counts,
@@ -1060,7 +1068,33 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
     .cols{columns:2;column-gap:24px}
     .cols li{break-inside:avoid}
     .muted{color:var(--muted)}
+    .logtbl{border-collapse:separate;border-spacing:0 4px}
+    .logtbl td{background:var(--bg);border-bottom:none;border-top:1px solid var(--line);
+     border-bottom:1px solid var(--line)}
+    .logtbl td:first-child{border-left:1px solid var(--line);border-radius:8px 0 0 8px}
+    .logtbl td:last-child{border-right:1px solid var(--line);border-radius:0 8px 8px 0}
+    .logsym{display:flex;flex-direction:column;line-height:1.25}
+    .logsym b{font-size:.9rem}
+    .logsym span{font-size:.66rem;color:var(--muted);font-family:ui-monospace,Consolas,monospace}
+    .timecell{display:flex;flex-direction:column;line-height:1.4;font-size:.78rem}
+    .timecell span{font-size:.68rem;color:var(--muted)}
+    .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;
+     font-size:.74rem;font-weight:700;white-space:nowrap}
+    .badge.win{background:rgba(24,122,77,.16);color:var(--up)}
+    .badge.loss{background:rgba(176,43,64,.16);color:var(--dn)}
+    td.mono{font-family:ui-monospace,Consolas,monospace}
     """
+    css_dark_badge = """
+    @media (prefers-color-scheme:dark){
+      .badge.win{background:rgba(63,191,138,.18)}
+      .badge.loss{background:rgba(228,103,123,.18)}
+    }
+    :root[data-theme="dark"] .badge.win{background:rgba(63,191,138,.18)}
+    :root[data-theme="dark"] .badge.loss{background:rgba(228,103,123,.18)}
+    :root[data-theme="light"] .badge.win{background:rgba(24,122,77,.16)}
+    :root[data-theme="light"] .badge.loss{background:rgba(176,43,64,.16)}
+    """
+    css += css_dark_badge
     return (f'<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">'
             f'<meta name="viewport" content="width=device-width,initial-scale=1">'
             f'<title>主力資金雷達 {now:%Y-%m-%d %H:%M}</title><style>{css}</style></head><body>'
@@ -1097,7 +1131,7 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
             f'<div class="kpi"><div class="l">平均最大回落</div>'
             f'<div class="v">{avg_dd_txt}</div></div>'
             f'</div>'
-            f'<div class="tbl" style="margin-top:14px"><table><tr><th>幣種</th><th>入池評級</th><th>結果</th>'
+            f'<div class="tbl" style="margin-top:14px"><table class="logtbl"><tr><th>幣種</th><th>評級</th><th>結果</th>'
             f'<th>首推→最新</th><th>推送價</th><th>現價/結案價</th><th>漲幅(高點)</th>'
             f'<th>跌幅(低點)</th><th>推送次數</th><th>來源</th></tr>'
             + signal_rows_html + '</table></div></section>'
