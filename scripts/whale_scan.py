@@ -35,6 +35,13 @@
   一般 B/C/D 之間的日常波動不通知（見 2026-07-10 lessons：曾經因為沒有這條
   規則在 265 檔裡洗出 69 則通知）。
 
+== 推送紀錄與績效（v4 新增，data/signal_log.json）==
+- 每次進入候選池開一筆歷史紀錄，跌出時結案，記錄推送價/結案價/期間高低/
+  推送次數，事後對帳「上漲有效」還是「反向走跌」。跟上面的候選池追蹤是
+  同一組進出條件，但這裡是 append-only 歷史，不會被覆蓋。
+- **這是唯一能誠實驗證整套評分系統有沒有預測力的地方**：長期勝率若接近或
+  低於 50%，代表系統沒用，該檢討公式，不是繼續加指標（見附錄）。
+
 == 一切分數是規則統計，不是預測，不構成投資建議 ==
 """
 import argparse
@@ -54,6 +61,8 @@ STATE_PATH = os.path.join(ROOT, "data", "whale_state.json")
 MAJORS_PATH = os.path.join(ROOT, "data", "majors_history.json")
 MAJORS = ["BTC", "ETH", "SOL", "BNB", "XRP"]  # 主流幣資金強度專區固定追蹤這幾檔
 MAJORS_HISTORY_LEN = 24  # 5 分鐘一輪，24 筆＝近 2 小時基準
+SIGNAL_LOG_PATH = os.path.join(ROOT, "data", "signal_log.json")
+SIGNAL_LOG_MAX = 300  # 超過上限先丟最舊的「已結案」紀錄，開放中的不丟
 DOCS_PATH = os.path.join(ROOT, "docs", "whales.html")
 
 H = {"User-Agent": "Mozilla/5.0"}
@@ -649,6 +658,82 @@ def update_tracking(results, prev_state, alerted_symbols, now_iso):
     return new_state
 
 
+# ---------- 4a2) 推送紀錄與績效（每次進出候選池留一筆歷史紀錄）----------
+def load_signal_log():
+    if os.path.exists(SIGNAL_LOG_PATH):
+        with open(SIGNAL_LOG_PATH, encoding="utf-8") as f:
+            return json.load(f)
+    return []
+
+
+def save_signal_log(log):
+    os.makedirs(os.path.dirname(SIGNAL_LOG_PATH), exist_ok=True)
+    closed = [r for r in log if r["status"] == "closed"]
+    open_ = [r for r in log if r["status"] == "open"]
+    if len(closed) + len(open_) > SIGNAL_LOG_MAX:
+        closed = closed[-(SIGNAL_LOG_MAX - len(open_)):] if SIGNAL_LOG_MAX > len(open_) else []
+    with open(SIGNAL_LOG_PATH, "w", encoding="utf-8") as f:
+        json.dump(open_ + closed, f, ensure_ascii=False, indent=1)
+
+
+def update_signal_log(results, prev_state, log, now_iso):
+    """每次候選池進出留一筆歷史紀錄，是「推送紀錄與績效」表的資料來源。
+    跟 update_tracking() 判斷同一組進出池條件，但這裡是 append-only 歷史，
+    update_tracking() 的 whale_state.json 只留最新一次的狀態（會被覆蓋）。
+    result 判定：以「目前價（開放中）／結案當下價（已結案）」對比推送價，
+    是最直接的「這次訊號後來準不準」量化——不是用最高點硬湊出來的好看數字。
+    """
+    open_idx = {r["symbol"]: i for i, r in enumerate(log) if r["status"] == "open"}
+    for r in results:
+        sym = r["symbol"]
+        old = prev_state.get(sym, {})
+        in_pool = r["grade"] in NOTABLE_GRADES
+        was_in_pool = old.get("grade") in NOTABLE_GRADES
+
+        if in_pool and not was_in_pool:
+            log.append({
+                "symbol": sym, "base": r["base"], "exch": r["exch"],
+                "entry_ts": now_iso, "entry_price": r["close"], "entry_grade": r["grade"],
+                "last_ts": now_iso, "last_price": r["close"],
+                "high_since": r["close"], "low_since": r["close"],
+                "push_count": 1, "status": "open",
+            })
+            open_idx[sym] = len(log) - 1
+        elif in_pool and was_in_pool and sym in open_idx:
+            rec = log[open_idx[sym]]
+            rec["last_ts"] = now_iso
+            rec["last_price"] = r["close"]
+            rec["high_since"] = max(rec["high_since"], r["close"])
+            rec["low_since"] = min(rec["low_since"], r["close"])
+            rec["push_count"] += 1
+        elif not in_pool and was_in_pool and sym in open_idx:
+            rec = log[open_idx[sym]]
+            rec["status"] = "closed"
+            rec["closed_ts"] = now_iso
+            rec["last_ts"] = now_iso
+            rec["last_price"] = r["close"]
+            rec["high_since"] = max(rec["high_since"], r["close"])
+            rec["low_since"] = min(rec["low_since"], r["close"])
+    return log
+
+
+def signal_result(rec):
+    return "上漲有效" if rec["last_price"] >= rec["entry_price"] else "反向走跌"
+
+
+def signal_stats(log):
+    """整份紀錄的勝率統計——這是驗證整套評分系統有沒有用的唯一誠實方法：
+    真實訊號事後追蹤，不是回測、不是自吹自擂。"""
+    closed = [r for r in log if r["status"] == "closed"]
+    if not closed:
+        return {"n": 0, "win_rate": None, "avg_gain": None, "avg_drawdown": None}
+    wins = sum(1 for r in closed if signal_result(r) == "上漲有效")
+    avg_gain = sum((r["high_since"] / r["entry_price"] - 1) * 100 for r in closed) / len(closed)
+    avg_dd = sum((r["low_since"] / r["entry_price"] - 1) * 100 for r in closed) / len(closed)
+    return {"n": len(closed), "win_rate": round(wins / len(closed) * 100, 1),
+            "avg_gain": round(avg_gain, 2), "avg_drawdown": round(avg_dd, 2)}
+
+
 # ---------- 4b) 主流幣資金強度（相對自己歷史基準，不是絕對分數）----------
 def load_majors_history():
     if os.path.exists(MAJORS_PATH):
@@ -823,10 +908,48 @@ def card_html(r):
             f'<div class="exch">來源：{esc(r["exch"])}</div></div>')
 
 
-def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, now, exch_counts, major_flows):
+def fmt_duration(start_iso, end_iso):
+    try:
+        start = dt.datetime.fromisoformat(start_iso)
+        end = dt.datetime.fromisoformat(end_iso)
+        mins = (end - start).total_seconds() / 60
+    except Exception:  # noqa: BLE001
+        return "—"
+    if mins < 60:
+        return f"{round(mins)}min"
+    if mins < 60 * 24:
+        return f"{mins/60:.1f}h"
+    return f"{mins/1440:.1f}d"
+
+
+def signal_row(rec):
+    result = signal_result(rec)
+    ok = result == "上漲有效"
+    gain_pct = (rec["high_since"] / rec["entry_price"] - 1) * 100
+    dd_pct = (rec["low_since"] / rec["entry_price"] - 1) * 100
+    dur = fmt_duration(rec["entry_ts"], rec["last_ts"])
+    status_txt = "開放中" if rec["status"] == "open" else "已結案"
+    return (
+        f'<tr><td class="code">{esc(rec["base"])}</td>'
+        f'<td>{esc(rec["entry_grade"])}</td>'
+        f'<td class="{"up" if ok else "dn"}">{"✓" if ok else "✗"} {esc(result)}</td>'
+        f'<td>{rec["entry_ts"][5:16]} → {rec["last_ts"][5:16]}<br><span class="muted">歷時 {dur}・{status_txt}</span></td>'
+        f'<td>${rec["entry_price"]:g}</td><td>${rec["last_price"]:g}</td>'
+        f'<td class="up">+{gain_pct:.2f}%</td><td class="dn">{dd_pct:.2f}%</td>'
+        f'<td>{rec["push_count"]}</td><td>{esc(rec["exch"])}</td></tr>')
+
+
+def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, now, exch_counts,
+                major_flows, signal_log, stats):
     pool = [r for r in results if r["grade"] in NOTABLE_GRADES or r["risk"] >= 75]
     pool.sort(key=lambda r: -r["total"])
     cards = "".join(card_html(r) for r in pool) or '<p class="sub">目前無候選池成員或高風險標的。</p>'
+
+    signal_rows_sorted = sorted(signal_log, key=lambda r: r["last_ts"], reverse=True)[:100]
+    signal_rows_html = "".join(signal_row(r) for r in signal_rows_sorted) or '<tr><td colspan="9">尚無推送紀錄。</td></tr>'
+    win_rate_txt = f'{stats["win_rate"]}%' if stats["win_rate"] is not None else "累積中"
+    avg_gain_txt = f'+{stats["avg_gain"]}%' if stats["avg_gain"] is not None else "—"
+    avg_dd_txt = f'{stats["avg_drawdown"]}%' if stats["avg_drawdown"] is not None else "—"
 
     def major_row(f):
         tone = "up" if (f["delta"] or 0) > 0 else ("dn" if (f["delta"] or 0) < 0 else "")
@@ -936,6 +1059,7 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
     .ov .kpi .v{font-size:1.15rem;font-weight:700;font-variant-numeric:tabular-nums}
     .cols{columns:2;column-gap:24px}
     .cols li{break-inside:avoid}
+    .muted{color:var(--muted)}
     """
     return (f'<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">'
             f'<meta name="viewport" content="width=device-width,initial-scale=1">'
@@ -960,6 +1084,23 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
             f'<div class="kpi"><div class="l">山寨中位數 24h（超額 vs BTC）</div>'
             f'<div class="v">{(str(round(overview["alt_median_chg"],1))+"%") if overview["alt_median_chg"] is not None else "缺"}'
             f'（{overview["alt_excess_vs_btc"]:+.1f}pp）</div></div></div></section>'
+            f'<section><h2>推送紀錄與績效（誠實對帳，不是回測）</h2>'
+            f'<p class="sub">每次進入候選池都留一筆紀錄，事後追蹤實際漲跌——這是驗證整套評分'
+            f'系統有沒有用的唯一誠實方法。「結果」＝目前價（開放中）或結案當下價（已結案）'
+            f'對比推送價，不是挑最高點硬湊好看數字（見附錄）</p>'
+            f'<div class="ov">'
+            f'<div class="kpi"><div class="l">已結案訊號數</div><div class="v">{stats["n"]}</div></div>'
+            f'<div class="kpi"><div class="l">上漲有效率</div>'
+            f'<div class="v">{win_rate_txt}</div></div>'
+            f'<div class="kpi"><div class="l">平均最大漲幅</div>'
+            f'<div class="v">{avg_gain_txt}</div></div>'
+            f'<div class="kpi"><div class="l">平均最大回落</div>'
+            f'<div class="v">{avg_dd_txt}</div></div>'
+            f'</div>'
+            f'<div class="tbl" style="margin-top:14px"><table><tr><th>幣種</th><th>入池評級</th><th>結果</th>'
+            f'<th>首推→最新</th><th>推送價</th><th>現價/結案價</th><th>漲幅(高點)</th>'
+            f'<th>跌幅(低點)</th><th>推送次數</th><th>來源</th></tr>'
+            + signal_rows_html + '</table></div></section>'
             f'<section><h2>主流幣資金強度（相對自己基準，不是跟其他幣比）</h2>'
             f'<p class="sub">固定幣種{" / ".join(MAJORS)}，鯨魚門檻本就依流動性分層更高；'
             f'這裡再拿「現在」跟「這檔幣自己近 2 小時的平均」比，抓真正異常放大的資金流，'
@@ -1030,6 +1171,13 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
             '≥+30＝資金流入顯著放大、≥+15＝轉強，對稱定義流出；未達門檻＝正常波動範圍。'
             '只在「進入顯著放大」的瞬間推 Discord，停留在該狀態不重複通知。'
             '<b>樣本數 &lt; 24 代表歷史還在累積中，基準尚不穩定，判讀僅供參考。</b></li>'
+            '<li><b>推送紀錄與績效</b>：每次「進入候選池」開一筆紀錄，追蹤到「跌出候選池」結案。'
+            '「結果」用最新價（開放中）或結案價（已結案）對比推送價判定，只有二元「上漲有效／'
+            '反向走跌」；「漲幅(高點)」「跌幅(低點)」是這段期間的最高/最低價對比推送價，'
+            '<b>不是進場就能拿到高點</b>，只是紀錄這段期間價格曾經去過哪裡。上漲有效率統計'
+            '只計已結案訊號，開放中的不計入（避免拿還沒有結果的訊號灌水勝率）。'
+            '<b>這是唯一能誠實驗證整套評分系統有沒有用的地方</b>：如果上漲有效率長期接近或低於'
+            '50%，代表評分系統沒有真正的預測力，該重新檢討公式，不是繼續加指標。</li>'
             '<li><b>尚未做（誠實列出）</b>：板塊輪動（DeFi/GameFi 等資金板塊分析）需要幣種分類資料源，'
             '目前免費 API 沒有整合，屬於下一階段的候選功能，還沒做。</li>'
             '<li><b>建議行動</b>：規則生成的操作語句（如「試倉 2-5%」），是既定規則輸出，'
@@ -1104,13 +1252,17 @@ def main():
 
     save_state(tracking_preview)
 
+    signal_log = update_signal_log(results, prev_state, load_signal_log(), now.isoformat())
+    save_signal_log(signal_log)
+    stats = signal_stats(signal_log)
+
     webhook = os.environ.get("DISCORD_WEBHOOK_URL", "").strip()
     if not args.dry_run:
         send_discord(webhook, alerts)
         send_major_flow_discord(webhook, major_alerts)
 
     html_out = render_page(results, alerts, all_transitions, overview, len(universe),
-                           args.min_quote_vol, now, exch_counts, major_flows)
+                           args.min_quote_vol, now, exch_counts, major_flows, signal_log, stats)
     os.makedirs(os.path.dirname(DOCS_PATH), exist_ok=True)
     with open(DOCS_PATH, "w", encoding="utf-8") as f:
         f.write(html_out)
