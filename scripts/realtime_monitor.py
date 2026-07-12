@@ -33,6 +33,7 @@ import datetime as dt
 import json
 import logging
 import os
+import re
 import time
 
 import requests
@@ -47,7 +48,10 @@ GATE_HOST = "https://api.gateio.ws/api/v4"
 STABLE = {"USDC", "FDUSD", "TUSD", "DAI", "EUR", "USDP", "BUSD", "USD1", "EURI",
           "XUSD", "PAX", "GUSD", "USDD", "EURT", "RLUSD", "USDE", "USDY",
           "BFUSD", "USDS", "U"}
-LEV_SUFFIX = ("UP", "DOWN", "BULL", "BEAR")
+LEV_SUFFIX = ("UP", "DOWN", "BULL", "BEAR")  # Binance 槓桿代幣後綴
+GATE_LEV_RE = re.compile(r"\d[LS]$")  # Gate.io 槓桿代幣（XRP3L/BTC5S 這種），實測 364 檔存在
+# 這種代幣機制上本來就會有劇烈量能波動，不是真的資金流向訊號——2026-07-13 從
+# 即時警報連續洗版（XRP3L/XRP5S/BTC5L...）抓到這個漏篩，whale_scan.py 同步修正。
 
 MIN_QUOTE_VOL = float(os.environ.get("MIN_QUOTE_VOL", 300_000))
 WINDOW_SEC = 60          # 檢查近 N 秒的成交
@@ -107,7 +111,7 @@ def fetch_gate_universe(exclude_bases):
         if not cp.endswith("_USDT"):
             continue
         base = cp[:-5]
-        if base in STABLE or base in exclude_bases:
+        if base in STABLE or base in exclude_bases or GATE_LEV_RE.search(base):
             continue
         try:
             qv = float(t["quote_volume"] or 0)

@@ -54,6 +54,7 @@ import datetime as dt
 import html
 import json
 import os
+import re
 import sys
 import time
 
@@ -78,7 +79,10 @@ HL_HOST = "https://api.hyperliquid.xyz/info"
 STABLE = {"USDC", "FDUSD", "TUSD", "DAI", "EUR", "USDP", "BUSD", "USD1", "EURI",
           "XUSD", "PAX", "GUSD", "USDD", "EURT", "RLUSD", "USDE", "USDY",
           "BFUSD", "USDS", "U"}
-LEV_SUFFIX = ("UP", "DOWN", "BULL", "BEAR")
+LEV_SUFFIX = ("UP", "DOWN", "BULL", "BEAR")  # Binance 槓桿代幣後綴
+GATE_LEV_RE = re.compile(r"\d[LS]$")  # Gate.io 槓桿代幣命名（如 XRP3L/BTC5S），364 檔實測存在
+# 這種代幣機制上本來就會有劇烈量能波動（槓桿再平衡），不是真的資金流向訊號，
+# 之前漏篩導致主力雷達跟即時警報都被洗版（2026-07-13 從即時警報噪音抓到）。
 # 鯨魚門檻改成流動性分層：固定 $10,000 對 BTC（日均量數十億）根本是雜訊，
 # 對一個 $30 萬量的長尾幣卻可能大到永遠觸發不了。門檻依 24h 成交額分層，
 # 讓「大額成交」在每個流動性量級都代表真正的異常，不是齊頭式假平等。
@@ -195,7 +199,7 @@ def fetch_gate_universe(min_qv, exclude_bases):
         if not cp.endswith("_USDT"):
             continue
         base = cp[:-5]
-        if base in STABLE or base in exclude_bases:
+        if base in STABLE or base in exclude_bases or GATE_LEV_RE.search(base):
             continue
         try:
             qv = float(t["quote_volume"] or 0)
