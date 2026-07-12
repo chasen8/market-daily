@@ -174,7 +174,10 @@ async def binance_ws_loop():
             await asyncio.sleep(5)
             continue
         streams = "/".join(f"{s.lower()}@aggTrade" for s in syms)
-        url = f"wss://stream.binance.com:9443/stream?streams={streams}"
+        # 注意：wss://stream.binance.com 在美國 IP（含 GCP us-* Always Free 區域）會被
+        # Binance 以 HTTP 451 法規封鎖；data-stream.binance.vision 是官方市場資料鏡像，
+        # 不受此限制，已實測組合流格式相容（見 lessons.md 2026-07-12）。
+        url = f"wss://data-stream.binance.vision/stream?streams={streams}"
         try:
             async with websockets.connect(url, ping_interval=20, ping_timeout=20,
                                           max_size=2**20) as ws:
