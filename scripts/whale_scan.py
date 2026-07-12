@@ -116,6 +116,12 @@ def grade_rank(g):
     return _GRADE_ORDER.index(g)
 
 
+def grade_class(g):
+    """S/A/B/C/D 各自一個 CSS class（"g"+字母），用同一個 --up/--dn 色相但不同飽和度/
+    粗細做出五級視覺層次——S 跟 A 才不會長得一樣分不出來。"""
+    return f"g{g}" if g in _GRADE_ORDER else ""
+
+
 # ---------- HTTP helpers ----------
 def sget(path, params=None):
     last = None
@@ -890,7 +896,7 @@ def card_html(r):
     tags = "、".join(resonance_tags(r) + r["tags"]) or "—"
     risk_line = f'{r["risk"]}・{esc(risk_label(r["risk"]))}' if r["risk"] >= 25 else f'{r["risk"]}'
     return (f'<div class="card {tone}"><div class="chead"><b class="sym">{esc(r["base"])}</b>'
-            f'<span class="grade {tone}">{r["grade"]}</span>'
+            f'<span class="grade {grade_class(r["grade"])}">{r["grade"]}</span>'
             f'<span class="beh">{esc(r["behavior"])}</span>'
             f'<span class="px">${r["close"]:g}<span class="{"up" if r["chg24h"]>=0 else "dn"}">'
             f'{r["chg24h"]:+.1f}%</span></span></div>'
@@ -934,7 +940,7 @@ def signal_row(rec):
     return (
         '<tr>'
         f'<td><div class="logsym"><b>{esc(rec["base"])}</b><span>{esc(rec["symbol"])}</span></div></td>'
-        f'<td><span class="{"up" if ok else "dn"}">{esc(rec["entry_grade"])}</span></td>'
+        f'<td><span class="grade {grade_class(rec["entry_grade"])}">{esc(rec["entry_grade"])}</span></td>'
         f'<td><span class="badge {badge_cls}">{badge_icon} {esc(result)}</span></td>'
         f'<td><div class="timecell">{rec["entry_ts"][5:16]} → {rec["last_ts"][5:16]}'
         f'<span>歷時 {dur}・{status_txt}</span></div></td>'
@@ -990,11 +996,11 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
 
     rows = []
     for r in sorted(results, key=lambda x: -x["total"])[:200]:
-        tone = "up" if r["grade"] in ("S", "A") else ("dn" if r["grade"] in ("C", "D") else "")
         risk_tone = "dn" if r["risk"] >= 75 else ("" if r["risk"] >= 50 else "fl")
         rows.append(
             f'<tr><td class="code">{esc(r["base"])}</td><td>{esc(r["exch"])}</td>'
-            f'<td class="{tone}"><b>{r["grade"]}</b>（{r["total"]:+d}）</td>'
+            f'<td><span class="grade {grade_class(r["grade"])}"><b>{r["grade"]}</b></span>'
+            f'（{r["total"]:+d}）</td>'
             + sub_cell(r["sub"]["whale"]) + sub_cell(r["sub"]["cvd"])
             + sub_cell(r["sub"]["oi"]) + sub_cell(r["sub"]["dom"]) + sub_cell(r["sub"]["ta"])
             + f'<td class="{risk_tone}">{r["risk"]}・{esc(risk_label(r["risk"]))}</td>'
@@ -1049,8 +1055,13 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
     .card.up{border-color:var(--up)}.card.dn{border-color:var(--dn)}
     .chead{display:flex;align-items:baseline;gap:8px;margin-bottom:6px}
     .chead .sym{font-size:1.05rem}
-    .chead .grade{font-weight:700;padding:1px 8px;border-radius:6px;background:var(--chip)}
-    .chead .grade.up{color:var(--up)}.chead .grade.dn{color:var(--dn)}
+    .grade{font-weight:700;padding:1px 9px;border-radius:6px;background:var(--chip);
+     display:inline-block;font-size:.82rem;line-height:1.5}
+    .grade.gS{background:var(--up);color:#fff}
+    .grade.gA{background:color-mix(in srgb, var(--up) 24%, var(--chip));color:var(--up)}
+    .grade.gB{background:var(--chip);color:var(--ink)}
+    .grade.gC{background:color-mix(in srgb, var(--dn) 24%, var(--chip));color:var(--dn)}
+    .grade.gD{background:var(--dn);color:#fff}
     .chead .px{margin-left:auto;font-size:.82rem;font-variant-numeric:tabular-nums}
     .card .bar{position:relative;background:var(--chip);border-radius:6px;height:16px;margin:6px 0;overflow:hidden}
     .card .bar .fill{position:absolute;left:0;top:0;bottom:0;background:var(--flat)}
@@ -1097,8 +1108,8 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
     css += css_dark_badge
     return (f'<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">'
             f'<meta name="viewport" content="width=device-width,initial-scale=1">'
-            f'<title>主力資金雷達 {now:%Y-%m-%d %H:%M}</title><style>{css}</style></head><body>'
-            f'<div class="wrap"><header class="mast"><h1>主力資金雷達</h1>'
+            f'<title>加密訊息 {now:%Y-%m-%d %H:%M}</title><style>{css}</style></head><body>'
+            f'<div class="wrap"><header class="mast"><h1>加密訊息</h1>'
             f'<span class="chip">掃描 {universe_n} 檔（Binance {exch_counts.get("binance",0)}・'
             f'Gate.io {exch_counts.get("gate",0)}・24h額≥${min_qv:,.0f}）</span>'
             f'<span class="chip">更新 {now:%Y-%m-%d %H:%M} UTC</span>'
