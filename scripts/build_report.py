@@ -71,7 +71,7 @@ def crypto_scan():
     top = sorted(pairs, key=lambda x: -x[1])[:15]
     rows = []
     for sym, qv in top:
-        kl = bget("/api/v3/klines", {"symbol": sym, "interval": "1d", "limit": 120})
+        kl = bget("/api/v3/klines", {"symbol": sym, "interval": "1d", "limit": 130})
         closes = [float(k[4]) for k in kl]
         highs = [float(k[2]) for k in kl]
         lows = [float(k[3]) for k in kl]

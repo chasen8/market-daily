@@ -18,10 +18,19 @@
 - 布林通道（score_bollinger）：%B 位置，穿出軌道一樣是「先給極端分再收斂」
 - KD（score_kd）：K 值位置＋黃金/死亡交叉
 - 成交量（score_volume）：量比，但爆量超過 3 倍後不再線性加分（避免單一離群值主導）
+- 時間序列動能（score_tsmom，2026-07-13 新增）：自身過去 N 期報酬率的 z-score
+  （Moskowitz/Ooi/Pedersen 2012 Time-Series Momentum），跟 MA 都反映趨勢但計算邏輯獨立
+- 波動率狀態（score_volatility_regime，2026-07-13 新增）：ATR/Close 百分位排名，
+  判斷現在是低波動蓄勢還是高波動放大期，不表方向，是現有系統原本缺的維度
+- ADX 趨勢強度（adx_weight_multiplier，2026-07-13 新增）：不是獨立分數項，是「趨勢類
+  指標（MA/MACD）現在可不可信」的權重濾網——盤整期（ADX 低）自動降低 MA/MACD 權重，
+  避免假突破雜訊主導總分
 
 == 誠實限制 ==
 這些公式是規則統計，不是學術驗證過的最佳參數；週期（14/20/26...）用業界慣用值，
 沒有針對任何市場做過最適化。分數是「當下技術面狀態的量化描述」，不是預測。
+TSMOM/波動率狀態/ADX 的縮放係數與 lookback 視窗都是起點參數，尚未用本專案歷史資料
+回測校準，正式使用一段時間後應該檢查分數分布是否合理。
 """
 
 
@@ -129,6 +138,103 @@ def volume_ratio(volumes, short=5, long=20):
     return (sum(volumes[-short:]) / short) / (sum(volumes[-long:]) / long)
 
 
+def true_range_full(highs, lows, closes):
+    n = len(closes)
+    out = [None] * n
+    if n < 2:
+        return out
+    out[0] = highs[0] - lows[0]
+    for i in range(1, n):
+        out[i] = max(highs[i] - lows[i], abs(highs[i] - closes[i - 1]), abs(lows[i] - closes[i - 1]))
+    return out
+
+
+def atr_full(highs, lows, closes, period=14):
+    """Wilder 平滑（跟 rsi_full 同一種平滑法），回傳跟輸入等長的 ATR 序列。"""
+    tr = true_range_full(highs, lows, closes)
+    n = len(closes)
+    out = [None] * n
+    valid_tr = [v for v in tr if v is not None]
+    if len(valid_tr) < period:
+        return out
+    first_idx = period  # tr[0] 是用 high-low 湊的、不是真正的 TR，跳過從 tr[1:period+1] 取種子
+    if n <= first_idx:
+        return out
+    seed = sum(tr[1:period + 1]) / period
+    out[first_idx] = seed
+    prev = seed
+    for i in range(first_idx + 1, n):
+        prev = (prev * (period - 1) + tr[i]) / period
+        out[i] = prev
+    return out
+
+
+def adx_full(highs, lows, closes, period=14):
+    """Wilder DMI/ADX 原始公式。回傳跟輸入等長的 ADX 序列（0~100，只表強度不表方向）。"""
+    n = len(closes)
+    out = [None] * n
+    if n < period * 2:
+        return out
+    plus_dm = [0.0] * n
+    minus_dm = [0.0] * n
+    for i in range(1, n):
+        up = highs[i] - highs[i - 1]
+        down = lows[i - 1] - lows[i]
+        plus_dm[i] = up if (up > down and up > 0) else 0.0
+        minus_dm[i] = down if (down > up and down > 0) else 0.0
+    tr = true_range_full(highs, lows, closes)
+
+    def wilder_smooth(series, start):
+        sm = [None] * n
+        seed = sum(series[start - period + 1:start + 1])
+        sm[start] = seed
+        prev = seed
+        for i in range(start + 1, n):
+            prev = prev - prev / period + series[i]
+            sm[i] = prev
+        return sm
+
+    start = period
+    tr_sm = wilder_smooth(tr, start)
+    plus_sm = wilder_smooth(plus_dm, start)
+    minus_sm = wilder_smooth(minus_dm, start)
+
+    dx = [None] * n
+    for i in range(start, n):
+        if not tr_sm[i]:
+            continue
+        pdi = plus_sm[i] / tr_sm[i] * 100
+        mdi = minus_sm[i] / tr_sm[i] * 100
+        denom = pdi + mdi
+        dx[i] = abs(pdi - mdi) / denom * 100 if denom > 1e-9 else 0.0
+
+    dx_valid_start = next((i for i in range(start, n) if dx[i] is not None), None)
+    if dx_valid_start is None or n - dx_valid_start < period:
+        return out
+    adx_seed = sum(dx[dx_valid_start:dx_valid_start + period]) / period
+    seed_idx = dx_valid_start + period - 1
+    out[seed_idx] = adx_seed
+    prev = adx_seed
+    for i in range(seed_idx + 1, n):
+        if dx[i] is None:
+            continue
+        prev = (prev * (period - 1) + dx[i]) / period
+        out[i] = prev
+    return out
+
+
+def percentile_rank(value, history):
+    """value 在 history 這個歷史分布裡的百分位（0~100）。history 不含 value 本身。
+    相等值算一半權重（below + 0.5*equal），避免資料剛好有大量重複值時
+    （例如低波動時 ATR% 幾乎不變）百分位被浮點捨入方向隨機推到 0 或 100 這種極端值。
+    """
+    if not history:
+        return None
+    below = sum(1 for v in history if v < value)
+    equal = sum(1 for v in history if v == value)
+    return (below + 0.5 * equal) / len(history) * 100
+
+
 # ---------- 量化評分（每個都是 -100~100，0=中性）----------
 
 def _interp(x, pts):
@@ -233,16 +339,83 @@ def score_volume(vol_ratio_value):
     return round(clamp((r - 1.0) * 100))
 
 
-WEIGHTS = {"ma": 30, "rsi": 20, "macd": 20, "boll": 15, "kd": 10, "volume": 5}
+def score_tsmom(closes, n=20, lookback=100):
+    """時間序列動能（Time-Series Momentum，Moskowitz/Ooi/Pedersen 2012）：
+    自身過去 N 期報酬率，用該幣種自己過去 lookback 期的「N 期報酬率分布」做 z-score，
+    而非固定百分比門檻——同一個 5% 漲幅對低波動幣是極端事件、對高波動幣只是日常雜訊，
+    用自身歷史分布相對化才公平（跟本專案 DOM/鯨魚門檻比例化是同一個教訓）。
+    """
+    need = n + lookback + 1
+    if len(closes) < need:
+        return None
+    returns_hist = []
+    for i in range(len(closes) - lookback, len(closes)):
+        base = closes[i - n]
+        if base:
+            returns_hist.append(closes[i] / base - 1)
+    if len(returns_hist) < 2:
+        return None
+    r_now = returns_hist[-1]
+    hist = returns_hist[:-1]
+    mean = sum(hist) / len(hist)
+    var = sum((x - mean) ** 2 for x in hist) / len(hist)
+    std = var ** 0.5
+    if std < 1e-12:
+        return 0
+    z = (r_now - mean) / std
+    return clamp(round(z * 35))
 
 
-def composite_score(subs):
-    """子分數的加權平均；可得子分數越少，總分越保守打折（跟本專案其他評分模組同一套慣例）。"""
+def score_volatility_regime(highs, lows, closes, period=14, lookback=100):
+    """波動率狀態（ATR 百分位排名）：用 ATR/Close（比例化，避免高價幣天然 ATR
+    絕對值大而被誤判為高波動）在自身近 lookback 期分布中的百分位，>50 代表波動放大、
+    <50 代表波動收斂。這不是方向分數，只是「現在該不該信任趨勢類指標」的狀態描述，
+    分數本身跟漲跌方向無關，正負只表示「波動偏高/偏低」。
+    """
+    atr = atr_full(highs, lows, closes, period)
+    n = len(closes)
+    atr_pct = [(atr[i] / closes[i]) if (atr[i] is not None and closes[i]) else None for i in range(n)]
+    valid_idx = [i for i in range(n) if atr_pct[i] is not None]
+    if len(valid_idx) < lookback + 1:
+        return None
+    window = valid_idx[-lookback - 1:]
+    now_i = window[-1]
+    hist = [atr_pct[i] for i in window[:-1]]
+    pct = percentile_rank(atr_pct[now_i], hist)
+    if pct is None:
+        return None
+    return clamp(round((pct - 50) * 2))
+
+
+def adx_weight_multiplier(adx_value):
+    """ADX 不是獨立分數項，是「趨勢類指標(ma/macd)可不可信」的權重調節濾網
+    （Wilder 原始建議：ADX<20 判定無明顯趨勢，>25 判定有趨勢）。回傳 0.5~1.5，
+    ADX 缺值時回傳 1.0（不調整，等同沒有這個濾網時的行為，向後相容）。
+    """
+    if adx_value is None:
+        return 1.0
+    return clamp(adx_value / 25, 0.5, 1.5)
+
+
+WEIGHTS = {"ma": 30, "rsi": 20, "macd": 20, "boll": 15, "kd": 10, "volume": 5,
+           "tsmom": 15, "vol_regime": 10}
+
+
+def composite_score(subs, weight_multipliers=None):
+    """子分數的加權平均；可得子分數越少，總分越保守打折（跟本專案其他評分模組同一套慣例）。
+    weight_multipliers：可選的 {key: multiplier}，用來讓 ADX 這類「濾網型」指標調整
+    ma/macd 的實際權重，而不是直接把 ADX 當成第 7 個獨立分數項疊加（見 adx_weight_multiplier）。
+    """
     avail = {k: v for k, v in subs.items() if v is not None}
     if not avail:
         return None
-    w = sum(WEIGHTS[k] for k in avail)
-    raw = sum(v * WEIGHTS[k] for k, v in avail.items()) / w
+    weights = dict(WEIGHTS)
+    if weight_multipliers:
+        for k, m in weight_multipliers.items():
+            if k in weights:
+                weights[k] = weights[k] * m
+    w = sum(weights[k] for k in avail)
+    raw = sum(v * weights[k] for k, v in avail.items()) / w
     discount = 1.0 if len(avail) >= 4 else (0.8 if len(avail) >= 2 else 0.5)
     return clamp(round(raw * discount))
 
@@ -264,6 +437,8 @@ def grade_of(total):
 def analyze(highs, lows, closes, volumes, ma_periods=(5, 20, 60)):
     """主入口：輸入完整 OHLCV 序列（由舊到新排序），回傳最新一根的完整技術分析結果。
     至少需要約 max(ma_periods)+10 根資料才會有完整分數，資料不足的子項回傳 None。
+    TSMOM/波動率狀態需要更長歷史（n+lookback+1，預設約 121 根），資料不足時這兩項
+    直接回傳 None、不影響其餘子項，composite_score 會照可得子項數量自動打折。
     """
     mas = [(f"MA{p}", sma_full(closes, p)[-1]) for p in ma_periods]
     rsi_series = rsi_full(closes)
@@ -271,9 +446,11 @@ def analyze(highs, lows, closes, volumes, ma_periods=(5, 20, 60)):
     _, _, _, pct_b_series = bollinger_full(closes)
     k_series, d_series = kd_full(highs, lows, closes)
     vr = volume_ratio(volumes)
+    adx_series = adx_full(highs, lows, closes)
 
     hist_now = hist[-1]
     hist_prev = hist[-2] if len(hist) >= 2 else None
+    adx_now = adx_series[-1]
 
     subs = {
         "ma": score_ma_trend(closes[-1], mas),
@@ -282,13 +459,16 @@ def analyze(highs, lows, closes, volumes, ma_periods=(5, 20, 60)):
         "boll": score_bollinger(pct_b_series[-1]),
         "kd": score_kd(k_series[-1], d_series[-1]),
         "volume": score_volume(vr),
+        "tsmom": score_tsmom(closes),
+        "vol_regime": score_volatility_regime(highs, lows, closes),
     }
-    total = composite_score(subs)
+    trend_mult = adx_weight_multiplier(adx_now)
+    total = composite_score(subs, weight_multipliers={"ma": trend_mult, "macd": trend_mult})
     return {
         "sub": subs,
         "total": total,
         "grade": grade_of(total),
         "raw": {"rsi": rsi_series[-1], "macd_hist": hist_now, "pct_b": pct_b_series[-1],
-                "k": k_series[-1], "d": d_series[-1], "vol_ratio": vr,
+                "k": k_series[-1], "d": d_series[-1], "vol_ratio": vr, "adx": adx_now,
                 **{name: v for name, v in mas}},
     }

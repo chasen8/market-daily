@@ -9,7 +9,7 @@
   超小型幣，只能給主流幣一個「未平倉/日量」擁擠度參考，對長尾幣種沒有幫助。
   這是免費 API 的硬限制，不是我們的篩選限制。
 
-== 六大子分數（決定總分，來源依交易所而異；v4 新增「技術」）==
+== 七大子分數（決定總分，來源依交易所而異；v4 新增「技術」，2026-07-13 新增「資金費率」）==
 - 鯨魚（大額成交淨流向）：Binance 用 aggTrades（isBuyerMaker 推斷方向）；
   Gate.io 用 trades（side 欄位直接給方向，更可靠）。都是「大單掛單行為」
   的統計近似，**不是真實錢包持倉**。門檻依 24h 成交額分層（BTC/ETH 等
@@ -20,8 +20,14 @@
 - DOM 市場深度：只對本輪分數最高的前 40 檔額外抓五檔深度，分數再乘上
   「簿深佔 24h 量比例」當信心係數，避免大幣（簿深絕對值大但佔自己日量比例小）
   被過度判斷（見 score_dom()）。
-- 技術：均線/RSI/MACD/KD/布林/量比六個常見指標的量化合成分（ta_scoring.py），
-  跟前面幾項是完全不同的資料來源（K線 vs 逐筆成交/合約），互為獨立驗證。
+- 技術：均線/RSI/MACD/KD/布林/量比六個常見指標的量化合成分，2026-07-13 新增
+  時間序列動能(TSMOM)、波動率狀態(ATR百分位)兩項，並用 ADX 當「趨勢類指標
+  (MA/MACD) 現在可不可信」的動態權重濾網（ta_scoring.py），跟前面幾項是完全
+  不同的資料來源（K線 vs 逐筆成交/合約），互為獨立驗證。
+- 資金費率（2026-07-13 新增，僅 Binance 永續合約幣種）：用該幣自己過去約 20 天
+  的資金費率分布做 z-score，費率極端偏多（多頭擁擠）視為反轉風險給負分，極端
+  偏空反之（funding_scoring.py）。這是「逆向」訊號，跟前面幾項「同向」動能類
+  分數方向定義相反，只是加進同一個簡單平均，正負號已經對齊過。
 - 操縱警示：簡單啟發式（單筆佔比過高），只在成交量夠厚時評估。
 
 == 額外顯示（不計入總分，純參考）==
@@ -61,6 +67,7 @@ import time
 import requests
 
 import ta_scoring as ta
+import funding_scoring as fs
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATE_PATH = os.path.join(ROOT, "data", "whale_state.json")
@@ -272,9 +279,10 @@ def whale_flow_binance(symbol, threshold):
 
 
 def binance_kline_metrics(symbol):
-    """一次抓 80 根 1h K 線，同時供 CVD/雙頂偵測與 ta_scoring 技術面分析使用
-    （避免重複打 API）。80 根足夠 MA60、MACD(26+9)、布林(20) 都有資料。"""
-    kl = sget("/api/v3/klines", {"symbol": symbol, "interval": "1h", "limit": 80})
+    """一次抓 K 線，同時供 CVD/雙頂偵測與 ta_scoring 技術面分析使用（避免重複打 API）。
+    130 根才夠 ta_scoring 新增的 TSMOM/波動率狀態（需要 n=20+lookback=100+1=121 根）；
+    舊的 MA60/MACD(26+9)/布林(20) 需求遠低於這個數字，一起滿足。"""
+    kl = sget("/api/v3/klines", {"symbol": symbol, "interval": "1h", "limit": 130})
     highs = [float(k[2]) for k in kl]
     lows = [float(k[3]) for k in kl]
     closes = [float(k[4]) for k in kl]
@@ -306,6 +314,16 @@ def oi_and_ratio_binance(symbol):
     return oi_chg, ratio
 
 
+def fetch_funding_history(symbol, limit=60):
+    """資金費率結算約每 8 小時一次，limit=60 約 20 天歷史，供 funding_scoring.py
+    的 z-score 當基準分布用。回傳 (最新一筆費率, 不含最新那筆的歷史 list)。"""
+    data = fget("/fapi/v1/fundingRate", {"symbol": symbol, "limit": limit})
+    if not data:
+        return None, []
+    rates = [float(d["fundingRate"]) for d in data]
+    return rates[-1], rates[:-1]
+
+
 def dom_imbalance_binance(symbol):
     book = sget("/api/v3/depth", {"symbol": symbol, "limit": 1000})
     return _dom_from_book(book["bids"], book["asks"])
@@ -334,9 +352,9 @@ def whale_and_cvd_gate(cp, threshold):
 
 
 def gate_kline_metrics(cp):
-    """同 binance_kline_metrics：一次抓 80 根 1h K 線供雙頂偵測與 ta_scoring 共用。
+    """同 binance_kline_metrics：一次抓 130 根 1h K 線供雙頂偵測與 ta_scoring 共用。
     Gate 格式：[timestamp, quote_vol, close, high, low, open, base_vol, ...]。"""
-    kl = gget("/spot/candlesticks", {"currency_pair": cp, "interval": "1h", "limit": 80})
+    kl = gget("/spot/candlesticks", {"currency_pair": cp, "interval": "1h", "limit": 130})
     highs = [float(k[3]) for k in kl]
     lows = [float(k[4]) for k in kl]
     closes = [float(k[2]) for k in kl]
@@ -392,7 +410,7 @@ def score_dom(imb, depth_usd, qv_24h):
 # ---------- 3) 單幣綜合評分 ----------
 def score_symbol(row, futures_syms, hl_map, do_dom):
     symbol, base, qv, exch = row["symbol"], row["base"], row["qv"], row["exch"]
-    sub = {"whale": None, "cvd": None, "oi": None, "dom": None, "ta": None, "manip": 0}
+    sub = {"whale": None, "cvd": None, "oi": None, "dom": None, "ta": None, "manip": 0, "funding": None}
     tags = []
     pullback, double_top = None, False
     threshold = whale_threshold(qv)
@@ -433,7 +451,7 @@ def score_symbol(row, futures_syms, hl_map, do_dom):
         except Exception:  # noqa: BLE001
             pass
 
-    ratio, oi_chg = None, None
+    ratio, oi_chg, funding_now = None, None, None
     if exch == "binance" and symbol in futures_syms:
         try:
             oi_chg, ratio = oi_and_ratio_binance(symbol)
@@ -446,6 +464,11 @@ def score_symbol(row, futures_syms, hl_map, do_dom):
             elif ratio is not None and ratio <= 0.5 and (
                     (sub["whale"] or 0) > 0 or (sub["cvd"] or 0) > 0):
                 tags.append("軋空候選")
+        except Exception:  # noqa: BLE001
+            pass
+        try:
+            funding_now, funding_hist = fetch_funding_history(symbol)
+            sub["funding"] = fs.score_funding_zscore(funding_now, funding_hist)
         except Exception:  # noqa: BLE001
             pass
 
@@ -482,7 +505,7 @@ def score_symbol(row, futures_syms, hl_map, do_dom):
             "chg24h": row["chg24h"], "qv": qv, "sub": sub, "hl_crowd": hl_crowd,
             "total": total, "grade": grade_of(total), "risk": risk, "tags": tags,
             "raw": {"pullback": pullback, "double_top": double_top, "ratio": ratio,
-                    "oi_chg": oi_chg, "has_futures": has_futures}}
+                    "oi_chg": oi_chg, "has_futures": has_futures, "funding_now": funding_now}}
 
 
 def resonance_tags(r):
