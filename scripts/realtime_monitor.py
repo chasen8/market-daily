@@ -15,7 +15,8 @@ Discord 通知會清楚標示「⚡即時警報」跟 whale_scan.py 的「主力
 
 == 運作方式 ==
 - 每 30 分鐘用 REST 重新抓一次流動性夠的幣種清單（跟 whale_scan.py 同樣門檻），
-  同時記下每檔幣的 24h 成交額
+  同時記下每檔幣的 24h 成交額，再用 whale_scan.py 的候選池狀態篩到只剩
+  S/A/D 級成員（見下方「收斂到候選池成員」）
 - 對這份清單開 WebSocket：Binance 組合流（aggTrade）、Gate.io spot.trades
 - 記憶體內維護每檔幣近 60 秒的成交，每 15 秒檢查一次淨流向是否破門檻
 - 破門檻且不在冷卻時間內（同一幣 10 分鐘只警一次，避免同一波行情洗版）→ 推 Discord
@@ -26,6 +27,16 @@ Discord 通知會清楚標示「⚡即時警報」跟 whale_scan.py 的「主力
 對剛好卡在 $30 萬流動性下限的小幣卻可能大到永遠觸發不了，兩種都不對。
 改成「60 秒淨力道 ÷ 24h 成交額」的比例，並加一個絕對金額下限（避免極小額
 的幣光靠低流動性就湊出高比例）：兩個條件都要達到才觸發。
+
+== 收斂到候選池成員（2026-07-13，比例制上線後發現雜訊還是太多）==
+比例門檻改完後，實測發現全市場約 290 檔幣裡，隨便一檔低流動性長尾幣種
+（跟主力資金完全無關）在 60 秒視窗內被隨機大單掃到 0.4% 是常態，不是訊號。
+問題不在門檻數字，是監控範圍太大：全市場逐筆掃描本來就會撞到大量統計雜訊。
+改成只對 whale_scan.py 已經算出候選池（S/A/D 級，即 POOL_GRADES）的成員開
+WebSocket、算門檻——範圍從 290 檔縮到候選池大小（通常個位數到十幾檔），
+且每則警報都能帶出候選池等級/方向，不再是孤立訊息。候選池清單讀本機
+data/whale_state.json（VM 每 30 分鐘 git pull 一次，whale_scan.py 每 5 分鐘
+更新一次，兩者剛好同週期，最多落後約 35 分鐘算可接受）。
 """
 import asyncio
 import collections
@@ -53,6 +64,14 @@ GATE_LEV_RE = re.compile(r"\d[LS]$")  # Gate.io 槓桿代幣（XRP3L/BTC5S 這�
 # 這種代幣機制上本來就會有劇烈量能波動，不是真的資金流向訊號——2026-07-13 從
 # 即時警報連續洗版（XRP3L/XRP5S/BTC5L...）抓到這個漏篩，whale_scan.py 同步修正。
 
+# 候選池等級定義，跟 whale_scan.py 保持一致（複製而非 import，兩支程式部署環境
+# 不同：這支跑在 GCP VM 常駐 daemon，whale_scan.py 跑在 GitHub Actions）
+LONG_GRADES = {"S", "A"}
+SHORT_GRADES = {"D"}
+POOL_GRADES = LONG_GRADES | SHORT_GRADES
+STATE_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                           "data", "whale_state.json")
+
 MIN_QUOTE_VOL = float(os.environ.get("MIN_QUOTE_VOL", 300_000))
 WINDOW_SEC = 60          # 檢查近 N 秒的成交
 CHECK_INTERVAL_SEC = 15  # 每隔多久檢查一次門檻
@@ -68,6 +87,7 @@ last_alert: dict[str, float] = {}
 universe_lock = asyncio.Lock()
 binance_symbols: dict[str, float] = {}  # symbol -> 24h 成交額(USD)，比例門檻要用
 gate_symbols: dict[str, float] = {}
+pool_grades: dict[str, str] = {}  # symbol -> grade，只含候選池成員，警報文案用
 
 
 def sget(path, params=None):
@@ -122,13 +142,31 @@ def fetch_gate_universe(exclude_bases):
     return out
 
 
-def send_discord_alert(symbol, exch, net, window_sec, qv, ratio):
+def fetch_pool_symbols():
+    """讀 whale_scan.py 的候選池狀態，回傳 {symbol: grade}，只留 S/A/D 級。
+    讀取失敗（檔案不存在/格式壞掉）回傳 None，讓呼叫端沿用舊清單，
+    避免候選池暫時讀不到就把整個即時警報清空。"""
+    try:
+        with open(STATE_PATH, encoding="utf-8") as f:
+            state = json.load(f)
+    except (OSError, json.JSONDecodeError) as e:
+        log.warning(f"讀取候選池狀態失敗，沿用舊清單: {e}")
+        return None
+    return {sym: entry.get("grade") for sym, entry in state.items()
+            if entry.get("grade") in POOL_GRADES}
+
+
+def send_discord_alert(symbol, exch, net, window_sec, qv, ratio, grade=None):
     if not DISCORD_WEBHOOK:
         log.info(f"[DRY] would alert {symbol} net={net:+.0f} ratio={ratio:.2%} (no webhook set)")
         return
     direction = "買方主動" if net > 0 else "賣方主動"
     title = f"⚡ 即時警報．{symbol}．{window_sec}秒內{direction}湧入"
-    desc = (f"近 {window_sec} 秒大額成交淨力道 `${net:+,.0f}` · 佔 24h 量 **{ratio:+.2%}**\n"
+    grade_line = ""
+    if grade:
+        pool_dir = "做多" if grade in LONG_GRADES else "做空"
+        grade_line = f"候選池等級：**{grade}**（{pool_dir}方向） · "
+    desc = (f"{grade_line}近 {window_sec} 秒大額成交淨力道 `${net:+,.0f}` · 佔 24h 量 **{ratio:+.2%}**\n"
             f"24h 成交額 `${qv:,.0f}` · 交易所：{exch}\n"
             "這是逐筆成交量的快速訊號，**不是完整主力評分**（沒有OI/深度/結構判斷）。\n"
             "完整評分與候選池請看每日市場觀察→主力資金雷達頁面。\n"
@@ -170,21 +208,29 @@ async def checker_loop():
             if now - last_alert.get(symbol, 0) < COOLDOWN_SEC:
                 continue
             exch = "binance" if symbol in binance_symbols else "gate"
-            log.info(f"ALERT {symbol} net={net:+.0f} ratio={ratio:+.2%} exch={exch}")
-            send_discord_alert(symbol, exch, net, WINDOW_SEC, qv, ratio)
+            grade = pool_grades.get(symbol)
+            log.info(f"ALERT {symbol} net={net:+.0f} ratio={ratio:+.2%} exch={exch} grade={grade}")
+            send_discord_alert(symbol, exch, net, WINDOW_SEC, qv, ratio, grade)
             last_alert[symbol] = now
 
 
 async def universe_refresh_loop():
-    global binance_symbols, gate_symbols
+    global binance_symbols, gate_symbols, pool_grades
     while True:
         try:
             b = fetch_binance_universe()
             b_bases = {s[:-4] for s in b}
             g = fetch_gate_universe(b_bases)
+            pool = fetch_pool_symbols()
+            if pool is not None:
+                b = {s: qv for s, qv in b.items() if s in pool}
+                g = {s: qv for s, qv in g.items() if s in pool}
             async with universe_lock:
                 binance_symbols, gate_symbols = b, g
-            log.info(f"universe refreshed: binance={len(b)} gate={len(g)}")
+                if pool is not None:
+                    pool_grades = pool
+            note = f"（候選池 {len(pool)} 檔）" if pool is not None else "（候選池讀取失敗，沿用舊清單未篩選）"
+            log.info(f"universe refreshed: binance={len(b)} gate={len(g)} {note}")
         except Exception as e:  # noqa: BLE001
             log.warning(f"universe refresh 失敗，沿用舊清單: {e}")
         await asyncio.sleep(UNIVERSE_REFRESH_SEC)
@@ -266,10 +312,17 @@ async def main():
     log.info(f"啟動：門檻=佔24h量{ALERT_RATIO:.2%}（且≥${ALERT_FLOOR_USD:,.0f}）/{WINDOW_SEC}s，"
              f"冷卻={COOLDOWN_SEC}s，webhook={'已設定' if DISCORD_WEBHOOK else '未設定(dry-run)'}")
     # 先同步抓一次清單，避免 WS 迴圈啟動時清單是空的
-    global binance_symbols, gate_symbols
-    binance_symbols = fetch_binance_universe()
-    gate_symbols = fetch_gate_universe({s[:-4] for s in binance_symbols})
-    log.info(f"初始清單：binance={len(binance_symbols)} gate={len(gate_symbols)}")
+    global binance_symbols, gate_symbols, pool_grades
+    b = fetch_binance_universe()
+    g = fetch_gate_universe({s[:-4] for s in b})
+    pool = fetch_pool_symbols()
+    if pool is not None:
+        b = {s: qv for s, qv in b.items() if s in pool}
+        g = {s: qv for s, qv in g.items() if s in pool}
+        pool_grades = pool
+    binance_symbols, gate_symbols = b, g
+    log.info(f"初始清單：binance={len(binance_symbols)} gate={len(gate_symbols)}"
+             + (f"（候選池 {len(pool)} 檔）" if pool is not None else "（候選池讀取失敗，暫不篩選）"))
 
     await asyncio.gather(
         universe_refresh_loop(),
