@@ -167,14 +167,17 @@ def fetch_pool_symbols():
 
 
 def _post_embed(title, desc, color):
-    if not DISCORD_WEBHOOK:
+    # DISCORD_WEBHOOK 支援多個網址（逗號分隔），同內容發到每個頻道
+    hooks = [h.strip() for h in DISCORD_WEBHOOK.split(",") if h.strip()]
+    if not hooks:
         log.info(f"[DRY] {title}")
         return
-    try:
-        requests.post(DISCORD_WEBHOOK, json={"embeds": [{
-            "title": title, "description": desc, "color": color}]}, timeout=15)
-    except Exception as e:  # noqa: BLE001
-        log.warning(f"Discord 推播失敗: {e}")
+    for h in hooks:
+        try:
+            requests.post(h, json={"embeds": [{
+                "title": title, "description": desc, "color": color}]}, timeout=15)
+        except Exception as e:  # noqa: BLE001
+            log.warning(f"Discord 推播失敗: {e}")
 
 
 def _grade_line(grade):

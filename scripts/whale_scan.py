@@ -1010,13 +1010,17 @@ def trend_emoji(chg):
 
 
 def _post_discord_embeds(webhook, embeds):
-    """每批最多 10 個 embed（Discord API 上限），批次之間留間隔避免撞速率限制。"""
+    """每批最多 10 個 embed（Discord API 上限），批次之間留間隔避免撞速率限制。
+    webhook 支援多個網址（逗號分隔，2026-07-14 起）：同樣內容發到每一個頻道，
+    單一頻道失敗不影響其他頻道。網址只存在 Secret/環境變數，絕不進程式碼。"""
+    hooks = [h.strip() for h in (webhook or "").split(",") if h.strip()]
     for i in range(0, len(embeds), 10):
         batch = embeds[i:i + 10]
-        try:
-            requests.post(webhook, json={"embeds": batch}, timeout=TIMEOUT)
-        except Exception as e:  # noqa: BLE001
-            print(f"[WARN] Discord 推播失敗: {e}")
+        for h in hooks:
+            try:
+                requests.post(h, json={"embeds": batch}, timeout=TIMEOUT)
+            except Exception as e:  # noqa: BLE001
+                print(f"[WARN] Discord 推播失敗: {e}")
         time.sleep(DISCORD_SEND_DELAY)
 
 
