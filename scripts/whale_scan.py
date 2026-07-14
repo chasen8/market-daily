@@ -83,6 +83,8 @@ MAJORS_PATH = os.path.join(ROOT, "data", "majors_history.json")
 MAJORS = ["BTC", "ETH", "SOL", "BNB", "XRP"]  # 主流幣資金強度專區固定追蹤這幾檔
 MAJORS_HISTORY_LEN = 24  # 5 分鐘一輪，24 筆＝近 2 小時基準
 SIGNAL_LOG_PATH = os.path.join(ROOT, "data", "signal_log.json")
+DIGEST_STATE_PATH = os.path.join(ROOT, "data", "digest_state.json")
+DIGEST_INTERVAL_HOURS = float(os.environ.get("DIGEST_INTERVAL_HOURS", 4))
 SIGNAL_LOG_MAX = 300  # 超過上限先丟最舊的「已結案」紀錄，開放中的不丟
 DOCS_PATH = os.path.join(ROOT, "docs", "whales.html")
 
@@ -1011,6 +1013,68 @@ def _post_discord_embeds(webhook, embeds):
         time.sleep(DISCORD_SEND_DELAY)
 
 
+def should_send_digest(now):
+    """定時戰報節流：距上次發送滿 DIGEST_INTERVAL_HOURS 才發。時間戳存獨立小檔，
+    不塞進 whale_state.json（那個檔每輪被 update_tracking 整個重建，塞進去會被洗掉）。"""
+    try:
+        with open(DIGEST_STATE_PATH, encoding="utf-8") as f:
+            last = dt.datetime.fromisoformat(json.load(f)["last_ts"])
+    except (OSError, ValueError, KeyError, json.JSONDecodeError):
+        return True  # 沒發過（或檔案壞掉）→ 直接發
+    return (now - last).total_seconds() >= DIGEST_INTERVAL_HOURS * 3600
+
+
+def save_digest_ts(now):
+    with open(DIGEST_STATE_PATH, "w", encoding="utf-8") as f:
+        json.dump({"last_ts": now.isoformat()}, f)
+
+
+def digest_line(r):
+    return (f'{GRADE_DOT.get(r["grade"], "⚪")}**{r["base"]}** `{r["total"]:+d}` · '
+            f'24h {r["chg24h"]:+.1f}% · 品質 `{r["quality"]}`')
+
+
+def send_digest_discord(webhook, results, overview, stats, universe_n, now):
+    """定時戰報（完整評分摘要）：跟事件型通知（機會/異動/風險）不同，這是固定間隔
+    的全景快照——大盤狀態＋兩個候選池＋蓄勢觀察＋推送紀錄勝率。使用者要求：
+    「完整評分也要在 discord 給我」。單一 embed，金色框。"""
+    if not webhook:
+        return
+    longs = sorted((r for r in results if r["grade"] in LONG_GRADES), key=lambda r: -r["total"])
+    shorts = sorted((r for r in results if r["grade"] in SHORT_GRADES), key=lambda r: r["total"])
+    brewing = sorted((r for r in results if r["grade"] not in POOL_GRADES and r["flow"] >= 15),
+                     key=lambda r: -r["flow"])[:3]
+    lines = [f'掃描 `{universe_n}` 檔 · 大盤 **{overview["bias"]}** · '
+             f'漲 `{overview["up"]}`/跌 `{overview["down"]}`'
+             + (f' · 恐慌貪婪 `{overview["fg"]}`' if overview.get("fg") is not None else "")]
+    for key, label in (("btc", "BTC"), ("eth", "ETH")):
+        m = overview.get(key)
+        if m:
+            lines.append(f'{label} `{m["total"]:+d}` {GRADE_DOT.get(m["grade"], "⚪")}{m["grade"]} '
+                         f'({m["chg24h"]:+.1f}%)')
+    lines.append("")
+    lines.append(f'**🟢 多方候選池（{len(longs)}）**')
+    lines += [digest_line(r) for r in longs[:8]] or ["（無）"]
+    if len(longs) > 8:
+        lines.append(f'…另有 {len(longs) - 8} 檔，完整清單見網頁')
+    lines.append("")
+    lines.append(f'**🔴 空方候選池（{len(shorts)}）**')
+    lines += [digest_line(r) for r in shorts[:8]] or ["（無）"]
+    if len(shorts) > 8:
+        lines.append(f'…另有 {len(shorts) - 8} 檔，完整清單見網頁')
+    if brewing:
+        lines.append("")
+        lines.append('**⏳ 蓄勢觀察（未入池但資金先行）**')
+        lines += [f'⚪**{r["base"]}** FLOW `{r["flow"]}` · 24h {r["chg24h"]:+.1f}%' for r in brewing]
+    lines.append("")
+    win_txt = f'{stats["win_rate"]}%（{stats["n"]} 筆結案）' if stats["win_rate"] is not None else f'累積中（{stats["n"]} 筆結案）'
+    lines.append(f'推送紀錄勝率 **{win_txt}**')
+    lines.append("程式規則生成，非投資建議")
+    embed = {"title": f'📊 定時戰報 · {now:%m-%d %H:%M} UTC',
+             "description": "\n".join(lines), "color": 0xD4AF37}
+    _post_discord_embeds(webhook, [embed])
+
+
 def send_major_flow_discord(webhook, major_alerts):
     if not webhook or not major_alerts:
         return
@@ -1546,6 +1610,9 @@ def main():
     if not args.dry_run:
         send_discord(webhook, alerts)
         send_major_flow_discord(webhook, major_alerts)
+        if webhook and should_send_digest(now):
+            send_digest_discord(webhook, results, overview, stats, len(universe), now)
+            save_digest_ts(now)
 
     html_out = render_page(results, alerts, all_transitions, overview, len(universe),
                            args.min_quote_vol, now, exch_counts, major_flows, signal_log, stats)
