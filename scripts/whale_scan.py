@@ -1028,6 +1028,18 @@ def send_major_flow_discord(webhook, major_alerts):
     _post_discord_embeds(webhook, embeds)
 
 
+SUB_LABELS = (("whale", "鯨魚"), ("cvd", "CVD"), ("oi", "OI"), ("dom", "簿深"),
+              ("ta", "技術"), ("funding", "費率"))
+
+
+def sub_breakdown(a):
+    """子分數明細列：機會/異動訊息顯示「是哪幾個指標在推動這個訊號」。
+    只列有資料的項目；技術分本身已是 ta_scoring.py 十一個指標的合成分。"""
+    sub = a.get("sub") or {}
+    parts = [f"{name} `{sub[k]:+d}`" for k, name in SUB_LABELS if sub.get(k) is not None]
+    return " · ".join(parts)
+
+
 def send_discord(webhook, alerts):
     if not webhook or not alerts:
         return
@@ -1042,17 +1054,21 @@ def send_discord(webhook, alerts):
             call = "🟢 做多點" if is_long else "🔴 做空點"
             quote = f'{tags_text}｜{action_suggestion(a, a)}' if tags_text else action_suggestion(a, a)
             title = f'{head} 機會・{a["base"]}・{call}：{trend_emoji(a["chg24h"])}'
+            breakdown = sub_breakdown(a)
             desc = (f'進場價 `${a["close"]:g}` · 24h **{a["chg24h"]:+.1f}%**\n'
                     f'總分 `{bar(a["total"])}` **{a["total"]:+d}** · '
                     f'品質 `{a["quality"]}` · {GRADE_DOT.get(a["grade"],"⚪")}**{a["grade"]}**\n'
-                    f'> {quote}')
+                    + (f'{breakdown}\n' if breakdown else '')
+                    + f'> {quote}')
         elif a["type"] == "movement":
             icon = "🟠" if a["change"] == "跌出候選池" else "⚡"
             quote = tags_text or action_suggestion(a, a)
             title = f'{icon} 異動・{a["base"]}・{a["prev_grade"]}→{a["grade"]}（{a["change"]}）：{trend_emoji(a["chg24h"])}'
+            breakdown = sub_breakdown(a)
             desc = (f'現價 `${a["close"]:g}` · **{a["chg24h"]:+.1f}%** · 篩選分 `{a["quality"]}` · '
                     f'{GRADE_DOT.get(a["grade"],"⚪")}**{a["grade"]}** `{a["total"]:+d}`\n'
-                    f'> {quote}')
+                    + (f'{breakdown}\n' if breakdown else '')
+                    + f'> {quote}')
         elif a["type"] == "risk_on":
             title = f'▼ 風險・{a["base"]}・🔴 {risk_label(a["risk"])}：{trend_emoji(a["chg24h"])}'
             desc = (f'現價 `${a["close"]:g}` · **{a["chg24h"]:+.1f}%**\n'
