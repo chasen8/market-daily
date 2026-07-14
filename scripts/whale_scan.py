@@ -17,9 +17,13 @@
 - CVD：Binance 用 K 線 taker-buy 欄位；Gate.io 沒有這個欄位，改用近期
   逐筆成交方向加總近似，方法不同、意義相近。
 - OI×價：僅 Binance 有永續合約資料時才有；Gate.io 尚未整合期貨，一律缺。
-- DOM 市場深度：只對本輪分數最高的前 40 檔額外抓五檔深度，分數再乘上
-  「簿深佔 24h 量比例」當信心係數，避免大幣（簿深絕對值大但佔自己日量比例小）
-  被過度判斷（見 score_dom()）。
+- DOM 市場深度：只對本輪分數最高的前 40 檔抓訂單簿，分數乘上「簿深佔 24h 量
+  比例」信心係數（見 score_dom()）。2026-07-14 起加三層防偽（文獻依據見
+  docs/orderbook-quant-research.md）：(a) 一輪 3 張快照間隔 4 秒取中位數，
+  殺瞬時假單與報價抖動；(b) 簿失衡方向與 taker 成交流（cvd）矛盾時 ×0.4——
+  掛單可撤可假、成交不可逆；(c) 方向與上一輪相反時 ×0.5——真實簿壓持續數輪，
+  spoofing 掛單活不久。誠實定位：靜態簿失衡的預測力在文獻上集中於 tick 級，
+  這裡只當「流動性/確認變數」，權重不高於其他子分數。
 - 技術：均線/RSI/MACD/KD/布林/量比六個常見指標的量化合成分，2026-07-13 新增
   時間序列動能(TSMOM)、波動率狀態(ATR百分位)兩項，並用 ADX 當「趨勢類指標
   (MA/MACD) 現在可不可信」的動態權重濾網（ta_scoring.py），跟前面幾項是完全
@@ -64,6 +68,7 @@ import html
 import json
 import os
 import re
+import statistics
 import sys
 import time
 
@@ -327,8 +332,15 @@ def fetch_funding_history(symbol, limit=60):
     return rates[-1], rates[:-1]
 
 
+DOM_SNAPSHOTS = 3        # 一輪抓幾張快照取中位數（殺瞬時假單與做市商報價抖動）
+DOM_SNAPSHOT_GAP = 4.0   # 快照間隔秒數（假單要活過整個採樣窗才騙得到中位數）
+
+
 def dom_imbalance_binance(symbol):
-    book = sget("/api/v3/depth", {"symbol": symbol, "limit": 1000})
+    # limit 從 1000 降到 500：多快照讓每檔 API 呼叫 ×3，用較低的 limit 抵掉大部分
+    # 請求權重（Binance depth limit=500 權重是 1000 的一半）；±1% 帶內 500 檔位
+    # 對絕大多數幣綽綽有餘
+    book = sget("/api/v3/depth", {"symbol": symbol, "limit": 500})
     return _dom_from_book(book["bids"], book["asks"])
 
 
@@ -395,6 +407,28 @@ def _dom_from_book(bids, asks):
     a = sum(p * q for p, q in asks if p <= hi)
     total = a + b
     return (b / total if total else None), total
+
+
+def dom_multi_snapshot(fetch_once):
+    """一輪抓 DOM_SNAPSHOTS 張快照、間隔 DOM_SNAPSHOT_GAP 秒，失衡比與簿深各取中位數。
+    單張快照等於從做市商高頻改單的雜訊裡隨機抽一個點，且對 spoofing（掛假單、價格
+    靠近就撤）零防禦——中位數要騙就得讓假單活過整個採樣窗，成本高得多
+    （文獻依據見 docs/orderbook-quant-research.md 缺陷 1/2 節）。
+    部分快照失敗就用剩下的算，全失敗回傳 (None, None)。"""
+    imbs, depths = [], []
+    for i in range(DOM_SNAPSHOTS):
+        if i:
+            time.sleep(DOM_SNAPSHOT_GAP)
+        try:
+            imb, depth = fetch_once()
+        except Exception:  # noqa: BLE001
+            continue
+        if imb is not None and depth is not None:
+            imbs.append(imb)
+            depths.append(depth)
+    if not imbs:
+        return None, None
+    return statistics.median(imbs), statistics.median(depths)
 
 
 def score_dom(imb, depth_usd, qv_24h):
@@ -477,8 +511,21 @@ def score_symbol(row, futures_syms, hl_map, do_dom):
 
     if do_dom:
         try:
-            imb, depth_usd = dom_imbalance_binance(symbol) if exch == "binance" else dom_imbalance_gate(symbol)
+            fetch = (lambda: dom_imbalance_binance(symbol)) if exch == "binance" \
+                else (lambda: dom_imbalance_gate(symbol))
+            imb, depth_usd = dom_multi_snapshot(fetch)
             sub["dom"] = score_dom(imb, depth_usd, qv)
+            # 成交流交叉確認（Silantyev 2019：成交過的失衡比掛在簿上的可信——
+            # 掛單可撤可假，成交不可逆）：簿失衡方向與 taker 成交流（cvd）明確矛盾
+            # 時大打折，同向才給全額，天然的 spoof 過濾器
+            if sub["dom"] is not None and sub["cvd"] is not None \
+                    and sub["dom"] * sub["cvd"] < 0 and abs(sub["dom"]) >= 10 and abs(sub["cvd"]) >= 10:
+                sub["dom"] = round(sub["dom"] * 0.4)
+            # 跨輪持續性過濾：方向跟上一輪（5 分鐘前）相反就打對折——真實的簿壓
+            # 通常持續數輪，spoofing 掛單活不久；上一輪沒有 DOM 資料就不動
+            prev_dom = row.get("prev_dom")
+            if sub["dom"] is not None and prev_dom is not None and sub["dom"] * prev_dom < 0:
+                sub["dom"] = round(sub["dom"] * 0.5)
         except Exception:  # noqa: BLE001
             pass
 
@@ -743,6 +790,8 @@ def update_tracking(results, prev_state, alerted_symbols, now_iso):
         in_pool = direction is not None
         same_episode = in_pool and old_direction == direction
         entry = {"grade": r["grade"], "total": r["total"], "risk": r["risk"], "ts": now_iso}
+        if r["sub"]["dom"] is not None:
+            entry["dom"] = r["sub"]["dom"]  # 下一輪的 DOM 跨輪持續性過濾要用
         if in_pool and not same_episode:
             entry.update(pool_direction=direction, pool_entry_ts=now_iso, pool_entry_price=r["close"],
                          high_since=r["close"], low_since=r["close"], alert_count=0)
@@ -1356,7 +1405,10 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
             '<li><b>DOM</b>：只對本輪分數最高的前 40 檔額外抓深度算失衡比，其餘顯示「缺」。'
             '分數會再乘上「信心係數」＝±1% 簿深金額 ÷ 24h 成交額，比例 &lt;2% 依比例打折——'
             'BTC/ETH 這種幣簿深絕對金額雖大，佔自己日成交量的比例其實很小，容易被做市商'
-            '瞬時報價雜訊主導，不打折會對大幣的 DOM 訊號過度判斷。掛單本身也可撤可假，僅供參考。</li>'
+            '瞬時報價雜訊主導，不打折會對大幣的 DOM 訊號過度判斷。'
+            '掛單可撤可假（spoofing），另有三層防偽：一輪 3 張快照取中位數、'
+            '與 taker 成交流方向矛盾時 ×0.4、與上一輪方向相反時 ×0.5。'
+            '學術文獻上簿失衡的預測力集中在 tick 級，此處僅作流動性/確認變數。</li>'
             '<li><b>操縱警示／雙頂形態</b>：簡單啟發式規則，是提示不是證據；低流動性幣的操縱檢查會跳過。</li>'
             '<li><b>品質分</b>：50 起跳，流動性層級 -10~+25、有 Binance 永續合約 +15、'
             '近期雙頂 -20、近期高點回落 ≥15% -15、有操縱警示 -15。<b>這不是基本面分析</b>'
@@ -1429,6 +1481,13 @@ def main():
     fg = fetch_fear_greed()
     dom_set = {r["symbol"] for r in universe[:args.dom_top]}
 
+    # prev_state 提前到評分之前載入：DOM 跨輪持續性過濾需要把上一輪的 dom 分數
+    # 塞進 row 給 score_symbol 用（見該函式 do_dom 段落）
+    prev_state = load_state()
+    is_cold_start = not prev_state
+    for r in universe:
+        r["prev_dom"] = prev_state.get(r["symbol"], {}).get("dom")
+
     results, errors = [], 0
     with cf.ThreadPoolExecutor(max_workers=10) as ex:
         futs = {ex.submit(score_symbol, r, futures_syms, hl_map, r["symbol"] in dom_set): r for r in universe}
@@ -1442,9 +1501,6 @@ def main():
         r["quality"] = quality_score(r)
         r["flow"] = flow_score(r)
         r["behavior"] = behavior_label(r)
-
-    prev_state = load_state()
-    is_cold_start = not prev_state
     alerts = build_alerts(results, prev_state, is_cold_start)
     alerted_symbols = {a["symbol"] for a in alerts}
     all_transitions = build_all_transitions(results, prev_state, is_cold_start)
