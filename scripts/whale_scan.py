@@ -86,7 +86,14 @@ SIGNAL_LOG_PATH = os.path.join(ROOT, "data", "signal_log.json")
 DIGEST_STATE_PATH = os.path.join(ROOT, "data", "digest_state.json")
 DIGEST_INTERVAL_HOURS = float(os.environ.get("DIGEST_INTERVAL_HOURS", 4))
 SIGNAL_LOG_MAX = 300  # 超過上限先丟最舊的「已結案」紀錄，開放中的不丟
-DOCS_PATH = os.path.join(ROOT, "docs", "whales.html")
+# 2026-07-14 起本頁就是網站首頁（原每日市場觀察 index 已退役，程式在 git 歷史）；
+# whales.html 保留一個轉址殼給舊書籤/舊 Discord 訊息裡的連結
+DOCS_PATH = os.path.join(ROOT, "docs", "index.html")
+WHALES_REDIRECT_PATH = os.path.join(ROOT, "docs", "whales.html")
+WHALES_REDIRECT_HTML = ('<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">'
+                        '<meta http-equiv="refresh" content="0;url=./index.html">'
+                        '<title>加密訊息</title></head>'
+                        '<body><a href="./index.html">頁面已搬家 → index.html</a></body></html>')
 
 H = {"User-Agent": "Mozilla/5.0"}
 SPOT_HOSTS = ["https://api.binance.com", "https://data-api.binance.vision"]
@@ -1287,6 +1294,7 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
             f'（{r["total"]:+d}）</td>'
             + sub_cell(r["sub"]["whale"]) + sub_cell(r["sub"]["cvd"])
             + sub_cell(r["sub"]["oi"]) + sub_cell(r["sub"]["dom"]) + sub_cell(r["sub"]["ta"])
+            + sub_cell(r["sub"].get("funding"))
             + f'<td class="{risk_tone}">{r["risk"]}・{esc(risk_label(r["risk"]))}</td>'
             f'<td>{r["quality"]}</td><td>{r["flow"]}</td><td>{esc(r["behavior"])}</td>'
             f'<td>{esc("、".join(r["tags"]) if r["tags"] else "—")}</td>'
@@ -1320,14 +1328,28 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
      --line:rgba(212,175,55,.22);--gold:#D4AF37;--gold-soft:#E8CD6B;--chip:#221D14;
      --up:#2EA673;--dn:#A83E54;--flat:#8A8172}
     *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    section{scroll-margin-top:14px}
     body{background:var(--bg);color:var(--ink);margin:0;
      font-family:"Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
     .wrap{max-width:1160px;margin:0 auto;padding:32px 20px 64px;display:flex;flex-direction:column;gap:22px}
-    .mast{border-bottom:1px solid var(--gold);padding-bottom:16px;display:flex;flex-wrap:wrap;
+    .mast{border-bottom:1px solid var(--gold);padding-bottom:14px;display:flex;flex-wrap:wrap;
      align-items:baseline;gap:8px 16px}
-    .mast h1{font-size:1.5rem;margin:0;letter-spacing:.16em;color:var(--gold);font-weight:700}
+    .mast h1{font-size:1.6rem;margin:0;letter-spacing:.18em;color:var(--gold);font-weight:700}
     .chip{background:var(--chip);color:var(--muted);border:1px solid var(--line);
      border-radius:999px;padding:3px 13px;font-size:.72rem}
+    .chip.hot{color:var(--gold-soft);border-color:var(--gold)}
+    .navbar{flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+    a.nav{background:var(--chip);color:var(--gold-soft);border:1px solid var(--line);
+     border-radius:8px;padding:5px 14px;font-size:.76rem;text-decoration:none;
+     letter-spacing:.06em;transition:border-color .15s,background .15s}
+    a.nav:hover{border-color:var(--gold);background:var(--card2)}
+    @media (max-width:640px){
+     .wrap{padding:20px 12px 48px;gap:14px}
+     section{padding:16px 14px}
+     .cols{columns:1}
+     .mast h1{font-size:1.3rem}
+    }
     section{background:linear-gradient(180deg,var(--card),var(--card) 60%,var(--card2));
      border:1px solid var(--line);border-radius:12px;padding:22px 24px;
      box-shadow:0 1px 0 rgba(212,175,55,.06) inset}
@@ -1395,15 +1417,21 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
     .badge.loss{background:rgba(168,62,84,.18);color:var(--dn)}
     td.mono{font-family:ui-monospace,Consolas,monospace}
     """
+    n_long = sum(1 for r in results if r["grade"] in LONG_GRADES)
+    n_short = sum(1 for r in results if r["grade"] in SHORT_GRADES)
+    nav = "".join(f'<a class="nav" href="#{aid}">{label}</a>' for aid, label in (
+        ("overview", "總覽"), ("pool", "候選池"), ("flow", "先行"), ("majors", "主流幣"),
+        ("track", "績效"), ("moves", "異動"), ("all", "全市場"), ("notes", "說明")))
     return (f'<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">'
             f'<meta name="viewport" content="width=device-width,initial-scale=1">'
-            f'<title>加密訊息 {now:%Y-%m-%d %H:%M}</title><style>{css}</style></head><body>'
+            f'<title>加密訊息</title><style>{css}</style></head><body>'
             f'<div class="wrap"><header class="mast"><h1>加密訊息</h1>'
+            f'<span class="chip hot">多方 {n_long}・空方 {n_short}</span>'
             f'<span class="chip">掃描 {universe_n} 檔（Binance {exch_counts.get("binance",0)}・'
             f'Gate.io {exch_counts.get("gate",0)}・24h額≥${min_qv:,.0f}）</span>'
-            f'<span class="chip">更新 {now:%Y-%m-%d %H:%M} UTC</span>'
-            f'<span class="chip"><a href="./index.html">← 回每日市場觀察</a></span></header>'
-            f'<section><h2>大盤總覽</h2>'
+            f'<span class="chip">更新 {now:%Y-%m-%d %H:%M} UTC・每 5 分鐘自動更新</span>'
+            f'<nav class="navbar">{nav}</nav></header>'
+            f'<section id="overview"><h2>大盤總覽</h2>'
             f'<p class="sub">全部從本輪已算好的 {universe_n} 檔彙總，不額外打 API</p>'
             f'<div class="ov">'
             f'<div class="kpi"><div class="l">整體風向（升/降家數）</div>'
@@ -1418,7 +1446,21 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
             f'<div class="kpi"><div class="l">山寨中位數 24h（超額 vs BTC）</div>'
             f'<div class="v">{(str(round(overview["alt_median_chg"],1))+"%") if overview["alt_median_chg"] is not None else "缺"}'
             f'（{overview["alt_excess_vs_btc"]:+.1f}pp）</div></div></div></section>'
-            f'<section><h2>推送紀錄與績效（誠實對帳，不是回測）</h2>'
+            f'<section id="pool"><h2>機會候選池（多方 S/A・空方 D・或高風險）</h2>'
+            f'<p class="sub">綠框＝多方機會（建議做多）、紅框＝空方機會（建議做空）或高風險警示；'
+            f'入池追蹤（時間/價格/期間高低＝MFE/MAE）持續累積</p>'
+            f'<div class="cards">{cards}</div></section>'
+            f'<section id="flow"><h2>先行・點火前資金流（FLOW，未進候選池）</h2>'
+            f'<p class="sub">只看鯨魚／CVD 這兩個快訊號，且價格還沒大動時給滿權重——目的是搶在主力評分'
+            f'觸發前先標記「正在蓄積」的候選，不保證會真的觸發</p><ul class="cols">{flow_rows}</ul></section>'
+            f'<section id="majors"><h2>主流幣資金強度（相對自己基準，不是跟其他幣比）</h2>'
+            f'<p class="sub">固定幣種{" / ".join(MAJORS)}，鯨魚門檻本就依流動性分層更高；'
+            f'這裡再拿「現在」跟「這檔幣自己近 2 小時的平均」比，抓真正異常放大的資金流，'
+            f'不是絕對分數高低（見附錄）</p>'
+            f'<div class="tbl"><table><tr><th>幣種</th><th>現價</th><th>24h</th>'
+            f'<th>當前鯨魚分</th><th>近2h基準</th><th>相對強度</th><th>判讀</th><th>樣本數</th></tr>'
+            + major_rows + '</table></div></section>'
+            f'<section id="track"><h2>推送紀錄與績效（誠實對帳，不是回測）</h2>'
             f'<p class="sub">每次進入候選池都留一筆紀錄，事後追蹤實際漲跌——這是驗證整套評分'
             f'系統有沒有用的唯一誠實方法。「結果」＝目前價（開放中）或結案當下價（已結案）'
             f'對比推送價，不是挑最高點硬湊好看數字（見附錄）</p>'
@@ -1435,34 +1477,20 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
             f'<th>首推→最新</th><th>推送價</th><th>現價/結案價</th><th>漲幅(高點)</th>'
             f'<th>跌幅(低點)</th><th>推送次數</th><th>來源</th></tr>'
             + signal_rows_html + '</table></div></section>'
-            f'<section><h2>主流幣資金強度（相對自己基準，不是跟其他幣比）</h2>'
-            f'<p class="sub">固定幣種{" / ".join(MAJORS)}，鯨魚門檻本就依流動性分層更高；'
-            f'這裡再拿「現在」跟「這檔幣自己近 2 小時的平均」比，抓真正異常放大的資金流，'
-            f'不是絕對分數高低（見附錄）</p>'
-            f'<div class="tbl"><table><tr><th>幣種</th><th>現價</th><th>24h</th>'
-            f'<th>當前鯨魚分</th><th>近2h基準</th><th>相對強度</th><th>判讀</th><th>樣本數</th></tr>'
-            + major_rows + '</table></div></section>'
-            f'<section><h2>機會候選池（多方 S/A・空方 D・或高風險）</h2>'
-            f'<p class="sub">綠框＝多方機會（建議做多）、紅框＝空方機會（建議做空）或高風險警示；'
-            f'入池追蹤（時間/價格/期間高低＝MFE/MAE）持續累積</p>'
-            f'<div class="cards">{cards}</div></section>'
-            f'<section><h2>先行・點火前資金流（FLOW，未進候選池）</h2>'
-            f'<p class="sub">只看鯨魚／CVD 這兩個快訊號，且價格還沒大動時給滿權重——目的是搶在主力評分'
-            f'觸發前先標記「正在蓄積」的候選，不保證會真的觸發</p><ul class="cols">{flow_rows}</ul></section>'
-            f'<section><h2>品質分排行（長期體質，非動能）</h2>'
-            f'<p class="sub">流動性層級＋有無永續合約＋近期有無結構性破壞的規則統計，跟主力評分分開看</p>'
-            f'<ul class="cols">{quality_rows}</ul></section>'
-            f'<section><h2>機會／異動／風險（Discord 有推播）</h2><ul>{alert_rows}</ul></section>'
-            f'<section><h2>全市場評級異動摘要（僅頁面顯示，含日常 B/C/D 波動）</h2>'
+            f'<section id="moves"><h2>機會／異動／風險（Discord 有推播）</h2><ul>{alert_rows}</ul>'
+            f'<h2 style="margin-top:20px">全市場評級異動摘要（僅頁面顯示，含日常 B/C/D 波動）</h2>'
             f'<ul class="cols">{trans_rows}</ul></section>'
-            f'<section><h2>全市場評分（顯示前 200，依總分排序）</h2>'
+            f'<section id="all"><h2>全市場評分（顯示前 200，依總分排序）</h2>'
             f'<p class="sub">評級：總分 ≥50 S・≥25 A・≥0 B・≥-25 C・其餘 D｜「缺」＝該幣無此資料源</p>'
             f'<div class="tbl"><table><tr><th>標的</th><th>來源</th><th>評級</th><th>鯨魚</th><th>CVD</th>'
-            f'<th>OI×價</th><th>DOM</th><th>技術</th><th>風險</th><th>品質</th><th>FLOW</th><th>行為</th>'
+            f'<th>OI×價</th><th>DOM</th><th>技術</th><th>費率</th><th>風險</th><th>品質</th><th>FLOW</th><th>行為</th>'
             f'<th>訊號標籤</th><th>24h</th></tr>'
             + "".join(rows) +
             '</table></div></section>'
-            '<section class="appendix"><h2>公式與誠實限制</h2><ul>'
+            f'<section><h2>品質分排行（長期體質，非動能）</h2>'
+            f'<p class="sub">流動性層級＋有無永續合約＋近期有無結構性破壞的規則統計，跟主力評分分開看</p>'
+            f'<ul class="cols">{quality_rows}</ul></section>'
+            '<section class="appendix" id="notes"><h2>公式與誠實限制</h2><ul>'
             '<li><b>涵蓋範圍</b>：Binance 現貨 USDT（主要）＋ Gate.io 現貨 USDT（只收 Binance 沒有的長尾幣，'
             '約 130 檔，含 TAG 這類極小型迷因幣）。兩者都套 24h 成交額 ≥$30萬 的流動性門檻。</li>'
             '<li><b>鯨魚（大額成交淨流向）</b>：近 500 筆逐筆成交中「單筆金額 ≥ 門檻」者的買賣淨額。'
@@ -1472,10 +1500,18 @@ def render_page(results, alerts, all_transitions, overview, universe_n, min_qv, 
             '≥$200萬→$8,000；其餘→$3,000。Binance 用 isBuyerMaker 推斷方向；'
             'Gate.io 用其 trades 的明確 side 欄位。<b>這不是真實錢包持倉</b>，'
             '只是大單掛單行為的統計近似。</li>'
-            '<li><b>技術</b>：均線排列／RSI／MACD／KD／布林通道／成交量比六個常見技術指標'
-            '各自量化成 -100~100 連續分數後合成（獨立模組 ta_scoring.py，同時供日報頁面使用，'
-            '公式細節見該檔案 docstring）。跟「鯨魚/CVD/OI/DOM」是完全不同的資料來源'
-            '（K 線 vs 逐筆成交/合約資料），互相獨立、互為驗證。</li>'
+            '<li><b>技術</b>：均線排列／RSI／MACD／KD／布林通道／量比／時間序列動能(TSMOM)／'
+            '波動率狀態(ATR百分位)／Donchian通道突破／長窗高低點鄰近度／OBV 十一個指標'
+            '各自量化成 -100~100 連續分數後加權合成，另用 ADX 趨勢強度當 MA/MACD 的動態'
+            '權重濾網（盤整期自動降權，獨立模組 ta_scoring.py，公式細節見該檔案 docstring）。'
+            '跟「鯨魚/CVD/OI/DOM」是完全不同的資料來源（K 線 vs 逐筆成交/合約資料），互為驗證。</li>'
+            '<li><b>費率</b>（僅 Binance 永續合約幣種）：資金費率反映多空擁擠度，用該幣自己'
+            '近約 20 天費率分布做 z-score——極端偏多（多頭擁擠）＝反轉風險給負分，極端偏空'
+            '給正分，是「逆向」訊號（funding_scoring.py）。不用固定費率門檻：不同幣的正常'
+            '費率水準差很多，跟其他門檻比例化是同一個教訓。</li>'
+            '<li><b>指標共振</b>：鯨魚/CVD/OI/DOM/技術/費率六個獨立來源子分數中，同方向'
+            '達 ±25 者 ≥3 個時總分額外 +6/源（上限 ±18）——簡單平均會稀釋「多源同向」的'
+            '證據力；多空拉鋸時不給加成。觸發時卡片與 Discord 會帶「多/空方共振×N」標籤。</li>'
             '<li><b>CVD</b>：Binance 用近 6 小時 K 線的主動買賣量差；Gate.io 沒有這個欄位，'
             '改用近 500 筆成交的淨方向近似，兩者方法不同、意義相近。</li>'
             '<li><b>OI×價</b>：僅 Binance 有永續合約的幣才有資料；Gate.io 尚未整合期貨資料，一律缺。</li>'
@@ -1619,6 +1655,8 @@ def main():
     os.makedirs(os.path.dirname(DOCS_PATH), exist_ok=True)
     with open(DOCS_PATH, "w", encoding="utf-8") as f:
         f.write(html_out)
+    with open(WHALES_REDIRECT_PATH, "w", encoding="utf-8") as f:
+        f.write(WHALES_REDIRECT_HTML)
 
     print(f"universe={len(universe)}(binance={exch_counts['binance']},gate={exch_counts['gate']}) "
           f"scored={len(results)} errors={errors} alerts={len(alerts)} major_alerts={len(major_alerts)} "
