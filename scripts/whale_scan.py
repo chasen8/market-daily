@@ -29,6 +29,9 @@
   偏空反之（funding_scoring.py）。這是「逆向」訊號，跟前面幾項「同向」動能類
   分數方向定義相反，只是加進同一個簡單平均，正負號已經對齊過。
 - 操縱警示：簡單啟發式（單筆佔比過高），只在成交量夠厚時評估。
+- 指標共振加成（2026-07-14 新增）：≥3 個獨立來源子分數同方向達門檻時，
+  總分額外 ±6~18（見 resonance_bonus()）——簡單平均會稀釋「多源同向」的證據力，
+  共振加成把這個資訊補回來，但上限壓低、只做臨門一腳。
 
 == 額外顯示（不計入總分，純參考）==
 - HL 未平倉擁擠度：Hyperliquid 未平倉量／當日名目量，只有該幣在 HL 上架
@@ -483,7 +486,10 @@ def score_symbol(row, futures_syms, hl_map, do_dom):
 
     core = {k: v for k, v in sub.items() if k != "manip" and v is not None}
     total = round(sum(core.values()) / len(core) * (1 if len(core) >= 2 else 0.6)) if core else 0
-    total = clamp(total + sub["manip"])
+    reso, reso_n = resonance_bonus(sub)
+    if reso:
+        tags.append(f"{'多' if reso > 0 else '空'}方共振×{reso_n}")
+    total = clamp(total + reso + sub["manip"])
 
     risk = 0
     if pullback is not None:
@@ -506,6 +512,29 @@ def score_symbol(row, futures_syms, hl_map, do_dom):
             "total": total, "grade": grade_of(total), "risk": risk, "tags": tags,
             "raw": {"pullback": pullback, "double_top": double_top, "ratio": ratio,
                     "oi_chg": oi_chg, "has_futures": has_futures, "funding_now": funding_now}}
+
+
+RESO_STEP = 6       # 每多一個共振源的加成分數
+RESO_CAP = 18       # 共振加成上限（避免共振主導總分，總分主體仍是子分數平均）
+RESO_THRESHOLD = 25  # 子分數絕對值達此值才算「有明確方向」的共振源
+
+
+def resonance_bonus(sub):
+    """指標共振加成（2026-07-14 起計入總分）：whale/cvd/oi/dom/ta/funding 六個
+    來源獨立的子分數中，同方向達 RESO_THRESHOLD 的數量 ≥3 個才給加成，
+    每多一個 +RESO_STEP、上限 RESO_CAP。理由：簡單平均會稀釋「多個獨立資料源
+    同時指向同方向」的資訊（三個 +30 和一個 +90 兩個 0 平均一樣，但前者證據力
+    更強）；同時要求「明確多於反方向數量」，多空訊號拉鋸時不給加成。
+    加成刻意壓在總分量級的零頭（≤18），讓它只做臨門一腳，不喧賓奪主。
+    回傳 (加成分數, 共振源數量)——源數量給標籤用，不能從被封頂的分數反推。"""
+    keys = ("whale", "cvd", "oi", "dom", "ta", "funding")
+    pos = sum(1 for k in keys if sub.get(k) is not None and sub[k] >= RESO_THRESHOLD)
+    neg = sum(1 for k in keys if sub.get(k) is not None and sub[k] <= -RESO_THRESHOLD)
+    if pos >= 3 and pos > neg:
+        return min((pos - 2) * RESO_STEP, RESO_CAP), pos
+    if neg >= 3 and neg > pos:
+        return -min((neg - 2) * RESO_STEP, RESO_CAP), neg
+    return 0, 0
 
 
 def resonance_tags(r):

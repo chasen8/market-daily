@@ -7,9 +7,9 @@ GitHub Actions 版：每小時快照＋重建。
 資料來源（全部免費、無金鑰）：
 - 加密貨幣行情：Binance /api/v3/ticker/24hr、/api/v3/klines（備援 data-api.binance.vision）
 - DOM 深度：C:\\trading-data\\dom\\dom_history.csv（由 src/dom/dom_snapshot.py 累積）
-- 台股個股：TWSE openapi STOCK_DAY_ALL（最近交易日）＋ BWIBBU_ALL（PE/殖利率/PB）
-- 台股大盤：TWSE openapi FMTQIK（每日市場成交統計）
-- 籌碼：TWSE rwd T86 三大法人買賣超，近 5 個交易日加總
+
+台股區塊（大盤/個股/法人籌碼）於 2026-07-14 依使用者需求移除——網站只留加密貨幣。
+程式碼在 git 歷史（此 commit 之前的版本），Phase 2 若要恢復台股可回溯。
 
 誠實規則：每個區塊獨立抓取，失敗就在頁面顯示「取得失敗」，不編造數字。
 """
@@ -123,58 +123,6 @@ def dom_latest():
     return out
 
 
-# ---------- 3) 台股 ----------
-def tw_market():
-    j = requests.get("https://openapi.twse.com.tw/v1/exchangeReport/FMTQIK", headers=H, timeout=60).json()
-    return j[-5:]
-
-
-def tw_stocks():
-    da = requests.get("https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL", headers=H, timeout=60).json()
-    bw = {r["Code"]: r for r in requests.get(
-        "https://openapi.twse.com.tw/v1/exchangeReport/BWIBBU_ALL", headers=H, timeout=60).json()}
-    rows = []
-    for r in da:
-        code = r["Code"]
-        if code.startswith("00") or len(code) != 4:
-            continue
-        tv, close, chg = fnum(r["TradeValue"]), fnum(r["ClosingPrice"]), fnum(r["Change"])
-        if not tv or close is None:
-            continue
-        prev = close - chg if chg is not None else None
-        b = bw.get(code, {})
-        rows.append({"code": code, "name": r["Name"], "close": close,
-                     "chg_pct": (chg / prev * 100) if (chg is not None and prev) else None,
-                     "tv_e": tv / 1e8, "pe": fnum(b.get("PEratio")),
-                     "yld": fnum(b.get("DividendYield")), "pb": fnum(b.get("PBratio"))})
-    rows = sorted(rows, key=lambda x: -x["tv_e"])[:15]
-    return rows
-
-
-def tw_t86_5d(codes):
-    net, dates, d, got = {c: 0.0 for c in codes}, [], dt.datetime.now(TPE).date(), 0
-    while got < 5 and (dt.datetime.now(TPE).date() - d).days < 15:
-        if d.weekday() < 5:
-            url = f"https://www.twse.com.tw/rwd/zh/fund/T86?date={d:%Y%m%d}&selectType=ALLBUT0999&response=json"
-            try:
-                j = requests.get(url, headers=H, timeout=30).json()
-                if j.get("stat") == "OK" and j.get("data"):
-                    idx_code, idx_net = 0, len(j["fields"]) - 1
-                    for row in j["data"]:
-                        c = str(row[idx_code]).strip()
-                        if c in net:
-                            v = fnum(row[idx_net])
-                            if v is not None:
-                                net[c] += v
-                    dates.append(str(d))
-                    got += 1
-            except Exception:  # noqa: BLE001 - 單日失敗跳過
-                pass
-            time.sleep(1.0)
-        d -= dt.timedelta(days=1)
-    return net, dates
-
-
 # ---------- HTML ----------
 CSS = """
 :root{
@@ -266,16 +214,6 @@ def build():
         dom = dom_latest()
     except Exception as e:  # noqa: BLE001
         dom, _ = [], fails.append(f"DOM 深度：{e}")
-    try:
-        twm = tw_market()
-    except Exception as e:  # noqa: BLE001
-        twm, _ = [], fails.append(f"台股大盤：{e}")
-    try:
-        tws = tw_stocks()
-        t86, t86_dates = tw_t86_5d([r["code"] for r in tws]) if tws else ({}, [])
-    except Exception as e:  # noqa: BLE001
-        tws, t86, t86_dates = [], {}, []
-        fails.append(f"台股個股：{e}")
 
     try:
         scores, fg_val = scoring.score_all(cs, dom) if cs else ([], None)
@@ -294,16 +232,6 @@ def build():
             kpi.append(f'<div class="kpi"><div class="l">{sym}/USDT</div>'
                        f'<div class="v">{num(r["close"], 2 if r["close"] < 100 else 0)}</div>'
                        f'<div class="d {cls}">{arrow} {abs(r["chg7"]):.2f}%（7日）</div></div>')
-    if twm:
-        last = twm[-1]
-        taiex, chg = fnum(last.get("TAIEX")), fnum(last.get("Change"))
-        prev = taiex - chg if (taiex and chg is not None) else None
-        p = chg / prev * 100 if prev else None
-        cls = "up" if (p or 0) > 0 else ("dn" if (p or 0) < 0 else "fl")
-        arrow = "▲" if (p or 0) > 0 else ("▼" if (p or 0) < 0 else "–")
-        kpi.append(f'<div class="kpi"><div class="l">加權指數（{esc(last.get("Date", ""))}）</div>'
-                   f'<div class="v">{num(taiex, 2)}</div>'
-                   f'<div class="d {cls}">{arrow} {num(abs(p) if p is not None else None)}%</div></div>')
     if dom:
         tot_b = sum(d["bid_usd_10"] or 0 for d in dom)
         tot_a = sum(d["ask_usd_10"] or 0 for d in dom)
@@ -398,44 +326,6 @@ def build():
             '<th>vs MA60</th><th>排列</th><th>RSI14</th><th>量比</th><th>24h 額(M)</th></tr>'
             + "".join(rows) + "</table></div></section>")
 
-    # ---- 台股 ----
-    tw_parts = []
-    if twm:
-        rows = "".join(
-            f'<tr><td>{esc(r.get("Date", ""))}</td><td>{num(fnum(r.get("TAIEX")), 2)}</td>'
-            + pct_cell((fnum(r.get("Change")) / (fnum(r.get("TAIEX")) - fnum(r.get("Change"))) * 100)
-                       if fnum(r.get("TAIEX")) and fnum(r.get("Change")) is not None else None)
-            + f'<td>{num((fnum(r.get("TradeValue")) or 0) / 1e8, 0)}</td></tr>'
-            for r in twm)
-        tw_parts.append('<h2>台股大盤（近 5 個交易日）</h2>'
-                        '<p class="sub">來源：證交所每日市場成交統計</p>'
-                        '<div class="tbl"><table><tr><th>日期</th><th>加權指數</th><th>漲跌</th>'
-                        '<th>成交值（億）</th></tr>' + rows + "</table></div>")
-    if tws:
-        buys = sorted(((c, v) for c, v in t86.items() if v > 0), key=lambda x: -x[1])[:3]
-        sells = sorted(((c, v) for c, v in t86.items() if v < 0), key=lambda x: x[1])[:3]
-        name = {r["code"]: r["name"] for r in tws}
-        if buys:
-            notes.append("台股法人 5 日買超（TOP15 內）：" + "、".join(
-                f"<b>{esc(name[c])}</b>（{v/1000:,.0f} 張）" for c, v in buys) + "。")
-        if sells:
-            notes.append("台股法人 5 日賣超（TOP15 內）：" + "、".join(
-                f"<b>{esc(name[c])}</b>（{v/1000:,.0f} 張）" for c, v in sells) + "。")
-        rows = "".join(
-            f'<tr><td><span class="code">{esc(r["code"])}</span> {esc(r["name"])}</td>'
-            f'<td>{num(r["close"], 2)}</td>' + pct_cell(r["chg_pct"])
-            + f'<td>{num(r["tv_e"], 1)}</td><td>{num(r["pe"], 1)}</td><td>{num(r["yld"], 2)}</td>'
-            f'<td>{num(r["pb"], 2)}</td><td>{num((t86.get(r["code"]) or 0) / 1000, 0)}</td></tr>'
-            for r in tws)
-        d_note = f"｜法人統計日：{t86_dates[-1]}～{t86_dates[0]}" if t86_dates else "｜法人資料取得失敗"
-        tw_parts.append('<h2 style="margin-top:22px">台股成交值 TOP 15（個股，不含 ETF）</h2>'
-                        f'<p class="sub">最近交易日收盤｜基本面：證交所 BWIBBU{d_note}</p>'
-                        '<div class="tbl"><table><tr><th>個股</th><th>收盤</th><th>漲跌</th><th>成交值(億)</th>'
-                        '<th>本益比</th><th>殖利率%</th><th>淨值比</th><th>法人5日(張)</th></tr>'
-                        + rows + "</table></div>")
-    if tw_parts:
-        parts.append("<section>" + "".join(tw_parts) + "</section>")
-
     # ---- 觀察筆記 ----
     if notes:
         parts.append('<section><h2>觀察筆記（規則自動生成）</h2><ul class="notes">'
@@ -460,8 +350,8 @@ def build():
         '掛單可撤可假（spoofing），單一快照僅供參考，趨勢（24h 均值）比單點可信。</li>'
         '<li><b>簿深覆蓋</b>：Binance 單次最多回傳 5000 檔掛單；若覆蓋範圍小於帶寬，該帶寬數字已飽和（偏低估）。</li>'
         '<li><b>顏色慣例</b>：本頁採台灣慣例——紅＝上漲/買方，綠＝下跌/賣方（與國際相反）。</li>'
-        '<li><b>台股五檔深度</b>：無免費公開來源，需券商 API（Phase 2 接 Shioaji 後補上）。</li>'
-        '<li>來源：Binance 公開 API、台灣證交所 OpenAPI/T86。加密行情為產生當下即時值；台股為最近交易日收盤。</li>'
+        '<li>來源：Binance 公開 API，行情為產生當下即時值。台股區塊已於 2026-07-14 依需求移除，'
+        '相關程式碼在 git 歷史中，Phase 2 若要恢復可回溯。</li>'
         '</ul>'
         f'<p class="disc"><b>免責聲明</b>：本頁為程式自動彙整的技術面統計，不構成投資建議；'
         '歷史統計與掛單狀態不代表未來表現，交易決定與風險由使用者自行承擔。</p></section>')
@@ -472,7 +362,7 @@ def build():
             f'<div class="wrap"><header class="mast"><h1>每日市場觀察</h1>'
             f'<span class="date">{now:%Y-%m-%d（%a）}</span>'
             f'<div class="chips"><span class="chip">產生 {now:%H:%M} 台北</span>'
-            f'<span class="chip">加密＝即時</span><span class="chip">台股＝最近交易日</span>'
+            f'<span class="chip">加密＝即時</span>'
             f'<span class="chip">紅漲綠跌</span>'
             f'<span class="chip"><a href="./whales.html" style="color:inherit">加密訊息 →</a></span>'
             f'</div></header>'
@@ -485,7 +375,7 @@ def build():
     with open(out, "w", encoding="utf-8") as f:
         f.write(body)
     print(f"OK -> {out}  ({len(body):,} bytes)")
-    print(f"sections: crypto={len(cs)} dom={len(dom)} tw={len(tws)} fails={len(fails)}")
+    print(f"sections: crypto={len(cs)} dom={len(dom)} fails={len(fails)}")
     return 0
 
 

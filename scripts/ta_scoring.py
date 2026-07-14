@@ -25,6 +25,12 @@
 - ADX 趨勢強度（adx_weight_multiplier，2026-07-13 新增）：不是獨立分數項，是「趨勢類
   指標（MA/MACD）現在可不可信」的權重濾網——盤整期（ADX 低）自動降低 MA/MACD 權重，
   避免假突破雜訊主導總分
+- Donchian 通道突破（score_donchian，2026-07-14 新增）：海龜法則的連續分數版，
+  通道內看位置、突破外看 ATR 正規化的突破幅度
+- 長窗高低點鄰近度（score_extreme_proximity，2026-07-14 新增）：52-Week High
+  動能因子的短窗變體，跟 Donchian 有相關性（都是通道位置），權重刻意壓低
+- OBV 淨方向量能（score_obv，2026-07-14 新增）：近期淨方向性成交量佔總量比例，
+  跟量比（看量能放大與否）不同維度（看量能偏哪一邊）
 
 == 誠實限制 ==
 這些公式是規則統計，不是學術驗證過的最佳參數；週期（14/20/26...）用業界慣用值，
@@ -235,6 +241,21 @@ def percentile_rank(value, history):
     return (below + 0.5 * equal) / len(history) * 100
 
 
+def obv_full(closes, volumes):
+    """OBV 能量潮（Granville 1963）：收漲加量、收跌減量的累積序列。
+    絕對值無意義（起點任意），只能用變化量/斜率，不能跨幣比較原始值。"""
+    n = len(closes)
+    out = [0.0] * n
+    for i in range(1, n):
+        if closes[i] > closes[i - 1]:
+            out[i] = out[i - 1] + volumes[i]
+        elif closes[i] < closes[i - 1]:
+            out[i] = out[i - 1] - volumes[i]
+        else:
+            out[i] = out[i - 1]
+    return out
+
+
 # ---------- 量化評分（每個都是 -100~100，0=中性）----------
 
 def _interp(x, pts):
@@ -387,6 +408,65 @@ def score_volatility_regime(highs, lows, closes, period=14, lookback=100):
     return clamp(round((pct - 50) * 2))
 
 
+def score_donchian(highs, lows, closes, n=20, atr_period=14):
+    """Donchian 通道（海龜法則，Richard Donchian/Dennis）：用前 n 根（不含當根）的
+    極值當通道。通道內按位置給溫和分（±40 封頂），收盤突破通道外才進入「突破區」，
+    突破幅度用 ATR 正規化（同一個 1% 突破對低波動幣是大事、對高波動幣是雜訊，
+    除以自身 ATR 才公平），每 1 個 ATR 加 30 分，總分 ±100 封頂。
+    用收盤價判斷突破而非影線，降低插針假突破的干擾（研究整理裡的已知坑）。
+    """
+    if len(closes) < n + 1:
+        return None
+    upper = max(highs[-n - 1:-1])
+    lower = min(lows[-n - 1:-1])
+    close = closes[-1]
+    if upper <= lower:
+        return 0
+    if lower < close < upper:
+        pos = (close - lower) / (upper - lower)
+        return round((pos - 0.5) * 80)
+    atr = atr_full(highs, lows, closes, atr_period)[-1]
+    if not atr:
+        return 40 if close >= upper else -40
+    if close >= upper:
+        return clamp(round(40 + (close - upper) / atr * 30))
+    return clamp(round(-40 - (lower - close) / atr * 30))
+
+
+def score_extreme_proximity(highs, lows, closes, lookback=120):
+    """長窗高低點鄰近度（52-Week High Momentum 的短窗變體，George & Hwang 2004）：
+    收盤離長窗高點近＝買盤動能強（正分），離長窗低點近＝負分。用「距高點距離 vs
+    距低點距離」的相對比例自正規化，不用固定的鄰近度門檻（0.85 這種寫死基準對
+    不同波動度的幣不公平）。跟 score_donchian 概念相關（都是通道位置），差異在
+    視窗長度（這裡用全部可得歷史 vs Donchian 的 20 根）與突破加成（這裡沒有），
+    誠實說兩者有相關性，權重上刻意都壓低。
+    """
+    if len(closes) < lookback:
+        return None
+    close = closes[-1]
+    d_high = (max(highs[-lookback:]) - close) / close
+    d_low = (close - min(lows[-lookback:])) / close
+    denom = d_high + d_low
+    if denom <= 1e-12:
+        return 0
+    return round((d_low - d_high) / denom * 100)
+
+
+def score_obv(closes, volumes, n=20):
+    """OBV 淨方向量能佔比：近 n 根 OBV 變化量 ÷ 同期總成交量，得「淨方向性量能
+    佔總量能的比例」（-1~1），這個定義天然跨幣可比（OBV 原始值不可比，見 obv_full）。
+    量能持續偏買方＝正分。縮放係數 200（佔比 50% 一面倒＝滿分）是起點參數，未回測校準。
+    """
+    if len(closes) < n + 1:
+        return None
+    obv = obv_full(closes, volumes)
+    total_vol = sum(volumes[-n:])
+    if total_vol <= 0:
+        return None
+    share = (obv[-1] - obv[-n - 1]) / total_vol
+    return clamp(round(share * 200))
+
+
 def adx_weight_multiplier(adx_value):
     """ADX 不是獨立分數項，是「趨勢類指標(ma/macd)可不可信」的權重調節濾網
     （Wilder 原始建議：ADX<20 判定無明顯趨勢，>25 判定有趨勢）。回傳 0.5~1.5，
@@ -398,7 +478,8 @@ def adx_weight_multiplier(adx_value):
 
 
 WEIGHTS = {"ma": 30, "rsi": 20, "macd": 20, "boll": 15, "kd": 10, "volume": 5,
-           "tsmom": 15, "vol_regime": 10}
+           "tsmom": 15, "vol_regime": 10,
+           "donchian": 10, "extreme": 8, "obv": 10}
 
 
 def composite_score(subs, weight_multipliers=None):
@@ -461,6 +542,9 @@ def analyze(highs, lows, closes, volumes, ma_periods=(5, 20, 60)):
         "volume": score_volume(vr),
         "tsmom": score_tsmom(closes),
         "vol_regime": score_volatility_regime(highs, lows, closes),
+        "donchian": score_donchian(highs, lows, closes),
+        "extreme": score_extreme_proximity(highs, lows, closes),
+        "obv": score_obv(closes, volumes),
     }
     trend_mult = adx_weight_multiplier(adx_now)
     total = composite_score(subs, weight_multipliers={"ma": trend_mult, "macd": trend_mult})
