@@ -36,11 +36,11 @@ from wall_detect import (  # noqa: E402
 )
 
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT", "XRPUSDT"]
-KLINES_API = (
-    "https://api.binance.com/api/v3/klines"
-    "?symbol={symbol}&interval=15m&limit=500"
-)
-DEPTH_API = "https://api.binance.com/api/v3/depth?symbol={symbol}&limit=1000"
+# GitHub Actions 的美國 runner 會被 api.binance.com 以 HTTP 451 geo-block，
+# 依序退到 data-api.binance.vision（幣安官方公開行情鏡像；同 whale_scan.py 做法）
+SPOT_HOSTS = ["https://api.binance.com", "https://data-api.binance.vision"]
+KLINES_PATH = "/api/v3/klines?symbol={symbol}&interval=15m&limit=500"
+DEPTH_PATH = "/api/v3/depth?symbol={symbol}&limit=1000"
 # 路徑相對 repo 根（CI 的 working directory）；本機開發用 WALLS_DATA_DIR 覆寫
 BASE_DIR = Path(os.environ.get("WALLS_DATA_DIR", "."))
 SEQ_DIR = BASE_DIR / "data" / "depth_seq"
@@ -64,10 +64,23 @@ def log(msg: str) -> None:
 # 資料抓取 / 讀取
 # --------------------------------------------------------------------------
 
+def _get_json(path: str):
+    """對 SPOT_HOSTS 依序嘗試 GET，回傳解析後 JSON；全部失敗拋最後的例外。"""
+    last_err: Exception | None = None
+    for host in SPOT_HOSTS:
+        url = host + path
+        try:
+            with urllib.request.urlopen(url, timeout=TIMEOUT_SEC) as resp:
+                return json.loads(resp.read().decode("utf-8"))
+        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as e:
+            last_err = e
+            log(f"WARN {host} 失敗（{type(e).__name__}: {e}），試下一個 host")
+    assert last_err is not None
+    raise last_err
+
+
 def fetch_klines(symbol: str) -> list[dict]:
-    url = KLINES_API.format(symbol=symbol)
-    with urllib.request.urlopen(url, timeout=TIMEOUT_SEC) as resp:
-        raw = json.loads(resp.read().decode("utf-8"))
+    raw = _get_json(KLINES_PATH.format(symbol=symbol))
     klines = []
     for row in raw:
         klines.append(
@@ -86,11 +99,10 @@ def fetch_klines(symbol: str) -> list[dict]:
 
 def fetch_depth(symbol: str) -> dict | None:
     """抓當下逐檔深度快照（同 depth_collector.py 的做法，含重試與退避）。"""
-    url = DEPTH_API.format(symbol=symbol)
+    path = DEPTH_PATH.format(symbol=symbol)
     for attempt in range(1 + DEPTH_RETRIES):
         try:
-            with urllib.request.urlopen(url, timeout=TIMEOUT_SEC) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
+            data = _get_json(path)
             return {
                 "ts_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
                 "symbol": symbol,
