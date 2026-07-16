@@ -1,0 +1,47 @@
+name: walls
+
+on:
+  schedule:
+    # 每 5 分鐘：量能牆偵測（引擎A K線＋引擎B DOM）＋walls.html＋Discord 警報（UTC）
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  # 與 whale-scan 共用同一 group：兩個 workflow 都會 commit+push，
+  # 序列化避免互相打架；cancel-in-progress 必須 false（排隊而非取消）
+  group: site-commit
+  cancel-in-progress: false
+
+jobs:
+  walls:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # 零第三方相依（標準庫 only），不需要 pip install
+
+      - name: Wall report
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: python scripts/wall_report.py
+
+      - name: Commit and push
+        run: |
+          git config user.name "market-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/ docs/
+          if git diff --cached --quiet; then
+            echo "no changes"
+          else
+            git commit -m "auto(walls): $(date -u +'%Y-%m-%dT%H:%MZ')"
+            git pull --rebase origin main
+            git push
+          fi
