@@ -7,8 +7,12 @@
      detect_dom_walls 後把「輕量偵測結果」追加到 data/depth_seq/{SYMBOL}.jsonl
      （純文字 JSONL，一行一快照：ts_utc、mid、bucket_width、walls；
      追加後修剪只留最近 48 小時）。track_persistence 吃整個序列。
-  3. 產出自含 SVG/HTML 報表 docs/walls.html（無外部 CDN、無 fetch）。
-  4. 若環境變數 DISCORD_WEBHOOK_URL 存在，對「新持續牆在現價 +-2xATR 內」與
+  3. 引擎 C：每幣種抓 OKX 永續合約近期強平事件，去重後追加到
+     data/liq_seq/{SYMBOL}.jsonl（純文字 JSONL，修剪只留最近 14 天），
+     算出量能牆附近的歷史強平密度——**回顧性統計，不是預測**，也是
+     跨交易所比對（OKX 永續 vs 幣安現貨），見 liq_seq.py 模組說明。
+  4. 產出自含 SVG/HTML 報表 docs/walls.html（無外部 CDN、無 fetch）。
+  5. 若環境變數 DISCORD_WEBHOOK_URL 存在，對「新持續牆在現價 +-2xATR 內」與
      「持續牆消失」發警報；不存在就 log 一行 skip。webhook URL 絕不落檔、
      絕不印出、絕不寫進任何檔案內容。
 
@@ -33,6 +37,15 @@ from wall_detect import (  # noqa: E402
     detect_dom_walls,
     detect_volume_walls,
     track_persistence,
+)
+from liq_seq import (  # noqa: E402
+    RETENTION_DAYS as LIQ_RETENTION_DAYS,
+    dedupe_merge as liq_dedupe_merge,
+    fetch_liquidations,
+    liq_density_near_price,
+    load_liq_seq,
+    prune_liq_seq as prune_liq_seq_events,
+    write_liq_seq,
 )
 
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT", "XRPUSDT"]
@@ -490,6 +503,39 @@ def render_table(volume_walls: list[dict], dom_current: list[dict], persistence:
     )
 
 
+def render_liq_row(liq_seq: list[dict], persistence: dict, current_price: float) -> str:
+    """引擎 C 顯示列：歷史強平密度，回顧性統計、非預測，文案要講清楚界線。
+
+    資料來源是 OKX 永續合約（見 liq_seq.py），跟本頁其餘引擎（幣安現貨/
+    深度）是跨交易所比對，價格高度相關但不完全一致，這裡也要提醒一次。
+    """
+    if not liq_seq:
+        return (
+            '<div class="liq-row"><span class="liq-label">歷史強平密度（引擎C）</span>'
+            '<span class="liq-empty">近 {days} 天無 OKX 永續強平記錄（或抓取失敗）</span></div>'
+        ).format(days=LIQ_RETENTION_DAYS)
+
+    near_current = liq_density_near_price(liq_seq, current_price, band_pct=0.005)
+    parts = [
+        f"近 {LIQ_RETENTION_DAYS} 天共 {len(liq_seq)} 筆　現價 ±0.5% 內 "
+        f"{near_current['count']} 筆（約 ${near_current['notional_usd']:,.0f}）"
+    ]
+    wall_bits = []
+    for w in persistence.get("persistent", [])[:5]:
+        d = liq_density_near_price(liq_seq, w["price"], band_pct=0.005)
+        wall_bits.append(f"{_fmt_price(w['price'])} 附近 {d['count']} 筆")
+    if wall_bits:
+        parts.append("持續牆附近：" + "、".join(wall_bits))
+
+    return (
+        '<div class="liq-row"><span class="liq-label">歷史強平密度（引擎C）</span>'
+        f'<span class="liq-body">{html_lib.escape("　".join(parts))}</span></div>'
+        '<div class="liq-disclaimer">回顧性統計，不是預測；資料來源 OKX 永續合約'
+        '（非本頁其餘引擎使用的幣安現貨/深度），跨交易所比對，價格高度相關但不完全一致，'
+        '僅供佐證量能牆可信度參考，不構成任何預測。</div>'
+    )
+
+
 PAGE_CSS = """
 :root { color-scheme: light; }
 .viz-root {
@@ -550,6 +596,11 @@ footer { color: var(--text-muted); font-size: 12px; margin-top: 12px; }
 .tv-row button { font: inherit; font-size: 12px; padding: 3px 12px; border-radius: 6px; cursor: pointer;
   border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary); }
 .tv-row button:hover { background: var(--page-plane); }
+.liq-row { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-top: 8px; font-size: 12px; }
+.liq-row .liq-label { color: var(--text-secondary); white-space: nowrap; font-weight: 600; }
+.liq-row .liq-body { color: var(--text-primary); }
+.liq-row .liq-empty { color: var(--text-muted); font-style: italic; }
+.liq-disclaimer { font-size: 11px; color: var(--text-muted); font-style: italic; margin-top: 2px; }
 """
 
 COPY_JS = """
@@ -589,6 +640,7 @@ def build_html(symbol_blocks: list[str], generated_at: str, discord_status: str)
       <span><span class="swatch" style="background:var(--wall-doji)"></span>十字吸籌牆（引擎A）</span>
       <span><span class="swatch" style="background:var(--wall-persistent)"></span>持續掛單牆標記（引擎B，右緣三角形）</span>
       <span>水平帶不透明度＝牆強度百分位</span>
+      <span>歷史強平密度（引擎C）：OKX 永續合約，回顧性統計，非預測，非幣安資料</span>
     </div>
     """
     body = f"""
@@ -656,6 +708,14 @@ def main() -> int:
         persistence = track_persistence(dom_seq)
         dom_current = persistence["current"]
 
+        # 引擎 C：歷史強平事件密度（回顧性統計，非預測；OKX 永續合約，
+        # 見 liq_seq.py 模組 docstring 的 API 查證與跨交易所比對限制說明）
+        liq_seq = load_liq_seq(BASE_DIR, symbol)
+        new_liq = fetch_liquidations(symbol)
+        liq_seq = liq_dedupe_merge(liq_seq, new_liq)
+        liq_seq = prune_liq_seq_events(liq_seq, now, LIQ_RETENTION_DAYS)
+        write_liq_seq(BASE_DIR, symbol, liq_seq)
+
         gone = persistence["disappeared"]
         if len(gone) > 5 and all(w["reason"] == "cancelled" for w in gone):
             log(
@@ -669,7 +729,8 @@ def main() -> int:
         n_gone = len(persistence["disappeared"])
         summary_lines.append(
             f"{symbol}: 爆量牆 {n_big}　十字牆 {n_doji}　DOM 現況牆 {len(dom_current)}　"
-            f"持續牆 {n_persist}　消失牆 {n_gone}（快照數 {len(dom_seq)}）"
+            f"持續牆 {n_persist}　消失牆 {n_gone}（快照數 {len(dom_seq)}）　"
+            f"歷史強平 {len(liq_seq)} 筆（{LIQ_RETENTION_DAYS}天窗，OKX）"
         )
 
         # 只在本輪確實新增了快照時發警報：CI 每 5 分鐘一跑、每跑恰好新增
@@ -697,6 +758,7 @@ def main() -> int:
 
         svg = render_symbol_svg(symbol, closed_klines, volume_walls, dom_current, persistence)
         table = render_table(volume_walls, dom_current, persistence)
+        liq_html = render_liq_row(liq_seq, persistence, current_price)
         alert_html = ""
         if alerts:
             alert_html = "<div class=\"alerts\">" + "<br/>".join(
@@ -712,6 +774,7 @@ def main() -> int:
             消失牆 <b>{n_gone}</b>（深度快照數 {len(dom_seq)}）</div>
           {svg}
           {tv_html}
+          {liq_html}
           {alert_html}
           <details class="table-view"><summary>資料表格（最新 15 筆量能牆／現況 DOM 牆／消失牆）</summary>
             {table}

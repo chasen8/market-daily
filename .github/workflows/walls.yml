@@ -2,7 +2,8 @@ name: walls
 
 on:
   schedule:
-    # 每 5 分鐘：量能牆偵測（引擎A K線＋引擎B DOM）＋walls.html＋Discord 警報（UTC）
+    # 每 5 分鐘：量能牆偵測（引擎A K線＋引擎B DOM＋引擎C OKX歷史強平密度）
+    # ＋walls.html＋Discord 警報（UTC）
     - cron: "*/5 * * * *"
   workflow_dispatch:
 
@@ -31,6 +32,8 @@ jobs:
       - name: Wall report
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        # 引擎 A（幣安K線）+ B（幣安深度，data/depth_seq/）+ C（OKX 永續強平，
+        # data/liq_seq/ ——回顧性統計，不是預測，見 project-charter 訊號規格 v1）
         run: python scripts/wall_report.py
 
       - name: Commit and push
