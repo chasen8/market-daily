@@ -12,6 +12,8 @@ config.py
 - angle_scale：100
 - breakout_buffer：4h 0.005；1d/1w 0.01
 - min_volume_ratio：1.2
+- shoulder_amplitude_tolerance：0.15（右肩跌幅相對左肩跌幅的容忍度）
+- require_neckline_untouched：True（頸線區間不得被其他K棒穿越）
 """
 from __future__ import annotations
 
@@ -42,6 +44,9 @@ class IHSConfig:
     enable_volume_filter: bool = False
     min_volume_ratio: float = 1.2
     min_pattern_score: float = 0.0
+    # 2026-07-24 使用者依實際圖表案例（BASUSDT）新增的兩條結構驗證規則：
+    shoulder_amplitude_tolerance: float = 0.15  # 右肩跌幅需落在左肩跌幅 ±15% 內
+    require_neckline_untouched: bool = True     # 頸線區間內（除左右肩本身）不得被其他K棒高點穿越
 
     # --- 額外輔助參數（spec 公式中出現的常數，集中放這裡方便調整） ---
     ideal_head_depth: float = 0.10          # 第九步 head_depth_score 用

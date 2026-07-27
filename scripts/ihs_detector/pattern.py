@@ -87,6 +87,26 @@ def _best_swing_high_in_range(swing_highs: list[dict], lo_index: int, hi_index: 
     return best
 
 
+def _neckline_untouched(df: pd.DataFrame, neckline: "Neckline", ls_index: int, rs_index: int) -> bool:
+    """
+    2026-07-24 使用者依實際圖表案例（BASUSDT）新增的驗證規則：頸線區間內，
+    除了左右肩本身，任何一根 K 線的 high 都不能超過當時的頸線內插價，
+    否則整組候選作廢——頸線必須是這段期間真正的「天花板」，不能中途被
+    其他更高的 high 穿越（N1、N2 本身在頸線上，price_at 剛好等於自己的
+    high，天生就不會觸發；只需排除 LS、RS 兩根本身）。
+
+    只驗證頭肩底（Inverse H&S，頸線在上方）；頭肩頂的鏡像規則（改驗證
+    low 沒有跌破頸線）不在本專案範圍內，見 docs/project-charter.md。
+    """
+    high = df["high"].to_numpy(dtype=float)
+    for i in range(ls_index, rs_index + 1):
+        if i == ls_index or i == rs_index:
+            continue
+        if high[i] > neckline.price_at(i):
+            return False
+    return True
+
+
 def _average_volume(volume: np.ndarray, upto_index_exclusive: int, window: int) -> Optional[float]:
     """average_volume_20：往前取 window 根（不含 upto_index_exclusive 當根）的平均量。"""
     lo = max(0, upto_index_exclusive - window)
@@ -186,6 +206,16 @@ def detect_inverse_head_shoulders(df: pd.DataFrame, timeframe: str, config: IHSC
                 if shoulder_diff > shoulder_diff_limit:
                     continue
 
+                # 2026-07-24 新增：右肩跌幅需落在左肩跌幅 ±shoulder_amplitude_tolerance
+                # 內（相對容忍，不是絕對價位比較）——比較的是「從頸線點跌到肩部」的
+                # 跌幅比例是否對稱，跟上面 shoulder_diff（直接比較肩部價位）是互補的
+                # 兩種對稱性檢查，見專案 charter 決策記錄。
+                ls_amplitude = (N1["price"] - LS["price"]) / N1["price"]
+                rs_amplitude = (N2["price"] - RS["price"]) / N2["price"]
+                tol = config.shoulder_amplitude_tolerance
+                if not (ls_amplitude * (1 - tol) <= rs_amplitude <= ls_amplitude * (1 + tol)):
+                    continue
+
                 # 第四步：頭部深度
                 shoulder_avg = (LS["price"] + RS["price"]) / 2
                 head_depth = (shoulder_avg - H["price"]) / shoulder_avg
@@ -195,6 +225,11 @@ def detect_inverse_head_shoulders(df: pd.DataFrame, timeframe: str, config: IHSC
                 # 第五步：頸線角度
                 neckline = calculate_neckline(N1, N2, config.angle_scale)
                 if abs(neckline.angle_deg) > max_angle:
+                    continue
+
+                # 2026-07-24 新增：頸線區間不得被其他K棒穿越（見 _neckline_untouched）
+                if config.require_neckline_untouched and not _neckline_untouched(
+                        df, neckline, LS["index"], RS["index"]):
                     continue
 
                 # ---- 通過 Mode A candidate 全部條件 ----
