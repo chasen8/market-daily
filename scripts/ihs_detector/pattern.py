@@ -87,6 +87,26 @@ def _best_swing_high_in_range(swing_highs: list[dict], lo_index: int, hi_index: 
     return best
 
 
+def _neckline_candidates(swing_highs: list[dict], lo_index: int, hi_index: int,
+                          prominence_ratio: float) -> list[dict]:
+    """
+    2026-07-28 使用者要求「頸線斜率越接近零越優先」後新增。
+
+    回傳 (lo_index, hi_index) 開區間內「夠顯著」的 swing high 清單：價格必須
+    >= 區間最高價 × prominence_ratio。只回傳最高點（舊行為）會強迫頸線通過兩個
+    未必等高的點、斜率無從選擇；但若完全不設門檻，演算法會為了追求水平而選到
+    區間裡不顯著的小高點，畫出一條沒有意義的「平頸線」。這個門檻是兩者的折衷：
+    先篩掉不夠高的，再由呼叫端在剩下的組合裡挑最平的。
+    """
+    in_range = [sh for sh in swing_highs if lo_index < sh["index"] < hi_index]
+    if not in_range:
+        return []
+    top = max(sh["price"] for sh in in_range)
+    if top <= 0:
+        return in_range
+    return [sh for sh in in_range if sh["price"] >= top * prominence_ratio]
+
+
 def _neckline_untouched(df: pd.DataFrame, neckline: "Neckline", ls_index: int, rs_index: int) -> bool:
     """
     2026-07-24 使用者依實際圖表案例（BASUSDT）新增的驗證規則：頸線區間內，
@@ -187,8 +207,9 @@ def detect_inverse_head_shoulders(df: pd.DataFrame, timeframe: str, config: IHSC
             if not (H["price"] < LS["price"]):
                 continue  # 條件：H.low < LS.low
 
-            N1 = _best_swing_high_in_range(swing_highs, LS["index"], H["index"])
-            if N1 is None:
+            n1_candidates = _neckline_candidates(
+                swing_highs, LS["index"], H["index"], config.neckline_prominence_ratio)
+            if not n1_candidates:
                 continue
 
             for RS in swing_lows:
@@ -197,39 +218,51 @@ def detect_inverse_head_shoulders(df: pd.DataFrame, timeframe: str, config: IHSC
                 if not (H["price"] < RS["price"]):
                     continue  # 條件：H.low < RS.low
 
-                N2 = _best_swing_high_in_range(swing_highs, H["index"], RS["index"])
-                if N2 is None:
+                n2_candidates = _neckline_candidates(
+                    swing_highs, H["index"], RS["index"], config.neckline_prominence_ratio)
+                if not n2_candidates:
                     continue
 
-                # 第三步：左右肩差異率
+                # 第三步：左右肩差異率（不依賴頸線點，先擋掉再說）
                 shoulder_diff = abs(LS["price"] - RS["price"]) / ((LS["price"] + RS["price"]) / 2)
                 if shoulder_diff > shoulder_diff_limit:
                     continue
 
-                # 2026-07-24 新增：右肩跌幅需落在左肩跌幅 ±shoulder_amplitude_tolerance
-                # 內（相對容忍，不是絕對價位比較）——比較的是「從頸線點跌到肩部」的
-                # 跌幅比例是否對稱，跟上面 shoulder_diff（直接比較肩部價位）是互補的
-                # 兩種對稱性檢查，見專案 charter 決策記錄。
-                ls_amplitude = (N1["price"] - LS["price"]) / N1["price"]
-                rs_amplitude = (N2["price"] - RS["price"]) / N2["price"]
-                tol = config.shoulder_amplitude_tolerance
-                if not (ls_amplitude * (1 - tol) <= rs_amplitude <= ls_amplitude * (1 + tol)):
-                    continue
-
-                # 第四步：頭部深度
+                # 第四步：頭部深度（同樣不依賴頸線點）
                 shoulder_avg = (LS["price"] + RS["price"]) / 2
                 head_depth = (shoulder_avg - H["price"]) / shoulder_avg
                 if not (head_depth > 0 and head_depth >= min_head_depth):
                     continue
 
-                # 第五步：頸線角度
-                neckline = calculate_neckline(N1, N2, config.angle_scale)
-                if abs(neckline.angle_deg) > max_angle:
-                    continue
-
-                # 2026-07-24 新增：頸線區間不得被其他K棒穿越（見 _neckline_untouched）
-                if config.require_neckline_untouched and not _neckline_untouched(
-                        df, neckline, LS["index"], RS["index"]):
+                # 第五步：從候選頸線點組合中挑出「斜率最接近水平」且通過全部檢查的一組
+                # （2026-07-28 使用者要求：頸線斜率越接近零越優先）。
+                # 每組 (LS, H, RS) 骨架仍然只產生一筆結果，不會因為頸線有多種選法而重複。
+                tol = config.shoulder_amplitude_tolerance
+                N1 = None
+                N2 = None
+                neckline = None
+                ls_amplitude = None
+                rs_amplitude = None
+                for c1 in n1_candidates:
+                    for c2 in n2_candidates:
+                        # 右肩跌幅需落在左肩跌幅 ±tol 內（相對容忍，見 charter 決策記錄）。
+                        # 跌幅是相對各自的頸線點算的，所以要在頸線組合迴圈裡逐組驗證。
+                        ls_amp = (c1["price"] - LS["price"]) / c1["price"]
+                        rs_amp = (c2["price"] - RS["price"]) / c2["price"]
+                        if ls_amp <= 0:
+                            continue
+                        if not (ls_amp * (1 - tol) <= rs_amp <= ls_amp * (1 + tol)):
+                            continue
+                        nl = calculate_neckline(c1, c2, config.angle_scale)
+                        if abs(nl.angle_deg) > max_angle:
+                            continue
+                        if config.require_neckline_untouched and not _neckline_untouched(
+                                df, nl, LS["index"], RS["index"]):
+                            continue
+                        if neckline is None or abs(nl.angle_deg) < abs(neckline.angle_deg):
+                            N1, N2, neckline = c1, c2, nl
+                            ls_amplitude, rs_amplitude = ls_amp, rs_amp
+                if neckline is None:
                     continue
 
                 # ---- 通過 Mode A candidate 全部條件 ----

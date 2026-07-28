@@ -12,7 +12,7 @@ config.py
 - angle_scale：100
 - breakout_buffer：4h 0.005；1d/1w 0.01
 - min_volume_ratio：1.2
-- shoulder_amplitude_tolerance：0.15（右肩跌幅相對左肩跌幅的容忍度）
+- shoulder_amplitude_tolerance：0.30（右肩跌幅相對左肩跌幅的容忍度，2026-07-28 由 0.15 放寬）
 - require_neckline_untouched：True（頸線區間不得被其他K棒穿越）
 """
 from __future__ import annotations
@@ -45,8 +45,12 @@ class IHSConfig:
     min_volume_ratio: float = 1.2
     min_pattern_score: float = 0.0
     # 2026-07-24 使用者依實際圖表案例（BASUSDT）新增的兩條結構驗證規則：
-    shoulder_amplitude_tolerance: float = 0.15  # 右肩跌幅需落在左肩跌幅 ±15% 內
+    shoulder_amplitude_tolerance: float = 0.30  # 右肩跌幅需落在左肩跌幅 ±30% 內
     require_neckline_untouched: bool = True     # 頸線區間內（除左右肩本身）不得被其他K棒高點穿越
+    # 2026-07-28：頸線點不再只取「區間最高」，改成在「夠高的候選」裡挑斜率最平的組合。
+    # prominence_ratio 決定什麼叫「夠高」：價格 >= 區間最高價 × 本值 才列入候選。
+    # 設 1.0 等同回到舊行為（只有最高點入選）；設太低會讓演算法為了求平而選到不顯著的小高點。
+    neckline_prominence_ratio: float = 0.90
 
     # --- 額外輔助參數（spec 公式中出現的常數，集中放這裡方便調整） ---
     ideal_head_depth: float = 0.10          # 第九步 head_depth_score 用
