@@ -146,13 +146,25 @@ def build_breakout_embed(r):
         color = 0x2ECC71
         break_word = "突破價"
     target = r.get("measured_target")
+    hit = r.get("target_hit_rate")
+    fail = r.get("historical_failure_rate")
+    # 誠實標示：量測目標的歷史達成率（Bulkowski：頭肩底 71%、頭肩頂 51%）。
+    # 不標的話目標價看起來會像承諾，但實際上頭肩頂只有約一半會走到。
+    target_line = ""
+    if target:
+        target_line = f'\n量測目標 `{target:g}`'
+        if hit:
+            target_line += f'（歷史達成率約 `{hit:.0%}`'
+            if fail:
+                target_line += f'，失敗率約 `{fail:.0%}`'
+            target_line += '）'
     desc = (
         f'pattern_score `{r["pattern_score"]:.1f}`\n'
         f'{struct}\n'
         f'肩差 `{r["shoulder_diff"] * 100:.2f}%` · 頸線角度 `{r["neckline_angle"]:.1f}°`\n'
         f'{break_word} `{r["breakout_price"]:g}` · 時間 `{fmt_tw_time(r["breakout_time"])}`'
         + (f' · 量能比 `{r["volume_ratio"]:.2f}`' if r.get("volume_ratio") else '')
-        + (f'\n量測目標 `{target:g}`' if target else '')
+        + target_line
         + '\n程式規則生成的型態候選，非投資建議'
     )
     return {"title": title, "description": desc, "color": color}

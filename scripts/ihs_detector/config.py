@@ -22,6 +22,16 @@ from typing import Dict
 
 TIMEFRAMES = ("4h", "1d", "1w")
 
+# Bulkowski 實證統計（thepatternsite.com，2026-07-30 查證）。
+# 用途：誠實標示量測目標的達成機率，避免把目標價講得像承諾。
+# 樣本：頭肩底 3,197 筆「perfect trades」。
+BULKOWSKI_STATS = {
+    "bottom": {"target_hit_rate": 0.71, "failure_rate": 0.11,
+               "avg_move": 0.45, "throwback_rate": 0.65},
+    "top": {"target_hit_rate": 0.51, "failure_rate": 0.19,
+            "avg_move": -0.16, "pullback_rate": 0.68},
+}
+
 
 @dataclass
 class IHSConfig:
@@ -64,8 +74,25 @@ class IHSConfig:
     # 避免為了追求斜率而選到怪異的頸線點。
     top_downward_neckline_bonus: float = 10.0
     # 五段式量能檢查（頭部推進縮量 / 頭部回落放量 / 右肩推進縮量）
+    # Bulkowski：肩部量能下降只有 61~65% 的時候成立，所以只加分不淘汰
     enable_volume_stage_score: bool = False
     volume_stage_weight: float = 15.0
+
+    # --- 2026-07-30 研究後修正（來源：Bulkowski / QuantInsti，見 charter）---
+    # ATR 相對門檻：固定百分比在不同週期與不同標的上意義差很多
+    # （BTC 的 3% 跟台積電的 3% 完全不是同一回事），改用「幾倍 ATR」
+    # 讓門檻自動適應波動。關掉則退回原本的固定百分比。
+    use_atr_thresholds: bool = True
+    atr_period: int = 14
+    min_head_atr: float = 1.5          # 頭部要比雙肩平均更極端至少 N 倍 ATR
+    max_shoulder_diff_atr: float = 1.5  # 左右肩價差不得超過 N 倍 ATR
+
+    # 對稱性計分模式。Bulkowski 的實證統計顯示「頭肩頂越不對稱表現越好」，
+    # 跟「越對稱分數越高」的直覺相反——對稱是「辨識」標準，不等於「績效」標準。
+    #   "gate"             = 只當辨識門檻不計分（預設，最保守）
+    #   "reward_symmetry"  = 舊行為，越對稱分數越高
+    #   "reward_asymmetry" = 照 Bulkowski 統計，不對稱給分
+    shoulder_symmetry_scoring: str = "gate"
 
     # --- 額外輔助參數（spec 公式中出現的常數，集中放這裡方便調整） ---
     ideal_head_depth: float = 0.10          # 第九步 head_depth_score 用

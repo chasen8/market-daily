@@ -24,7 +24,8 @@ import pandas as pd
 
 from . import direction as dirmod
 from . import volume_stages
-from .config import IHSConfig
+from .config import IHSConfig, BULKOWSKI_STATS
+from .indicators import atr, atr_at
 from .swing import find_swing_points, extract_swing_points
 from .scoring import calculate_pattern_score
 
@@ -214,6 +215,10 @@ def detect_head_shoulders(df: pd.DataFrame, timeframe: str, config: IHSConfig,
     last_index = len(df) - 1
     time_col = "timestamp" if "timestamp" in df.columns else None
 
+    # ATR 相對門檻（2026-07-30）：固定百分比在不同標的/週期上意義差很多，
+    # 改用「幾倍 ATR」讓門檻自動適應波動。詳見 indicators.py 檔頭。
+    atr_values = atr(df, config.atr_period) if config.use_atr_thresholds else None
+
     results: list[dict] = []
 
     # 第二步：組合候選結構 LS -> H -> RS（依 index 時間序）。
@@ -244,16 +249,26 @@ def detect_head_shoulders(df: pd.DataFrame, timeframe: str, config: IHSConfig,
                 if not n2_candidates:
                     continue
 
-                # 第三步：左右肩差異率（不依賴頸線點，先擋掉再說）
+                # 第三步：左右肩差異（純辨識門檻，2026-07-30 起不再計分——
+                # Bulkowski 統計顯示越不對稱表現越好，對稱性不等於績效）
                 shoulder_diff = abs(LS["price"] - RS["price"]) / ((LS["price"] + RS["price"]) / 2)
-                if shoulder_diff > shoulder_diff_limit:
-                    continue
-
-                # 第四步：頭部幅度（同樣不依賴頸線點）
                 shoulder_avg = (LS["price"] + RS["price"]) / 2
                 head_depth = dirmod.head_depth(shoulder_avg, H["price"], direction)
-                if not (head_depth > 0 and head_depth >= min_head_depth):
-                    continue
+
+                # ATR 模式：門檻改用「幾倍 ATR」；ATR 取不到（暖身期）時退回百分比
+                bar_atr = atr_at(atr_values, RS["index"]) if atr_values is not None else None
+                if bar_atr:
+                    if abs(LS["price"] - RS["price"]) > config.max_shoulder_diff_atr * bar_atr:
+                        continue
+                    if abs(H["price"] - shoulder_avg) < config.min_head_atr * bar_atr:
+                        continue
+                    if head_depth <= 0:
+                        continue
+                else:
+                    if shoulder_diff > shoulder_diff_limit:
+                        continue
+                    if not (head_depth > 0 and head_depth >= min_head_depth):
+                        continue
 
                 # 第五步：從候選頸線點組合中挑出「斜率最接近水平」且通過全部檢查的一組
                 # （2026-07-28 使用者要求：頸線斜率越接近零越優先）。
@@ -374,6 +389,12 @@ def detect_head_shoulders(df: pd.DataFrame, timeframe: str, config: IHSConfig,
                     # 量測目標（ChartSchool 量測法則）：底部往上加、頂部往下減
                     "measured_target": dirmod.measured_target(
                         current_neckline_price, H["price"], direction),
+                    # Bulkowski 實證：這個目標的歷史達成率（底 71% / 頂 51%）。
+                    # 一併輸出是為了讓下游顯示時能誠實標示機率，不要讓目標價
+                    # 看起來像承諾。
+                    "target_hit_rate": BULKOWSKI_STATS[direction]["target_hit_rate"],
+                    "historical_failure_rate": BULKOWSKI_STATS[direction]["failure_rate"],
+                    "atr_at_rs": bar_atr,
                     # 附加除錯/可追溯欄位（非 spec 必要欄位，但不影響驗收）
                     "_score_components": score,
                     "_volume_stage": volume_stage,
