@@ -11,8 +11,15 @@ ihs_detector
     scan_symbols, export_results
 """
 from .config import IHSConfig, TIMEFRAMES
+from .direction import BOTTOM, TOP
 from .swing import find_swing_points, extract_swing_points
-from .pattern import calculate_neckline, detect_inverse_head_shoulders, Neckline
+from .pattern import (
+    calculate_neckline,
+    detect_head_shoulders,
+    detect_inverse_head_shoulders,
+    detect_head_and_shoulders_top,
+    Neckline,
+)
 from .scoring import calculate_pattern_score
 from .scan import scan_symbols, OUTPUT_FIELDS
 from .export import export_results
@@ -20,11 +27,15 @@ from .export import export_results
 __all__ = [
     "IHSConfig",
     "TIMEFRAMES",
+    "BOTTOM",
+    "TOP",
     "find_swing_points",
     "extract_swing_points",
     "calculate_neckline",
     "Neckline",
+    "detect_head_shoulders",
     "detect_inverse_head_shoulders",
+    "detect_head_and_shoulders_top",
     "calculate_pattern_score",
     "scan_symbols",
     "OUTPUT_FIELDS",

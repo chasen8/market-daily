@@ -2,10 +2,15 @@
 """
 pattern.py
 
-第二～八步：組合候選頭肩底結構、計算頸線、判斷 candidate / breakout 模式、
+第二～八步：組合候選頭肩結構、計算頸線、判斷 candidate / breakout 模式、
 成交量篩選。核心函式：
 - calculate_neckline(N1, N2, angle_scale)
-- detect_inverse_head_shoulders(df, timeframe, config, symbol=None)
+- detect_head_shoulders(df, timeframe, config, direction, symbol=None)
+- detect_inverse_head_shoulders(...)  頭肩底（direction="bottom"）的相容包裝
+- detect_head_and_shoulders_top(...)  頭肩頂（direction="top"）
+
+2026-07-30：同一份主流程同時支援頭肩底與頭肩頂，兩者的方向差異全部集中在
+direction.py，避免複製兩份程式碼造成漂移。
 
 全部為純數學規則（pivot 比較、代數公式），不使用 LLM／圖像辨識／主觀判斷。
 """
@@ -17,6 +22,8 @@ from typing import Callable, Optional
 import numpy as np
 import pandas as pd
 
+from . import direction as dirmod
+from . import volume_stages
 from .config import IHSConfig
 from .swing import find_swing_points, extract_swing_points
 from .scoring import calculate_pattern_score
@@ -87,42 +94,39 @@ def _best_swing_high_in_range(swing_highs: list[dict], lo_index: int, hi_index: 
     return best
 
 
-def _neckline_candidates(swing_highs: list[dict], lo_index: int, hi_index: int,
-                          prominence_ratio: float) -> list[dict]:
+def _neckline_candidates(neckline_pivots: list[dict], lo_index: int, hi_index: int,
+                          prominence_ratio: float, direction: str) -> list[dict]:
     """
-    2026-07-28 使用者要求「頸線斜率越接近零越優先」後新增。
+    2026-07-28 使用者要求「頸線斜率越接近零越優先」後新增；2026-07-30 支援雙方向。
 
-    回傳 (lo_index, hi_index) 開區間內「夠顯著」的 swing high 清單：價格必須
-    >= 區間最高價 × prominence_ratio。只回傳最高點（舊行為）會強迫頸線通過兩個
-    未必等高的點、斜率無從選擇；但若完全不設門檻，演算法會為了追求水平而選到
-    區間裡不顯著的小高點，畫出一條沒有意義的「平頸線」。這個門檻是兩者的折衷：
-    先篩掉不夠高的，再由呼叫端在剩下的組合裡挑最平的。
+    回傳 (lo_index, hi_index) 開區間內「夠顯著」的頸線點候選。只回傳最極端那一點
+    （舊行為）會強迫頸線通過兩個未必等高的點、斜率無從選擇；但若完全不設門檻，
+    演算法會為了追求水平而選到區間裡不顯著的小高/低點，畫出一條沒有意義的
+    「平頸線」。這個門檻是兩者的折衷：先篩掉不夠顯著的，再由呼叫端在剩下的
+    組合裡挑最平的。方向差異見 direction.pick_neckline_candidates。
     """
-    in_range = [sh for sh in swing_highs if lo_index < sh["index"] < hi_index]
-    if not in_range:
-        return []
-    top = max(sh["price"] for sh in in_range)
-    if top <= 0:
-        return in_range
-    return [sh for sh in in_range if sh["price"] >= top * prominence_ratio]
+    return dirmod.pick_neckline_candidates(
+        neckline_pivots, lo_index, hi_index, prominence_ratio, direction)
 
 
-def _neckline_untouched(df: pd.DataFrame, neckline: "Neckline", ls_index: int, rs_index: int) -> bool:
+def _neckline_untouched(df: pd.DataFrame, neckline: "Neckline", ls_index: int,
+                         rs_index: int, direction: str) -> bool:
     """
     2026-07-24 使用者依實際圖表案例（BASUSDT）新增的驗證規則：頸線區間內，
-    除了左右肩本身，任何一根 K 線的 high 都不能超過當時的頸線內插價，
-    否則整組候選作廢——頸線必須是這段期間真正的「天花板」，不能中途被
-    其他更高的 high 穿越（N1、N2 本身在頸線上，price_at 剛好等於自己的
-    high，天生就不會觸發；只需排除 LS、RS 兩根本身）。
+    除了左右肩本身，任何一根 K 線都不能穿越當時的頸線內插價，否則整組候選作廢。
 
-    只驗證頭肩底（Inverse H&S，頸線在上方）；頭肩頂的鏡像規則（改驗證
-    low 沒有跌破頸線）不在本專案範圍內，見 docs/project-charter.md。
+    頭肩底：頸線是天花板，high 不得超過。
+    頭肩頂：頸線是地板，low 不得跌破（2026-07-30 依使用者要求補上鏡像規則）。
+
+    N1、N2 本身在頸線上，內插價剛好等於自己的價格，天生不會觸發；
+    只需排除 LS、RS 兩根本身。
     """
     high = df["high"].to_numpy(dtype=float)
+    low = df["low"].to_numpy(dtype=float)
     for i in range(ls_index, rs_index + 1):
         if i == ls_index or i == rs_index:
             continue
-        if high[i] > neckline.price_at(i):
+        if dirmod.neckline_pierced(high[i], low[i], neckline.price_at(i), direction):
             return False
     return True
 
@@ -138,9 +142,11 @@ def _average_volume(volume: np.ndarray, upto_index_exclusive: int, window: int) 
 
 def _find_breakout(df: pd.DataFrame, neckline: Neckline, rs_index: int,
                     breakout_buffer: float, enable_volume_filter: bool,
-                    min_volume_ratio: float, volume_avg_window: int):
+                    min_volume_ratio: float, volume_avg_window: int,
+                    direction: str = dirmod.BOTTOM):
     """
     第七、八步：在 RS 之後尋找第一根滿足突破（且若啟用則同時滿足量能）條件的 K 線。
+    頭肩底要收盤站上頸線，頭肩頂要收盤跌破頸線（見 direction.is_broken_out）。
 
     回傳 (breakout_time, breakout_price, breakout_index, volume_ratio) 或
     (None, None, None, None) 表示未找到有效突破。
@@ -152,7 +158,7 @@ def _find_breakout(df: pd.DataFrame, neckline: Neckline, rs_index: int,
 
     for i in range(rs_index + 1, n):
         neckline_price = neckline.price_at(i)
-        if close[i] > neckline_price * (1 + breakout_buffer):
+        if dirmod.is_broken_out(close[i], neckline_price, breakout_buffer, direction):
             volume_ratio = None
             if enable_volume_filter:
                 avg_vol = _average_volume(volume, i, volume_avg_window) if volume is not None else None
@@ -167,17 +173,22 @@ def _find_breakout(df: pd.DataFrame, neckline: Neckline, rs_index: int,
     return None, None, None, None
 
 
-def detect_inverse_head_shoulders(df: pd.DataFrame, timeframe: str, config: IHSConfig,
-                                   symbol: Optional[str] = None) -> list[dict]:
+def detect_head_shoulders(df: pd.DataFrame, timeframe: str, config: IHSConfig,
+                           direction: str = dirmod.BOTTOM,
+                           symbol: Optional[str] = None) -> list[dict]:
     """
     第二～九步主流程：從單一 symbol/timeframe 的 OHLCV DataFrame 找出所有符合
-    條件的頭肩底候選（candidate 或 breakout 模式），並算出 pattern_score。
+    條件的頭肩型態候選（candidate 或 breakout 模式），並算出 pattern_score。
+
+    direction="bottom" -> 頭肩底（肩/頭是低點，頸線在上方，站上頸線為突破）
+    direction="top"    -> 頭肩頂（肩/頭是高點，頸線在下方，跌破頸線為突破）
 
     df 需含欄位：timestamp, open, high, low, close, volume，並以時間排序、
     重設為連續整數索引（0..n-1），否則 index 比較會不正確。
 
     回傳：list of dict，欄位對應 spec 第十步「輸出欄位」。
     """
+    dirmod.validate(direction)
     if timeframe not in config.pivot_window_by_timeframe:
         raise ValueError(f"不支援的 timeframe: {timeframe}")
 
@@ -185,41 +196,51 @@ def detect_inverse_head_shoulders(df: pd.DataFrame, timeframe: str, config: IHSC
     swings_df = find_swing_points(df, config.pivot_window(timeframe))
     swing_lows, swing_highs = extract_swing_points(swings_df)
 
-    shoulder_diff_limit = config.shoulder_diff_limit(timeframe)
+    # 肩/頭與頸線各自從哪一組 pivot 挑，由方向決定
+    shoulder_pool = dirmod.shoulder_pivots(swing_lows, swing_highs, direction)
+    neckline_pool = dirmod.neckline_pivots(swing_lows, swing_highs, direction)
+
+    # 肩部對稱性模式：strict 沿用既有嚴格門檻；textbook 依 ChartSchool
+    # 「symmetry preferred but not required」放寬（見 config 說明）
+    textbook = config.shoulder_symmetry_mode == "textbook"
+    shoulder_diff_limit = (config.textbook_shoulder_diff_limit if textbook
+                           else config.shoulder_diff_limit(timeframe))
     min_head_depth = config.min_head_depth(timeframe)
     max_angle = config.max_neckline_angle
     breakout_buffer = config.breakout_buffer(timeframe)
 
     close = df["close"].to_numpy(dtype=float)
+    volume_arr = df["volume"].to_numpy(dtype=float) if "volume" in df.columns else None
     last_index = len(df) - 1
     time_col = "timestamp" if "timestamp" in df.columns else None
 
     results: list[dict] = []
 
     # 第二步：組合候選結構 LS -> H -> RS（依 index 時間序）。
-    # N1、N2 不再窮舉所有 swing high 組合，而是分別取 LS-H 之間、H-RS 之間
-    # 「最高」的那個 swing high 當頸線點（見 _best_swing_high_in_range 說明），
+    # N1、N2 從「夠顯著」的頸線點候選裡挑斜率最接近水平的一組，
     # 讓每組 (LS, H, RS) 骨架只產生一筆候選，避免重複爆炸。
-    for LS in swing_lows:
-        for H in swing_lows:
+    for LS in shoulder_pool:
+        for H in shoulder_pool:
             if H["index"] <= LS["index"]:
                 continue
-            if not (H["price"] < LS["price"]):
-                continue  # 條件：H.low < LS.low
+            if not dirmod.head_is_beyond(H["price"], LS["price"], direction):
+                continue  # 頭部要比左肩更極端
 
             n1_candidates = _neckline_candidates(
-                swing_highs, LS["index"], H["index"], config.neckline_prominence_ratio)
+                neckline_pool, LS["index"], H["index"],
+                config.neckline_prominence_ratio, direction)
             if not n1_candidates:
                 continue
 
-            for RS in swing_lows:
+            for RS in shoulder_pool:
                 if RS["index"] <= H["index"]:
                     continue
-                if not (H["price"] < RS["price"]):
-                    continue  # 條件：H.low < RS.low
+                if not dirmod.head_is_beyond(H["price"], RS["price"], direction):
+                    continue  # 頭部要比右肩更極端
 
                 n2_candidates = _neckline_candidates(
-                    swing_highs, H["index"], RS["index"], config.neckline_prominence_ratio)
+                    neckline_pool, H["index"], RS["index"],
+                    config.neckline_prominence_ratio, direction)
                 if not n2_candidates:
                     continue
 
@@ -228,15 +249,16 @@ def detect_inverse_head_shoulders(df: pd.DataFrame, timeframe: str, config: IHSC
                 if shoulder_diff > shoulder_diff_limit:
                     continue
 
-                # 第四步：頭部深度（同樣不依賴頸線點）
+                # 第四步：頭部幅度（同樣不依賴頸線點）
                 shoulder_avg = (LS["price"] + RS["price"]) / 2
-                head_depth = (shoulder_avg - H["price"]) / shoulder_avg
+                head_depth = dirmod.head_depth(shoulder_avg, H["price"], direction)
                 if not (head_depth > 0 and head_depth >= min_head_depth):
                     continue
 
                 # 第五步：從候選頸線點組合中挑出「斜率最接近水平」且通過全部檢查的一組
                 # （2026-07-28 使用者要求：頸線斜率越接近零越優先）。
-                # 每組 (LS, H, RS) 骨架仍然只產生一筆結果，不會因為頸線有多種選法而重複。
+                # 注意：頭肩頂雖然「下斜頸線更看空」，但那是**分數**上的加分，
+                # 選點仍然偏好接近水平，避免為了追斜率選到怪異的頸線點。
                 tol = config.shoulder_amplitude_tolerance
                 N1 = None
                 N2 = None
@@ -245,19 +267,21 @@ def detect_inverse_head_shoulders(df: pd.DataFrame, timeframe: str, config: IHSC
                 rs_amplitude = None
                 for c1 in n1_candidates:
                     for c2 in n2_candidates:
-                        # 右肩跌幅需落在左肩跌幅 ±tol 內（相對容忍，見 charter 決策記錄）。
-                        # 跌幅是相對各自的頸線點算的，所以要在頸線組合迴圈裡逐組驗證。
-                        ls_amp = (c1["price"] - LS["price"]) / c1["price"]
-                        rs_amp = (c2["price"] - RS["price"]) / c2["price"]
-                        if ls_amp <= 0:
+                        # 右肩幅度需落在左肩幅度 ±tol 內（相對容忍，見 charter 決策記錄）。
+                        # 幅度是相對各自的頸線點算的，所以要在頸線組合迴圈裡逐組驗證。
+                        # textbook 模式明講「symmetry not required」，故跳過這項。
+                        ls_amp = dirmod.shoulder_amplitude(c1["price"], LS["price"], direction)
+                        rs_amp = dirmod.shoulder_amplitude(c2["price"], RS["price"], direction)
+                        if ls_amp <= 0 or rs_amp <= 0:
                             continue
-                        if not (ls_amp * (1 - tol) <= rs_amp <= ls_amp * (1 + tol)):
-                            continue
+                        if not textbook:
+                            if not (ls_amp * (1 - tol) <= rs_amp <= ls_amp * (1 + tol)):
+                                continue
                         nl = calculate_neckline(c1, c2, config.angle_scale)
                         if abs(nl.angle_deg) > max_angle:
                             continue
                         if config.require_neckline_untouched and not _neckline_untouched(
-                                df, nl, LS["index"], RS["index"]):
+                                df, nl, LS["index"], RS["index"], direction):
                             continue
                         if neckline is None or abs(nl.angle_deg) < abs(neckline.angle_deg):
                             N1, N2, neckline = c1, c2, nl
@@ -280,7 +304,7 @@ def detect_inverse_head_shoulders(df: pd.DataFrame, timeframe: str, config: IHSC
                     b_time, b_price, b_index, v_ratio = _find_breakout(
                         df, neckline, RS["index"], breakout_buffer,
                         config.enable_volume_filter, config.min_volume_ratio,
-                        config.volume_avg_window,
+                        config.volume_avg_window, direction,
                     )
                     if b_time is not None:
                         mode = "breakout"
@@ -300,13 +324,35 @@ def detect_inverse_head_shoulders(df: pd.DataFrame, timeframe: str, config: IHSC
                 )
                 pattern_score = score["pattern_score"]
 
+                # 頭肩頂加分：ChartSchool「a downward slope is more bearish than
+                # an upward slope」。只影響分數排序，不影響是否入選。
+                if direction == dirmod.TOP and neckline.angle_deg < 0 and config.top_downward_neckline_bonus:
+                    steepness = min(abs(neckline.angle_deg) / max_angle, 1.0) if max_angle else 0.0
+                    bearish_bonus = steepness * config.top_downward_neckline_bonus
+                    score["downward_neckline_bonus"] = bearish_bonus
+                    pattern_score += bearish_bonus
+
+                # 五段式量能檢查（教科書節奏），純加分不淘汰
+                volume_stage = None
+                if config.enable_volume_stage_score and volume_arr is not None:
+                    volume_stage = volume_stages.evaluate(
+                        volume_arr, LS["index"], N1["index"], H["index"],
+                        N2["index"], RS["index"])
+                    if volume_stage["quality"] is not None:
+                        vs_bonus = volume_stage["quality"] * config.volume_stage_weight
+                        score["volume_stage_bonus"] = vs_bonus
+                        pattern_score += vs_bonus
+
+                score["pattern_score"] = pattern_score
+
                 if pattern_score < config.min_pattern_score:
                     continue
 
                 results.append({
                     "symbol": symbol,
                     "timeframe": timeframe,
-                    "pattern_type": "inverse_head_and_shoulders",
+                    "pattern_type": dirmod.PATTERN_TYPE[direction],
+                    "direction": direction,
                     "mode": mode,
                     "pattern_score": pattern_score,
                     "LS_time": LS["time"], "LS_price": LS["price"],
@@ -325,8 +371,24 @@ def detect_inverse_head_shoulders(df: pd.DataFrame, timeframe: str, config: IHSC
                     "breakout_time": breakout_time,
                     "breakout_price": breakout_price,
                     "volume_ratio": volume_ratio,
+                    # 量測目標（ChartSchool 量測法則）：底部往上加、頂部往下減
+                    "measured_target": dirmod.measured_target(
+                        current_neckline_price, H["price"], direction),
                     # 附加除錯/可追溯欄位（非 spec 必要欄位，但不影響驗收）
                     "_score_components": score,
+                    "_volume_stage": volume_stage,
                 })
 
     return results
+
+
+def detect_inverse_head_shoulders(df: pd.DataFrame, timeframe: str, config: IHSConfig,
+                                   symbol: Optional[str] = None) -> list[dict]:
+    """頭肩底（相容包裝，維持既有呼叫端不用改）。"""
+    return detect_head_shoulders(df, timeframe, config, dirmod.BOTTOM, symbol)
+
+
+def detect_head_and_shoulders_top(df: pd.DataFrame, timeframe: str, config: IHSConfig,
+                                   symbol: Optional[str] = None) -> list[dict]:
+    """頭肩頂（2026-07-30 新增）。"""
+    return detect_head_shoulders(df, timeframe, config, dirmod.TOP, symbol)

@@ -52,6 +52,21 @@ class IHSConfig:
     # 設 1.0 等同回到舊行為（只有最高點入選）；設太低會讓演算法為了求平而選到不顯著的小高點。
     neckline_prominence_ratio: float = 0.90
 
+    # --- 2026-07-30 頭肩頂支援（研究來源：StockCharts ChartSchool）---
+    # 肩部對稱性模式：
+    #   "strict"   = 沿用頭肩底的嚴格門檻（shoulder_diff + 跌幅比都要過），少而精
+    #   "textbook" = 照教科書「symmetry preferred but not required」，只要求右肩沒有
+    #                超過頭部、且肩差在放寬後的門檻內，抓得多但雜訊也多
+    shoulder_symmetry_mode: str = "strict"
+    textbook_shoulder_diff_limit: float = 0.20   # textbook 模式用的放寬門檻
+    # 頭肩頂：教科書說「下斜頸線比上斜更看空」，所以頸線往下傾斜時給看空加分。
+    # 注意這只影響「分數」，不影響「選哪組頸線」——選點仍然偏好接近水平，
+    # 避免為了追求斜率而選到怪異的頸線點。
+    top_downward_neckline_bonus: float = 10.0
+    # 五段式量能檢查（頭部推進縮量 / 頭部回落放量 / 右肩推進縮量）
+    enable_volume_stage_score: bool = False
+    volume_stage_weight: float = 15.0
+
     # --- 額外輔助參數（spec 公式中出現的常數，集中放這裡方便調整） ---
     ideal_head_depth: float = 0.10          # 第九步 head_depth_score 用
     distance_to_neckline_scale: float = 0.10  # 第九步 breakout_score（candidate）用

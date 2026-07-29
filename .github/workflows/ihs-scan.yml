@@ -37,7 +37,7 @@ jobs:
         run: |
           git config user.name "market-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/ihs_state.json data/ihs_half_state.json
+          git add data/ihs_state.json data/ihs_half_state.json data/hs_top_state.json data/hs_top_half_state.json
           if git diff --cached --quiet; then
             echo "no changes"
           else
