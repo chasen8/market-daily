@@ -94,6 +94,20 @@ class IHSConfig:
     #   "reward_asymmetry" = 照 Bulkowski 統計，不對稱給分
     shoulder_symmetry_scoring: str = "gate"
 
+    # --- 2026-07-30 使用者以 POWERUSDT 4h 實例指出的比例 bug ---
+    # 對稱性要用哪個判準？
+    #   "amplitude"（預設）= 只比「各自從頸線端點往下/往上的幅度百分比」
+    #   "absolute"        = 舊行為，比兩肩的絕對價位差
+    #   "both"            = 兩者都要通過（最嚴格）
+    #
+    # 為什麼預設改成 amplitude：兩者在頸線傾斜時會直接矛盾。實例——
+    # POWERUSDT 4h 頭肩底，頸線從 0.12391 下斜到 0.11125（-10.2%），
+    # 左肩跌幅 27.13%、右肩跌幅 27.08%（比值 0.998，近乎完美對稱），
+    # 但兩肩絕對價位差 10.70%，被 4h 的 5% 門檻整組砍掉。
+    # 頸線既然下斜 10.2%，兩肩要等比例就「必然」差約 10.2% —— 用絕對價位
+    # 當門檻等於宣告「斜頸線的頭肩型態一律不算」，跟允許斜頸線自相矛盾。
+    shoulder_symmetry_basis: str = "amplitude"
+
     # --- 額外輔助參數（spec 公式中出現的常數，集中放這裡方便調整） ---
     ideal_head_depth: float = 0.10          # 第九步 head_depth_score 用
     distance_to_neckline_scale: float = 0.10  # 第九步 breakout_score（candidate）用

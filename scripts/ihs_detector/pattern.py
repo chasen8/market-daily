@@ -249,23 +249,27 @@ def detect_head_shoulders(df: pd.DataFrame, timeframe: str, config: IHSConfig,
                 if not n2_candidates:
                     continue
 
-                # 第三步：左右肩差異（純辨識門檻，2026-07-30 起不再計分——
-                # Bulkowski 統計顯示越不對稱表現越好，對稱性不等於績效）
+                # 第三步：左右肩差異。
+                # 2026-07-30 修正：預設**不再**用「兩肩絕對價位差」當門檻。
+                # 頸線傾斜時，兩肩要維持等比例幅度就必然有價差，用絕對價位當門檻
+                # 等於把所有斜頸線的頭肩型態砍光（POWERUSDT 實例見 config 說明）。
+                # 真正的對稱判準移到下方頸線迴圈裡的「幅度比」（ls_amp vs rs_amp）。
                 shoulder_diff = abs(LS["price"] - RS["price"]) / ((LS["price"] + RS["price"]) / 2)
                 shoulder_avg = (LS["price"] + RS["price"]) / 2
                 head_depth = dirmod.head_depth(shoulder_avg, H["price"], direction)
+                check_absolute = config.shoulder_symmetry_basis in ("absolute", "both")
 
                 # ATR 模式：門檻改用「幾倍 ATR」；ATR 取不到（暖身期）時退回百分比
                 bar_atr = atr_at(atr_values, RS["index"]) if atr_values is not None else None
                 if bar_atr:
-                    if abs(LS["price"] - RS["price"]) > config.max_shoulder_diff_atr * bar_atr:
+                    if check_absolute and abs(LS["price"] - RS["price"]) > config.max_shoulder_diff_atr * bar_atr:
                         continue
                     if abs(H["price"] - shoulder_avg) < config.min_head_atr * bar_atr:
                         continue
                     if head_depth <= 0:
                         continue
                 else:
-                    if shoulder_diff > shoulder_diff_limit:
+                    if check_absolute and shoulder_diff > shoulder_diff_limit:
                         continue
                     if not (head_depth > 0 and head_depth >= min_head_depth):
                         continue
