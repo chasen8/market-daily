@@ -55,7 +55,11 @@ class IHSConfig:
     min_volume_ratio: float = 1.2
     min_pattern_score: float = 0.0
     # 2026-07-24 使用者依實際圖表案例（BASUSDT）新增的兩條結構驗證規則：
-    shoulder_amplitude_tolerance: float = 0.30  # 右肩跌幅需落在左肩跌幅 ±30% 內
+    # 右肩幅度需落在左肩幅度 ±本值內。2026-07-30 由 0.30 收緊到 0.15：
+    # 對稱性判準改看幅度比之後，這是唯一的對稱門檻（絕對價位差那道已移除），
+    # ±30% 太寬會讓頭肩頂在 AAPL 日線上暴增到 30 組。實測 ±15% 為 22 組。
+    # 參考點：POWERUSDT 那組真正對稱的型態比值是 0.998，±5% 都過得了。
+    shoulder_amplitude_tolerance: float = 0.15
     require_neckline_untouched: bool = True     # 頸線區間內（除左右肩本身）不得被其他K棒高點穿越
     # 2026-07-28：頸線點不再只取「區間最高」，改成在「夠高的候選」裡挑斜率最平的組合。
     # prominence_ratio 決定什麼叫「夠高」：價格 >= 區間最高價 × 本值 才列入候選。
