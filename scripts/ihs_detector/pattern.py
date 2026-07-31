@@ -360,8 +360,16 @@ def detect_head_shoulders(df: pd.DataFrame, timeframe: str, config: IHSConfig,
                     if volume_stage["quality"] is not None:
                         vs_bonus = volume_stage["quality"] * config.volume_stage_weight
                         score["volume_stage_bonus"] = vs_bonus
+
                         pattern_score += vs_bonus
 
+                # 2026-07-30 修正：scoring.py 內部雖然已把四個分量夾在 [0,100]，
+                # 但上面兩項加分是在夾完之後才加的，理論最高會到 125
+                # （下斜頸線 +10、五段量能 +15），超出對外宣稱的 0~100 範圍。
+                # 這裡再夾一次，讓 pattern_score 的定義域跟文件一致。
+                # 副作用：接近滿分的型態，加分會被上限吸收——這是可接受的，
+                # 因為加分本來就設計成「臨門一腳」，不該讓分數突破量表。
+                pattern_score = max(0.0, min(100.0, pattern_score))
                 score["pattern_score"] = pattern_score
 
                 if pattern_score < config.min_pattern_score:

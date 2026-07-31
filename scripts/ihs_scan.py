@@ -51,7 +51,15 @@ TIMEOUT = 20
 MIN_QUOTE_VOL = 300_000  # 跟 whale_scan.py 同門檻，24h 成交額 >= $30萬才收進宇宙
 TIMEFRAMES = ["4h", "1d", "1w"]
 KLINE_LIMIT = 200
-MIN_PATTERN_SCORE = 60.0  # breakout 分級門檻，避免洗版
+# breakout 分級門檻。2026-07-30 由單一 60.0 改成上下方向各自獨立，理由：
+# 實測 12 檔 × 3 週期的分數分布顯示兩者尺度不同——
+#   頭肩底：最低 61.1 / 中位數 73.4 / 最高 90.2（17 筆）
+#   頭肩頂：最低 63.8 / 中位數 86.7 / 最高 99.6（44 筆）
+# 頭肩頂中位數高 13 分（下斜頸線加分只有頭肩頂有，是主因之一），
+# 用同一個門檻的話拉高會「先砍光頭肩底」：門檻 85 時底只剩 1 筆、頂還有 24 筆。
+# 另外舊的 60 其實等於沒設——最低分本來就高於 60，一筆都沒擋掉。
+MIN_SCORE_BOTTOM = 65.0
+MIN_SCORE_TOP = 85.0
 STABLE = {"USDC", "FDUSD", "TUSD", "DAI", "USDP", "BUSD", "USD1", "EURI",
           "PAX", "GUSD", "USDD", "RLUSD", "USDE", "USDY", "BFUSD", "USDS"}
 LEV_SUFFIX = ("UP", "DOWN", "BULL", "BEAR")
@@ -259,14 +267,17 @@ def scan(symbols, config):
                 continue
             if len(df) < 30:
                 continue
+            # 分數門檻依方向各自套用（見 MIN_SCORE_BOTTOM / MIN_SCORE_TOP 說明）
             try:
                 results = detect_inverse_head_shoulders(df, tf, config, symbol=symbol)
-                b_breaks.extend(r for r in results if r["breakout_detected"])
+                b_breaks.extend(r for r in results
+                                if r["breakout_detected"] and r["pattern_score"] >= MIN_SCORE_BOTTOM)
             except Exception as e:  # noqa: BLE001
                 print(f"[WARN] {symbol} {tf} 頭肩底偵測失敗: {e}")
             try:
                 results = detect_head_and_shoulders_top(df, tf, config, symbol=symbol)
-                t_breaks.extend(r for r in results if r["breakout_detected"])
+                t_breaks.extend(r for r in results
+                                if r["breakout_detected"] and r["pattern_score"] >= MIN_SCORE_TOP)
             except Exception as e:  # noqa: BLE001
                 print(f"[WARN] {symbol} {tf} 頭肩頂偵測失敗: {e}")
             try:
@@ -309,7 +320,9 @@ def main():
     config = IHSConfig()
     config.enable_breakout_filter = True
     config.enable_volume_filter = False
-    config.min_pattern_score = MIN_PATTERN_SCORE
+    # 偵測器本身不過濾（設 0），改由 scan() 依方向套用各自的門檻——
+    # 同一個 config 會同時餵給頭肩底與頭肩頂，沒辦法在偵測器層分開設定
+    config.min_pattern_score = 0.0
 
     # 四類各自獨立的冷啟動判定與 state 檔
     paths = {
