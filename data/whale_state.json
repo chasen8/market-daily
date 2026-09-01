@@ -1,23 +1,10 @@
 {
- "ARBUSDT": {
-  "grade": "C",
-  "total": -1,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 1,
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-31T21:32:29.418047+00:00",
-  "pool_entry_price": 0.1022,
-  "high_since": 0.1022,
-  "low_since": 0.1022,
-  "alert_count": 2
- },
  "ZECUSDT": {
-  "grade": "B",
-  "total": 4,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 18,
+  "grade": "C",
+  "total": -13,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 4,
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-21T09:55:58.999771+00:00",
   "pool_entry_price": 651.65,
@@ -25,64 +12,12 @@
   "low_since": 645.0,
   "alert_count": 2
  },
- "BTCUSDT": {
-  "grade": "C",
-  "total": -24,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": -8,
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T05:38:20.977671+00:00",
-  "pool_entry_price": 78122.01,
-  "high_since": 78122.01,
-  "low_since": 78122.01,
-  "alert_count": 2
- },
- "ETHUSDT": {
-  "grade": "C",
-  "total": -11,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": -1,
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-19T17:56:24.693187+00:00",
-  "pool_entry_price": 2091.8,
-  "high_since": 2091.8,
-  "low_since": 2091.8,
-  "alert_count": 2
- },
- "BNBUSDT": {
-  "grade": "C",
-  "total": -11,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 1,
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-19T16:25:28.515868+00:00",
-  "pool_entry_price": 619.99,
-  "high_since": 619.99,
-  "low_since": 619.99,
-  "alert_count": 2
- },
- "ENSOUSDT": {
-  "grade": "C",
-  "total": -12,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 1,
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-28T17:14:59.480260+00:00",
-  "pool_entry_price": 0.875,
-  "high_since": 0.875,
-  "low_since": 0.875,
-  "alert_count": 2
- },
  "UNIUSDT": {
   "grade": "B",
-  "total": 13,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 2,
+  "total": 5,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 0,
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-26T07:56:28.760624+00:00",
   "pool_entry_price": 4.271,
@@ -90,25 +25,12 @@
   "low_since": 4.271,
   "alert_count": 2
  },
- "SOLUSDT": {
-  "grade": "C",
-  "total": -12,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 17,
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-25T01:11:17.271996+00:00",
-  "pool_entry_price": 101.64,
-  "high_since": 101.64,
-  "low_since": 101.64,
-  "alert_count": 2
- },
  "ENAUSDT": {
   "grade": "B",
   "total": 8,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 19,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 20,
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-23T11:53:06.326418+00:00",
   "pool_entry_price": 0.1757,
@@ -116,12 +38,64 @@
   "low_since": 0.1757,
   "alert_count": 2
  },
+ "ETHUSDT": {
+  "grade": "C",
+  "total": -17,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": -4,
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-19T17:56:24.693187+00:00",
+  "pool_entry_price": 2091.8,
+  "high_since": 2091.8,
+  "low_since": 2091.8,
+  "alert_count": 2
+ },
+ "ENSOUSDT": {
+  "grade": "C",
+  "total": -14,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 0,
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-28T17:14:59.480260+00:00",
+  "pool_entry_price": 0.875,
+  "high_since": 0.875,
+  "low_since": 0.875,
+  "alert_count": 2
+ },
+ "BNBUSDT": {
+  "grade": "C",
+  "total": -16,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 5,
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-19T16:25:28.515868+00:00",
+  "pool_entry_price": 619.99,
+  "high_since": 619.99,
+  "low_since": 619.99,
+  "alert_count": 2
+ },
+ "ARBUSDT": {
+  "grade": "C",
+  "total": -6,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 2,
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-31T21:32:29.418047+00:00",
+  "pool_entry_price": 0.1022,
+  "high_since": 0.1022,
+  "low_since": 0.1022,
+  "alert_count": 2
+ },
  "XRPUSDT": {
   "grade": "C",
-  "total": -7,
+  "total": -10,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 2,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 10,
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-16T18:25:10.487792+00:00",
   "pool_entry_price": 0.9983,
@@ -129,64 +103,38 @@
   "low_since": 0.9983,
   "alert_count": 2
  },
- "HYPE_USDT": {
-  "grade": "B",
-  "total": 4,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 32,
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-25T03:28:31.904298+00:00",
-  "pool_entry_price": 81.21,
-  "high_since": 81.21,
-  "low_since": 81.21,
-  "alert_count": 2
- },
- "LINKUSDT": {
+ "BTCUSDT": {
   "grade": "C",
-  "total": -2,
+  "total": -18,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 13,
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-21T07:50:55.365144+00:00",
-  "pool_entry_price": 11.555,
-  "high_since": 11.555,
-  "low_since": 11.554,
-  "alert_count": 2
- },
- "BTR_USDT": {
-  "grade": "C",
-  "total": -10,
-  "risk": 45,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 0,
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
-  "pool_entry_price": 0.18331,
-  "high_since": 0.18331,
-  "low_since": 0.18331,
-  "alert_count": 2
- },
- "SNDKBUSDT": {
-  "grade": "B",
-  "total": 11,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 6,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 4,
   "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 1451.77,
-  "high_since": 1451.77,
-  "low_since": 1451.77,
+  "pool_entry_ts": "2026-08-30T05:38:20.977671+00:00",
+  "pool_entry_price": 78122.01,
+  "high_since": 78122.01,
+  "low_since": 78122.01,
+  "alert_count": 2
+ },
+ "SOLUSDT": {
+  "grade": "C",
+  "total": -16,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 12,
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-25T01:11:17.271996+00:00",
+  "pool_entry_price": 101.64,
+  "high_since": 101.64,
+  "low_since": 101.64,
   "alert_count": 2
  },
  "NEARUSDT": {
-  "grade": "B",
-  "total": 20,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 14,
+  "grade": "C",
+  "total": -7,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 10,
   "pool_direction": "long",
   "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
   "pool_entry_price": 1.988,
@@ -194,12 +142,38 @@
   "low_since": 1.988,
   "alert_count": 2
  },
+ "DOGEUSDT": {
+  "grade": "C",
+  "total": -13,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 25,
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-20T15:19:23.460237+00:00",
+  "pool_entry_price": 0.07943,
+  "high_since": 0.07943,
+  "low_since": 0.07943,
+  "alert_count": 2
+ },
+ "SNDKBUSDT": {
+  "grade": "B",
+  "total": 2,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 4,
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 1451.77,
+  "high_since": 1451.77,
+  "low_since": 1451.77,
+  "alert_count": 2
+ },
  "TRXUSDT": {
   "grade": "C",
-  "total": -25,
+  "total": -20,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 1,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 6,
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
   "pool_entry_price": 0.3361,
@@ -208,11 +182,11 @@
   "alert_count": 2
  },
  "SUIUSDT": {
-  "grade": "B",
-  "total": 1,
+  "grade": "C",
+  "total": -2,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 4,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 19,
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-30T18:35:30.987908+00:00",
   "pool_entry_price": 0.7624,
@@ -220,64 +194,38 @@
   "low_since": 0.7624,
   "alert_count": 2
  },
- "XAUTUSDT": {
-  "grade": "B",
-  "total": 3,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 10,
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T18:35:30.987908+00:00",
-  "pool_entry_price": 4457.18,
-  "high_since": 4457.18,
-  "low_since": 4457.18,
-  "alert_count": 2
- },
- "DOGEUSDT": {
+ "BTR_USDT": {
   "grade": "C",
-  "total": -11,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 2,
+  "total": -10,
+  "risk": 45,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 0,
   "pool_direction": "long",
-  "pool_entry_ts": "2026-08-20T15:19:23.460237+00:00",
-  "pool_entry_price": 0.07943,
-  "high_since": 0.07943,
-  "low_since": 0.07943,
+  "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
+  "pool_entry_price": 0.18331,
+  "high_since": 0.18331,
+  "low_since": 0.18331,
   "alert_count": 2
  },
- "DASHUSDT": {
+ "HYPE_USDT": {
   "grade": "C",
-  "total": -7,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 12,
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
-  "pool_entry_price": 45.08,
-  "high_since": 45.08,
-  "low_since": 45.08,
-  "alert_count": 2
- },
- "0GUSDT": {
-  "grade": "B",
-  "total": 0,
-  "risk": 25,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "total": -10,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "dom": 5,
   "pool_direction": "long",
-  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
-  "pool_entry_price": 0.1743,
-  "high_since": 0.1898,
-  "low_since": 0.1743,
+  "pool_entry_ts": "2026-08-25T03:28:31.904298+00:00",
+  "pool_entry_price": 81.21,
+  "high_since": 81.21,
+  "low_since": 81.21,
   "alert_count": 2
  },
  "PUMPUSDT": {
   "grade": "C",
-  "total": -4,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 8,
+  "total": -13,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 0,
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-20T03:27:31.938534+00:00",
   "pool_entry_price": 0.003289,
@@ -285,25 +233,38 @@
   "low_since": 0.003289,
   "alert_count": 2
  },
- "PEPEUSDT": {
+ "XAUTUSDT": {
+  "grade": "C",
+  "total": -4,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 12,
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T18:35:30.987908+00:00",
+  "pool_entry_price": 4457.18,
+  "high_since": 4457.18,
+  "low_since": 4457.18,
+  "alert_count": 2
+ },
+ "LINKUSDT": {
   "grade": "C",
   "total": -10,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": -12,
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
-  "pool_entry_price": 3.41e-06,
-  "high_since": 3.41e-06,
-  "low_since": 3.41e-06,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 9,
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-21T07:50:55.365144+00:00",
+  "pool_entry_price": 11.555,
+  "high_since": 11.555,
+  "low_since": 11.554,
   "alert_count": 2
  },
  "TRUMPUSDT": {
   "grade": "C",
-  "total": -8,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": -2,
+  "total": -19,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": -8,
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-22T04:07:54.384396+00:00",
   "pool_entry_price": 2.69,
@@ -311,25 +272,51 @@
   "low_since": 2.69,
   "alert_count": 2
  },
- "GRAMUSDT": {
+ "PEPEUSDT": {
+  "grade": "C",
+  "total": -16,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": -1,
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
+  "pool_entry_price": 3.41e-06,
+  "high_since": 3.41e-06,
+  "low_since": 3.41e-06,
+  "alert_count": 2
+ },
+ "0GUSDT": {
+  "grade": "C",
+  "total": -10,
+  "risk": 25,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 4,
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
+  "pool_entry_price": 0.1743,
+  "high_since": 0.1898,
+  "low_since": 0.1743,
+  "alert_count": 2
+ },
+ "DASHUSDT": {
   "grade": "C",
   "total": -11,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 16,
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-26T16:43:36.959290+00:00",
-  "pool_entry_price": 1.371,
-  "high_since": 1.371,
-  "low_since": 1.371,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 7,
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
+  "pool_entry_price": 45.08,
+  "high_since": 45.08,
+  "low_since": 45.08,
   "alert_count": 2
  },
  "ADAUSDT": {
   "grade": "C",
-  "total": -4,
+  "total": -5,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 6,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 12,
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
   "pool_entry_price": 0.1902,
@@ -337,25 +324,19 @@
   "low_since": 0.1902,
   "alert_count": 2
  },
- "CRCLBUSDT": {
+ "DGAI_USDT": {
   "grade": "C",
-  "total": -10,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 8,
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 87.08,
-  "high_since": 87.08,
-  "low_since": 87.08,
-  "alert_count": 2
+  "total": -6,
+  "risk": 25,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 2
  },
  "CRVUSDT": {
   "grade": "B",
-  "total": 9,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 5,
+  "total": 0,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 2,
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-31T21:32:29.418047+00:00",
   "pool_entry_price": 0.3392,
@@ -363,24 +344,37 @@
   "low_since": 0.3392,
   "alert_count": 2
  },
- "HEMIUSDT": {
-  "grade": "B",
-  "total": 14,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 1,
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-23T23:30:23.986805+00:00",
-  "pool_entry_price": 0.00891,
-  "high_since": 0.00891,
-  "low_since": 0.00891,
-  "alert_count": 2
- },
- "PONS_USDT": {
+ "OPUSDT": {
   "grade": "B",
   "total": 0,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": -1,
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T00:45:53.367527+00:00",
+  "pool_entry_price": 0.0964,
+  "high_since": 0.0964,
+  "low_since": 0.0964,
+  "alert_count": 2
+ },
+ "CRCLBUSDT": {
+  "grade": "C",
+  "total": -2,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 34,
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 87.08,
+  "high_since": 87.08,
+  "low_since": 87.08,
+  "alert_count": 2
+ },
+ "PONS_USDT": {
+  "grade": "C",
+  "total": -8,
+  "risk": 25,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "dom": -1,
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-30T00:22:08.238377+00:00",
@@ -389,71 +383,12 @@
   "low_since": 0.2485,
   "alert_count": 2
  },
- "OPUSDT": {
-  "grade": "B",
-  "total": 20,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 6,
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T00:45:53.367527+00:00",
-  "pool_entry_price": 0.0964,
-  "high_since": 0.0964,
-  "low_since": 0.0964,
-  "alert_count": 2
- },
- "DGAI_USDT": {
-  "grade": "B",
-  "total": 13,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": -2
- },
- "PAXGUSDT": {
-  "grade": "C",
-  "total": -1,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 13,
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-27T10:37:59.640756+00:00",
-  "pool_entry_price": 4572.69,
-  "high_since": 4572.69,
-  "low_since": 4572.69,
-  "alert_count": 2
- },
- "SPCXBUSDT": {
-  "grade": "B",
-  "total": 8,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": -7,
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T05:38:20.977671+00:00",
-  "pool_entry_price": 140.58,
-  "high_since": 140.58,
-  "low_since": 140.58,
-  "alert_count": 2
- },
- "WLDUSDT": {
-  "grade": "B",
-  "total": 7,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 20,
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-16T17:08:24.211343+00:00",
-  "pool_entry_price": 0.3692,
-  "high_since": 0.3692,
-  "low_since": 0.3692,
-  "alert_count": 2
- },
  "TUTUSDT": {
-  "grade": "C",
-  "total": -4,
-  "risk": 25,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 4,
+  "grade": "B",
+  "total": 4,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": -2,
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-31T21:32:29.418047+00:00",
   "pool_entry_price": 0.03054,
@@ -461,25 +396,51 @@
   "low_since": 0.03054,
   "alert_count": 2
  },
- "ONGUSDT": {
-  "grade": "B",
-  "total": 8,
-  "risk": 45,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 2,
+ "HEMIUSDT": {
+  "grade": "C",
+  "total": -3,
+  "risk": 25,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 4,
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-23T23:30:23.986805+00:00",
+  "pool_entry_price": 0.00891,
+  "high_since": 0.00891,
+  "low_since": 0.00891,
+  "alert_count": 2
+ },
+ "PAXGUSDT": {
+  "grade": "C",
+  "total": -8,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 14,
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-27T10:37:59.640756+00:00",
+  "pool_entry_price": 4572.69,
+  "high_since": 4572.69,
+  "low_since": 4572.69,
+  "alert_count": 2
+ },
+ "WLDUSDT": {
+  "grade": "C",
+  "total": -7,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 10,
   "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 0.1162,
-  "high_since": 0.1162,
-  "low_since": 0.1162,
+  "pool_entry_ts": "2026-08-16T17:08:24.211343+00:00",
+  "pool_entry_price": 0.3692,
+  "high_since": 0.3692,
+  "low_since": 0.3692,
   "alert_count": 2
  },
  "AAVEUSDT": {
-  "grade": "B",
-  "total": 12,
+  "grade": "C",
+  "total": -3,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 21,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 7,
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-26T16:43:36.959290+00:00",
   "pool_entry_price": 121.67,
@@ -487,12 +448,38 @@
   "low_since": 121.67,
   "alert_count": 2
  },
+ "ONGUSDT": {
+  "grade": "B",
+  "total": 12,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 6,
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
+  "pool_entry_price": 0.1162,
+  "high_since": 0.1162,
+  "low_since": 0.1162,
+  "alert_count": 2
+ },
+ "SPCXBUSDT": {
+  "grade": "C",
+  "total": -1,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": -1,
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T05:38:20.977671+00:00",
+  "pool_entry_price": 140.58,
+  "high_since": 140.58,
+  "low_since": 140.58,
+  "alert_count": 2
+ },
  "LTCUSDT": {
   "grade": "B",
-  "total": 20,
+  "total": 11,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 22,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 5,
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-28T17:14:59.480260+00:00",
   "pool_entry_price": 48.91,
@@ -500,11 +487,25 @@
   "low_since": 48.91,
   "alert_count": 2
  },
- "AVAXUSDT": {
-  "grade": "B",
-  "total": 15,
+ "FILUSDT": {
+  "grade": "A",
+  "total": 28,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 11,
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 0.7615,
+  "high_since": 0.7615,
+  "low_since": 0.7615,
+  "alert_count": 1
+ },
+ "AVAXUSDT": {
+  "grade": "C",
+  "total": -4,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "dom": 7,
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
   "pool_entry_price": 7.108,
@@ -512,36 +513,23 @@
   "low_since": 7.108,
   "alert_count": 2
  },
- "XLMUSDT": {
-  "grade": "B",
-  "total": 1,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-22T02:40:38.243989+00:00",
-  "pool_entry_price": 0.21,
-  "high_since": 0.21,
-  "low_since": 0.21,
-  "alert_count": 2
- },
  "TAOUSDT": {
-  "grade": "C",
-  "total": -14,
+  "grade": "D",
+  "total": -43,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "dom": 5,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
-  "pool_entry_ts": "2026-08-29T17:20:28.737466+00:00",
-  "pool_entry_price": 237.7,
-  "high_since": 237.7,
-  "low_since": 237.7,
-  "alert_count": 2
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 220.2,
+  "high_since": 220.2,
+  "low_since": 220.2,
+  "alert_count": 1
  },
  "XPLUSDT": {
-  "grade": "B",
-  "total": 6,
+  "grade": "C",
+  "total": -4,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-30T18:35:30.987908+00:00",
   "pool_entry_price": 0.08944,
@@ -549,11 +537,23 @@
   "low_since": 0.08944,
   "alert_count": 2
  },
+ "GRAMUSDT": {
+  "grade": "D",
+  "total": -27,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 1.317,
+  "high_since": 1.317,
+  "low_since": 1.317,
+  "alert_count": 1
+ },
  "BMTUSDT": {
-  "grade": "B",
-  "total": 6,
+  "grade": "C",
+  "total": -3,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-29T07:48:52.450855+00:00",
   "pool_entry_price": 0.02181,
@@ -561,11 +561,35 @@
   "low_since": 0.02181,
   "alert_count": 2
  },
- "MSTRBUSDT": {
-  "grade": "B",
-  "total": 6,
+ "XLMUSDT": {
+  "grade": "C",
+  "total": -12,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-22T02:40:38.243989+00:00",
+  "pool_entry_price": 0.21,
+  "high_since": 0.21,
+  "low_since": 0.21,
+  "alert_count": 2
+ },
+ "ACEUSDT": {
+  "grade": "A",
+  "total": 30,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 0.2058,
+  "high_since": 0.2058,
+  "low_since": 0.2058,
+  "alert_count": 1
+ },
+ "MSTRBUSDT": {
+  "grade": "C",
+  "total": -17,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
   "pool_entry_price": 125.86,
@@ -573,35 +597,11 @@
   "low_since": 125.86,
   "alert_count": 2
  },
- "ONDOUSDT": {
-  "grade": "C",
-  "total": -9,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-28T17:14:59.480260+00:00",
-  "pool_entry_price": 0.357,
-  "high_since": 0.357,
-  "low_since": 0.357,
-  "alert_count": 2
- },
- "POLUSDT": {
-  "grade": "C",
-  "total": -4,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-29T19:51:02.868518+00:00",
-  "pool_entry_price": 0.10252,
-  "high_since": 0.10252,
-  "low_since": 0.10159,
-  "alert_count": 2
- },
  "SCUSDT": {
   "grade": "B",
-  "total": 21,
+  "total": 6,
   "risk": 25,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-09-01T00:45:53.367527+00:00",
   "pool_entry_price": 0.00066,
@@ -609,95 +609,23 @@
   "low_since": 0.00066,
   "alert_count": 1
  },
- "INJUSDT": {
+ "ONDOUSDT": {
   "grade": "C",
-  "total": -18,
+  "total": -9,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 4.863,
-  "high_since": 4.863,
-  "low_since": 4.863,
-  "alert_count": 2
- },
- "PROMUSDT": {
-  "grade": "C",
-  "total": -14,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-24T04:28:30.525522+00:00",
-  "pool_entry_price": 3.138,
-  "high_since": 3.854,
-  "low_since": 3.138,
-  "alert_count": 2
- },
- "ACEUSDT": {
-  "grade": "B",
-  "total": 17,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T21:32:54.867043+00:00",
-  "pool_entry_price": 0.1789,
-  "high_since": 0.1789,
-  "low_since": 0.1694,
-  "alert_count": 2
- },
- "SKR_USDT": {
-  "grade": "C",
-  "total": -11,
-  "risk": 25,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
-  "pool_entry_price": 0.032178,
-  "high_since": 0.032178,
-  "low_since": 0.032178,
-  "alert_count": 2
- },
- "ZROUSDT": {
-  "grade": "C",
-  "total": -12,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-29T01:00:09.990155+00:00",
-  "pool_entry_price": 1.074,
-  "high_since": 1.074,
-  "low_since": 1.074,
-  "alert_count": 2
- },
- "SNXXBUSDT": {
-  "grade": "B",
-  "total": 15,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-31T21:32:29.418047+00:00",
-  "pool_entry_price": 13.96,
-  "high_since": 13.96,
-  "low_since": 13.96,
-  "alert_count": 2
- },
- "FETUSDT": {
-  "grade": "C",
-  "total": -10,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-30T18:35:30.987908+00:00",
-  "pool_entry_price": 0.1603,
-  "high_since": 0.1603,
-  "low_since": 0.1603,
+  "pool_entry_ts": "2026-08-28T17:14:59.480260+00:00",
+  "pool_entry_price": 0.357,
+  "high_since": 0.357,
+  "low_since": 0.357,
   "alert_count": 2
  },
  "APTUSDT": {
   "grade": "B",
-  "total": 19,
+  "total": 10,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-25T23:57:26.732641+00:00",
   "pool_entry_price": 0.562,
@@ -705,215 +633,47 @@
   "low_since": 0.562,
   "alert_count": 2
  },
- "QQQBUSDT": {
-  "grade": "B",
-  "total": 23,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-19T17:56:24.693187+00:00",
-  "pool_entry_price": 717.32,
-  "high_since": 717.5,
-  "low_since": 717.32,
-  "alert_count": 2
- },
- "BONKUSDT": {
-  "grade": "B",
-  "total": 2,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
-  "pool_entry_price": 3.22e-06,
-  "high_since": 3.22e-06,
-  "low_since": 3.22e-06,
-  "alert_count": 2
- },
- "ASTERUSDT": {
+ "PROMUSDT": {
   "grade": "C",
-  "total": -14,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T05:38:20.977671+00:00",
-  "pool_entry_price": 0.697,
-  "high_since": 0.697,
-  "low_since": 0.697,
-  "alert_count": 2
- },
- "FILUSDT": {
-  "grade": "B",
-  "total": 20,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 0.7054,
-  "high_since": 0.7054,
-  "low_since": 0.7054,
-  "alert_count": 2
- },
- "BCHUSDT": {
-  "grade": "C",
-  "total": -19,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
-  "pool_entry_price": 244.9,
-  "high_since": 244.9,
-  "low_since": 244.9,
-  "alert_count": 2
- },
- "ACTUSDT": {
-  "grade": "C",
-  "total": -1,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "MORPHOUSDT": {
-  "grade": "C",
-  "total": -9,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-23T11:53:06.326418+00:00",
-  "pool_entry_price": 2.437,
-  "high_since": 2.894,
-  "low_since": 2.437,
-  "alert_count": 2
- },
- "DOTUSDT": {
-  "grade": "B",
-  "total": 10,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-29T13:26:17.404761+00:00",
-  "pool_entry_price": 0.838,
-  "high_since": 0.838,
-  "low_since": 0.838,
-  "alert_count": 2
- },
- "LIT_USDT": {
-  "grade": "B",
-  "total": 17,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "total": -18,
+  "risk": 45,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-24T04:28:30.525522+00:00",
-  "pool_entry_price": 3.707,
-  "high_since": 3.707,
-  "low_since": 3.707,
+  "pool_entry_price": 3.138,
+  "high_since": 3.854,
+  "low_since": 3.138,
   "alert_count": 2
  },
- "CYS_USDT": {
+ "INJUSDT": {
   "grade": "C",
-  "total": -10,
+  "total": -20,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-27T00:44:40.294914+00:00",
-  "pool_entry_price": 0.8241,
-  "high_since": 0.8241,
-  "low_since": 0.8241,
-  "alert_count": 2
- },
- "HBARUSDT": {
-  "grade": "B",
-  "total": 2,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
-  "pool_entry_ts": "2026-08-28T04:55:29.178964+00:00",
-  "pool_entry_price": 0.07755,
-  "high_since": 0.07755,
-  "low_since": 0.07755,
+  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
+  "pool_entry_price": 4.863,
+  "high_since": 4.863,
+  "low_since": 4.863,
   "alert_count": 2
  },
- "ZENUSDT": {
-  "grade": "C",
-  "total": -11,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-21T21:43:04.306210+00:00",
-  "pool_entry_price": 5.115,
-  "high_since": 5.961,
-  "low_since": 5.115,
-  "alert_count": 2
- },
- "SOXLBUSDT": {
+ "SNXXBUSDT": {
   "grade": "B",
-  "total": 18,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T05:38:20.977671+00:00",
-  "pool_entry_price": 112.88,
-  "high_since": 112.88,
-  "low_since": 112.88,
-  "alert_count": 2
- },
- "PENGUUSDT": {
-  "grade": "B",
-  "total": 3,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 0.008527,
-  "high_since": 0.008527,
-  "low_since": 0.008527,
-  "alert_count": 2
- },
- "TWTUSDT": {
-  "grade": "B",
-  "total": 22,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "total": 1,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-31T21:32:29.418047+00:00",
-  "pool_entry_price": 0.5292,
-  "high_since": 0.5292,
-  "low_since": 0.5292,
+  "pool_entry_price": 13.96,
+  "high_since": 13.96,
+  "low_since": 13.96,
   "alert_count": 2
- },
- "MUBUSDT": {
-  "grade": "C",
-  "total": -1,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 915.47,
-  "high_since": 918.35,
-  "low_since": 915.47,
-  "alert_count": 2
- },
- "DOGSUSDT": {
-  "grade": "C",
-  "total": -10,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "WBTCUSDT": {
-  "grade": "C",
-  "total": -14,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
-  "pool_entry_price": 78551.52,
-  "high_since": 78852.76,
-  "low_since": 78551.52,
-  "alert_count": 4
  },
  "FFUSDT": {
   "grade": "B",
-  "total": 24,
+  "total": 19,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-25T15:12:44.880151+00:00",
   "pool_entry_price": 0.09764,
@@ -921,53 +681,185 @@
   "low_since": 0.09764,
   "alert_count": 2
  },
- "牛来_USDT": {
+ "LIT_USDT": {
+  "grade": "B",
+  "total": 21,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-24T04:28:30.525522+00:00",
+  "pool_entry_price": 3.707,
+  "high_since": 3.707,
+  "low_since": 3.707,
+  "alert_count": 2
+ },
+ "FETUSDT": {
+  "grade": "C",
+  "total": -14,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-30T18:35:30.987908+00:00",
+  "pool_entry_price": 0.1603,
+  "high_since": 0.1603,
+  "low_since": 0.1603,
+  "alert_count": 2
+ },
+ "ZROUSDT": {
+  "grade": "C",
+  "total": -19,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-29T01:00:09.990155+00:00",
+  "pool_entry_price": 1.074,
+  "high_since": 1.074,
+  "low_since": 1.074,
+  "alert_count": 2
+ },
+ "QQQBUSDT": {
+  "grade": "B",
+  "total": 11,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-19T17:56:24.693187+00:00",
+  "pool_entry_price": 717.32,
+  "high_since": 717.5,
+  "low_since": 717.32,
+  "alert_count": 2
+ },
+ "ASTERUSDT": {
+  "grade": "C",
+  "total": -23,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T05:38:20.977671+00:00",
+  "pool_entry_price": 0.697,
+  "high_since": 0.697,
+  "low_since": 0.697,
+  "alert_count": 2
+ },
+ "BONKUSDT": {
+  "grade": "C",
+  "total": -12,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
+  "pool_entry_price": 3.22e-06,
+  "high_since": 3.22e-06,
+  "low_since": 3.22e-06,
+  "alert_count": 2
+ },
+ "DOTUSDT": {
+  "grade": "B",
+  "total": 9,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-29T13:26:17.404761+00:00",
+  "pool_entry_price": 0.838,
+  "high_since": 0.838,
+  "low_since": 0.838,
+  "alert_count": 2
+ },
+ "BCHUSDT": {
+  "grade": "C",
+  "total": -22,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
+  "pool_entry_price": 244.9,
+  "high_since": 244.9,
+  "low_since": 244.9,
+  "alert_count": 2
+ },
+ "CYS_USDT": {
+  "grade": "C",
+  "total": -11,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-27T00:44:40.294914+00:00",
+  "pool_entry_price": 0.8241,
+  "high_since": 0.8241,
+  "low_since": 0.8241,
+  "alert_count": 2
+ },
+ "PENGUUSDT": {
   "grade": "C",
   "total": -21,
-  "risk": 25,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "BICOUSDT": {
-  "grade": "D",
-  "total": -26,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_entry_price": 0.02144,
-  "high_since": 0.02144,
-  "low_since": 0.02144,
-  "alert_count": 1
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 0.008527,
+  "high_since": 0.008527,
+  "low_since": 0.008527,
+  "alert_count": 2
  },
- "MARSCOIN_USDT": {
-  "grade": "B",
-  "total": 16,
-  "risk": 45,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 0.07478,
-  "high_since": 0.07478,
-  "low_since": 0.07478,
-  "alert_count": 1
- },
- "CAKEUSDT": {
+ "SOXLBUSDT": {
   "grade": "C",
-  "total": -13,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "total": -8,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
-  "pool_entry_ts": "2026-08-25T21:02:36.290595+00:00",
-  "pool_entry_price": 1.714,
-  "high_since": 1.714,
-  "low_since": 1.714,
+  "pool_entry_ts": "2026-08-30T05:38:20.977671+00:00",
+  "pool_entry_price": 112.88,
+  "high_since": 112.88,
+  "low_since": 112.88,
+  "alert_count": 2
+ },
+ "POLUSDT": {
+  "grade": "C",
+  "total": -7,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-29T19:51:02.868518+00:00",
+  "pool_entry_price": 0.10252,
+  "high_since": 0.10252,
+  "low_since": 0.10159,
+  "alert_count": 2
+ },
+ "MUBUSDT": {
+  "grade": "C",
+  "total": -25,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 915.47,
+  "high_since": 918.35,
+  "low_since": 915.47,
+  "alert_count": 2
+ },
+ "ACTUSDT": {
+  "grade": "C",
+  "total": -21,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "HBARUSDT": {
+  "grade": "C",
+  "total": -5,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-28T04:55:29.178964+00:00",
+  "pool_entry_price": 0.07755,
+  "high_since": 0.07755,
+  "low_since": 0.07755,
   "alert_count": 2
  },
  "CHIPUSDT": {
   "grade": "B",
-  "total": 20,
+  "total": 8,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-30T10:41:16.613511+00:00",
   "pool_entry_price": 0.03925,
@@ -975,15 +867,69 @@
   "low_since": 0.03925,
   "alert_count": 2
  },
+ "MARSCOIN_USDT": {
+  "grade": "B",
+  "total": 1,
+  "risk": 45,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
+  "pool_entry_price": 0.07478,
+  "high_since": 0.07478,
+  "low_since": 0.07478,
+  "alert_count": 1
+ },
+ "SKR_USDT": {
+  "grade": "C",
+  "total": -17,
+  "risk": 25,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
+  "pool_entry_price": 0.032178,
+  "high_since": 0.032178,
+  "low_since": 0.032178,
+  "alert_count": 2
+ },
+ "MORPHOUSDT": {
+  "grade": "C",
+  "total": -13,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-23T11:53:06.326418+00:00",
+  "pool_entry_price": 2.437,
+  "high_since": 2.894,
+  "low_since": 2.437,
+  "alert_count": 2
+ },
+ "龙虾_USDT": {
+  "grade": "B",
+  "total": 9,
+  "risk": 45,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-25T21:39:01.240048+00:00",
+  "pool_entry_price": 0.035329,
+  "high_since": 0.046739,
+  "low_since": 0.035329,
+  "alert_count": 2
+ },
+ "牛来_USDT": {
+  "grade": "C",
+  "total": -21,
+  "risk": 45,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
  "SKYUSDT": {
   "grade": "A",
-  "total": 36,
+  "total": 31,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
   "pool_entry_price": 0.07182,
-  "high_since": 0.07182,
+  "high_since": 0.07212,
   "low_since": 0.07182,
   "alert_count": 1
  },
@@ -991,7 +937,7 @@
   "grade": "B",
   "total": 19,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
   "pool_entry_price": 2.191,
@@ -999,77 +945,47 @@
   "low_since": 2.191,
   "alert_count": 2
  },
- "NOTUSDT": {
-  "grade": "C",
-  "total": -11,
+ "TWTUSDT": {
+  "grade": "B",
+  "total": 2,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
-  "pool_entry_price": 0.000515,
-  "high_since": 0.000515,
-  "low_since": 0.000515,
-  "alert_count": 2
- },
- "JSTUSDT": {
-  "grade": "C",
-  "total": -10,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-31T21:32:29.418047+00:00",
-  "pool_entry_price": 0.09962,
-  "high_since": 0.10187,
-  "low_since": 0.09962,
+  "pool_entry_price": 0.5292,
+  "high_since": 0.5292,
+  "low_since": 0.5292,
   "alert_count": 2
  },
- "HNT_USDT": {
+ "ZENUSDT": {
   "grade": "C",
-  "total": -12,
+  "total": -15,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
-  "pool_entry_ts": "2026-08-29T01:00:09.990155+00:00",
-  "pool_entry_price": 0.2487,
-  "high_since": 0.2956,
-  "low_since": 0.2487,
-  "alert_count": 1
- },
- "ATMUSDT": {
-  "grade": "B",
-  "total": 3,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "ZKCUSDT": {
-  "grade": "C",
-  "total": -18,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-30T05:38:20.977671+00:00",
-  "pool_entry_price": 0.0451,
-  "high_since": 0.0451,
-  "low_since": 0.0451,
+  "pool_entry_ts": "2026-08-21T21:43:04.306210+00:00",
+  "pool_entry_price": 5.115,
+  "high_since": 5.961,
+  "low_since": 5.115,
   "alert_count": 2
  },
- "VIRTUALUSDT": {
+ "CAKEUSDT": {
   "grade": "C",
-  "total": -8,
+  "total": -16,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-25T21:02:36.290595+00:00",
-  "pool_entry_price": 0.733,
-  "high_since": 0.733,
-  "low_since": 0.733,
+  "pool_entry_price": 1.714,
+  "high_since": 1.714,
+  "low_since": 1.714,
   "alert_count": 2
  },
  "ETHFIUSDT": {
-  "grade": "C",
-  "total": -1,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "grade": "B",
+  "total": 7,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-31T21:32:29.418047+00:00",
   "pool_entry_price": 0.5686,
@@ -1077,23 +993,89 @@
   "low_since": 0.5686,
   "alert_count": 2
  },
- "USELESS_USDT": {
+ "ICPUSDT": {
   "grade": "B",
-  "total": 17,
+  "total": 23,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-23T03:42:55.479559+00:00",
+  "pool_entry_price": 2.284,
+  "high_since": 2.284,
+  "low_since": 2.284,
+  "alert_count": 2
+ },
+ "ATMUSDT": {
+  "grade": "B",
+  "total": 2,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "BICOUSDT": {
+  "grade": "C",
+  "total": -20,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
+  "pool_entry_price": 0.02144,
+  "high_since": 0.02144,
+  "low_since": 0.02144,
+  "alert_count": 2
+ },
+ "VIRTUALUSDT": {
+  "grade": "C",
+  "total": -16,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-25T21:02:36.290595+00:00",
+  "pool_entry_price": 0.733,
+  "high_since": 0.733,
+  "low_since": 0.733,
+  "alert_count": 2
+ },
+ "SKHYBUSDT": {
+  "grade": "D",
+  "total": -28,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 159.96,
+  "high_since": 159.96,
+  "low_since": 159.96,
+  "alert_count": 1
+ },
+ "JSTUSDT": {
+  "grade": "B",
+  "total": 15,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-31T21:32:29.418047+00:00",
-  "pool_entry_price": 0.09205,
-  "high_since": 0.09205,
-  "low_since": 0.09205,
+  "pool_entry_price": 0.09962,
+  "high_since": 0.10187,
+  "low_since": 0.09962,
   "alert_count": 2
+ },
+ "METABUSDT": {
+  "grade": "S",
+  "total": 51,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 580.56,
+  "high_since": 580.56,
+  "low_since": 580.56,
+  "alert_count": 1
  },
  "WLFIUSDT": {
   "grade": "C",
-  "total": -21,
+  "total": -3,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
   "pool_entry_price": 0.0554,
@@ -1101,11 +1083,35 @@
   "low_since": 0.0554,
   "alert_count": 2
  },
+ "HNT_USDT": {
+  "grade": "C",
+  "total": -18,
+  "risk": 25,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-29T01:00:09.990155+00:00",
+  "pool_entry_price": 0.2487,
+  "high_since": 0.2956,
+  "low_since": 0.2487,
+  "alert_count": 1
+ },
+ "WBTCUSDT": {
+  "grade": "C",
+  "total": -19,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
+  "pool_entry_price": 78551.52,
+  "high_since": 78852.76,
+  "low_since": 78551.52,
+  "alert_count": 4
+ },
  "DEXEUSDT": {
   "grade": "C",
-  "total": -9,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "total": -20,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
   "pool_entry_price": 2.05,
@@ -1113,47 +1119,47 @@
   "low_since": 2.05,
   "alert_count": 2
  },
- "ZORA_USDT": {
+ "ZKCUSDT": {
   "grade": "C",
-  "total": -15,
-  "risk": 25,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "total": -16,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
-  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
-  "pool_entry_price": 0.008565,
-  "high_since": 0.008565,
-  "low_since": 0.008565,
+  "pool_entry_ts": "2026-08-30T05:38:20.977671+00:00",
+  "pool_entry_price": 0.0451,
+  "high_since": 0.0451,
+  "low_since": 0.0451,
   "alert_count": 2
  },
- "SKHYBUSDT": {
+ "NOTUSDT": {
   "grade": "C",
-  "total": -24,
+  "total": -14,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 161.62,
-  "high_since": 161.62,
-  "low_since": 161.62,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
+  "pool_entry_price": 0.000515,
+  "high_since": 0.000515,
+  "low_since": 0.000515,
   "alert_count": 2
  },
- "SOMIUSDT": {
+ "ZKUSDT": {
   "grade": "C",
-  "total": -20,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T21:32:54.867043+00:00",
-  "pool_entry_price": 0.1129,
-  "high_since": 0.1129,
-  "low_since": 0.108,
+  "total": -17,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-30T05:38:20.977671+00:00",
+  "pool_entry_price": 0.00858,
+  "high_since": 0.00962,
+  "low_since": 0.00858,
   "alert_count": 2
  },
  "GIGGLEUSDT": {
   "grade": "C",
-  "total": -10,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "total": -22,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-25T22:38:59.789016+00:00",
   "pool_entry_price": 33.62,
@@ -1163,9 +1169,9 @@
  },
  "SHIBUSDT": {
   "grade": "B",
-  "total": 5,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "total": 1,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-25T23:34:35.961863+00:00",
   "pool_entry_price": 5.3e-06,
@@ -1173,47 +1179,23 @@
   "low_since": 5.26e-06,
   "alert_count": 2
  },
- "BERAUSDT": {
+ "SOMIUSDT": {
   "grade": "C",
-  "total": -1,
+  "total": -23,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
-  "pool_entry_price": 0.1854,
-  "high_since": 0.1854,
-  "low_since": 0.1854,
-  "alert_count": 2
- },
- "ZKUSDT": {
-  "grade": "B",
-  "total": 3,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-30T05:38:20.977671+00:00",
-  "pool_entry_price": 0.00858,
-  "high_since": 0.00962,
-  "low_since": 0.00858,
-  "alert_count": 2
- },
- "ICPUSDT": {
-  "grade": "B",
-  "total": 10,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
-  "pool_entry_ts": "2026-08-23T03:42:55.479559+00:00",
-  "pool_entry_price": 2.284,
-  "high_since": 2.284,
-  "low_since": 2.284,
+  "pool_entry_ts": "2026-08-30T21:32:54.867043+00:00",
+  "pool_entry_price": 0.1129,
+  "high_since": 0.1129,
+  "low_since": 0.108,
   "alert_count": 2
  },
  "STRKUSDT": {
   "grade": "B",
-  "total": 14,
+  "total": 4,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-25T21:39:01.240048+00:00",
   "pool_entry_price": 0.02578,
@@ -1221,11 +1203,23 @@
   "low_since": 0.02553,
   "alert_count": 2
  },
+ "USELESS_USDT": {
+  "grade": "B",
+  "total": 24,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-31T21:32:29.418047+00:00",
+  "pool_entry_price": 0.09205,
+  "high_since": 0.09205,
+  "low_since": 0.09205,
+  "alert_count": 2
+ },
  "AKE_USDT": {
   "grade": "B",
-  "total": 3,
+  "total": 5,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-19T15:16:36.620122+00:00",
   "pool_entry_price": 0.0085609,
@@ -1233,23 +1227,17 @@
   "low_since": 0.0085609,
   "alert_count": 2
  },
- "LDOUSDT": {
-  "grade": "B",
-  "total": 1,
+ "DOGSUSDT": {
+  "grade": "C",
+  "total": -5,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-26T09:41:47.326449+00:00",
-  "pool_entry_price": 0.3512,
-  "high_since": 0.3512,
-  "low_since": 0.3512,
-  "alert_count": 2
+  "ts": "2026-09-01T18:31:59.757845+00:00"
  },
  "IQUSDT": {
   "grade": "B",
-  "total": 15,
-  "risk": 45,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "total": 7,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
   "pool_entry_price": 0.000885,
@@ -1259,9 +1247,9 @@
  },
  "TIAUSDT": {
   "grade": "B",
-  "total": 19,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "total": 2,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
   "pool_entry_price": 0.3212,
@@ -1269,41 +1257,11 @@
   "low_since": 0.3212,
   "alert_count": 2
  },
- "ONTUSDT": {
-  "grade": "C",
-  "total": -11,
-  "risk": 40,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
-  "pool_entry_price": 0.0523,
-  "high_since": 0.0523,
-  "low_since": 0.0523,
-  "alert_count": 2
- },
- "PENDLEUSDT": {
-  "grade": "C",
-  "total": -4,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-30T15:02:24.381026+00:00",
-  "pool_entry_price": 1.769,
-  "high_since": 1.82,
-  "low_since": 1.769,
-  "alert_count": 2
- },
- "CASHCAT_USDT": {
-  "grade": "B",
-  "total": 4,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
  "PLUMEUSDT": {
   "grade": "C",
-  "total": -15,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "total": -22,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-30T15:02:24.381026+00:00",
   "pool_entry_price": 0.01496,
@@ -1311,11 +1269,59 @@
   "low_since": 0.01496,
   "alert_count": 2
  },
- "PYTHUSDT": {
+ "PENDLEUSDT": {
+  "grade": "C",
+  "total": -3,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-30T15:02:24.381026+00:00",
+  "pool_entry_price": 1.769,
+  "high_since": 1.82,
+  "low_since": 1.769,
+  "alert_count": 2
+ },
+ "LDOUSDT": {
   "grade": "B",
   "total": 1,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-26T09:41:47.326449+00:00",
+  "pool_entry_price": 0.3512,
+  "high_since": 0.3512,
+  "low_since": 0.3512,
+  "alert_count": 2
+ },
+ "ZORA_USDT": {
+  "grade": "C",
+  "total": -18,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
+  "pool_entry_price": 0.008565,
+  "high_since": 0.008565,
+  "low_since": 0.008565,
+  "alert_count": 2
+ },
+ "SEIUSDT": {
+  "grade": "A",
+  "total": 35,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 0.04626,
+  "high_since": 0.04626,
+  "low_since": 0.04626,
+  "alert_count": 1
+ },
+ "PYTHUSDT": {
+  "grade": "C",
+  "total": -2,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-09-01T00:45:53.367527+00:00",
   "pool_entry_price": 0.04992,
@@ -1323,35 +1329,11 @@
   "low_since": 0.04992,
   "alert_count": 2
  },
- "MITOUSDT": {
-  "grade": "C",
-  "total": -13,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 0.0219,
-  "high_since": 0.0219,
-  "low_since": 0.02189,
-  "alert_count": 2
- },
- "FLOCK_USDT": {
-  "grade": "C",
-  "total": -17,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
-  "pool_entry_price": 0.04098,
-  "high_since": 0.04098,
-  "low_since": 0.04098,
-  "alert_count": 2
- },
  "BEAT_USDT": {
-  "grade": "C",
-  "total": -2,
+  "grade": "B",
+  "total": 12,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-29T07:48:52.450855+00:00",
   "pool_entry_price": 0.15433,
@@ -1359,41 +1341,47 @@
   "low_since": 0.15433,
   "alert_count": 2
  },
- "WPAY_USDT": {
+ "ONTUSDT": {
   "grade": "B",
-  "total": 6,
+  "total": 1,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-20T11:36:27.556167+00:00",
-  "pool_entry_price": 0.78025,
-  "high_since": 0.78025,
-  "low_since": 0.78025,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
+  "pool_entry_price": 0.0523,
+  "high_since": 0.0523,
+  "low_since": 0.0523,
+  "alert_count": 2
+ },
+ "CASHCAT_USDT": {
+  "grade": "C",
+  "total": -14,
+  "risk": 25,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "MITOUSDT": {
+  "grade": "C",
+  "total": -22,
+  "risk": 25,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 0.0219,
+  "high_since": 0.0219,
+  "low_since": 0.02189,
   "alert_count": 2
  },
  "STRAXUSDT": {
   "grade": "C",
-  "total": -10,
-  "risk": 25,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "MIRAUSDT": {
-  "grade": "C",
-  "total": -12,
+  "total": -13,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-30T21:32:54.867043+00:00",
-  "pool_entry_price": 0.04556,
-  "high_since": 0.04556,
-  "low_since": 0.04556,
-  "alert_count": 2
+  "ts": "2026-09-01T18:31:59.757845+00:00"
  },
  "RENDERUSDT": {
-  "grade": "B",
-  "total": 8,
+  "grade": "C",
+  "total": -11,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
   "pool_entry_price": 1.386,
@@ -1403,9 +1391,9 @@
  },
  "STXUSDT": {
   "grade": "B",
-  "total": 11,
+  "total": 1,
   "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-25T06:04:32.562824+00:00",
   "pool_entry_price": 0.2782,
@@ -1413,125 +1401,23 @@
   "low_since": 0.2779,
   "alert_count": 2
  },
- "龙虾_USDT": {
-  "grade": "B",
-  "total": 8,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-25T21:39:01.240048+00:00",
-  "pool_entry_price": 0.035329,
-  "high_since": 0.046739,
-  "low_since": 0.035329,
-  "alert_count": 2
- },
- "FLR_USDT": {
-  "grade": "C",
-  "total": -6,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "HOODBUSDT": {
-  "grade": "B",
-  "total": 1,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
-  "pool_entry_price": 108.57,
-  "high_since": 108.57,
-  "low_since": 107.45,
-  "alert_count": 2
- },
- "EIGENUSDT": {
-  "grade": "B",
-  "total": 2,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-26T15:51:14.573369+00:00",
-  "pool_entry_price": 0.1998,
-  "high_since": 0.1998,
-  "low_since": 0.1973,
-  "alert_count": 2
- },
- "币安人生USDT": {
-  "grade": "C",
-  "total": -16,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T21:32:54.867043+00:00",
-  "pool_entry_price": 0.4936,
-  "high_since": 0.4936,
-  "low_since": 0.4775,
-  "alert_count": 2
- },
- "ALGOUSDT": {
-  "grade": "B",
-  "total": 1,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-26T09:41:47.326449+00:00",
-  "pool_entry_price": 0.089,
-  "high_since": 0.089,
-  "low_since": 0.0889,
-  "alert_count": 2
- },
- "GOOGLBUSDT": {
-  "grade": "C",
-  "total": -10,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 337.41,
-  "high_since": 337.41,
-  "low_since": 337.41,
-  "alert_count": 2
- },
- "KITEUSDT": {
-  "grade": "B",
-  "total": 18,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 0.1183,
-  "high_since": 0.1183,
-  "low_since": 0.1183,
-  "alert_count": 2
- },
- "MRVLBUSDT": {
+ "HEIUSDT": {
   "grade": "B",
   "total": 10,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
-  "pool_entry_price": 210.32,
-  "high_since": 210.32,
-  "low_since": 210.32,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-26T18:28:05.548669+00:00",
+  "pool_entry_price": 0.1482,
+  "high_since": 0.1619,
+  "low_since": 0.1482,
   "alert_count": 2
  },
- "RUNEUSDT": {
-  "grade": "D",
-  "total": -28,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_entry_price": 0.478,
-  "high_since": 0.478,
-  "low_since": 0.478,
-  "alert_count": 1
- },
  "JASMYUSDT": {
-  "grade": "B",
-  "total": 3,
+  "grade": "C",
+  "total": -12,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-30T21:32:54.867043+00:00",
   "pool_entry_price": 0.00448,
@@ -1539,47 +1425,155 @@
   "low_since": 0.00427,
   "alert_count": 2
  },
- "ENSUSDT": {
-  "grade": "B",
-  "total": 0,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 5.51,
-  "high_since": 5.51,
-  "low_since": 5.51,
-  "alert_count": 2
- },
- "MANTRAUSDT": {
+ "FLOCK_USDT": {
   "grade": "C",
-  "total": -7,
+  "total": -17,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T00:45:53.367527+00:00",
-  "pool_entry_price": 0.00443,
-  "high_since": 0.00443,
-  "low_since": 0.00443,
+  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
+  "pool_entry_price": 0.04098,
+  "high_since": 0.04098,
+  "low_since": 0.04098,
   "alert_count": 2
  },
- "LAUSDT": {
+ "WPAY_USDT": {
+  "grade": "B",
+  "total": 6,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-20T11:36:27.556167+00:00",
+  "pool_entry_price": 0.78025,
+  "high_since": 0.78025,
+  "low_since": 0.78025,
+  "alert_count": 2
+ },
+ "HOODBUSDT": {
+  "grade": "C",
+  "total": -21,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
+  "pool_entry_price": 108.57,
+  "high_since": 108.57,
+  "low_since": 107.45,
+  "alert_count": 2
+ },
+ "KORUBUSDT": {
+  "grade": "D",
+  "total": -27,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 19.09,
+  "high_since": 19.09,
+  "low_since": 19.09,
+  "alert_count": 1
+ },
+ "ALGOUSDT": {
+  "grade": "C",
+  "total": -11,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-26T09:41:47.326449+00:00",
+  "pool_entry_price": 0.089,
+  "high_since": 0.089,
+  "low_since": 0.0889,
+  "alert_count": 2
+ },
+ "EIGENUSDT": {
+  "grade": "C",
+  "total": -14,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-26T15:51:14.573369+00:00",
+  "pool_entry_price": 0.1998,
+  "high_since": 0.1998,
+  "low_since": 0.1973,
+  "alert_count": 2
+ },
+ "MIRAUSDT": {
   "grade": "C",
   "total": -21,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-30T21:32:54.867043+00:00",
-  "pool_entry_price": 0.0595,
-  "high_since": 0.0595,
-  "low_since": 0.0595,
+  "pool_entry_price": 0.04556,
+  "high_since": 0.04556,
+  "low_since": 0.04556,
+  "alert_count": 2
+ },
+ "KITEUSDT": {
+  "grade": "B",
+  "total": 6,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 0.1183,
+  "high_since": 0.1183,
+  "low_since": 0.1183,
+  "alert_count": 2
+ },
+ "币安人生USDT": {
+  "grade": "C",
+  "total": -10,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T21:32:54.867043+00:00",
+  "pool_entry_price": 0.4936,
+  "high_since": 0.4936,
+  "low_since": 0.4775,
+  "alert_count": 2
+ },
+ "RUNEUSDT": {
+  "grade": "D",
+  "total": -35,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
+  "pool_entry_price": 0.478,
+  "high_since": 0.478,
+  "low_since": 0.473,
+  "alert_count": 1
+ },
+ "BERAUSDT": {
+  "grade": "C",
+  "total": -10,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
+  "pool_entry_price": 0.1854,
+  "high_since": 0.1854,
+  "low_since": 0.1854,
+  "alert_count": 2
+ },
+ "MRVLBUSDT": {
+  "grade": "B",
+  "total": 11,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
+  "pool_entry_price": 210.32,
+  "high_since": 210.32,
+  "low_since": 210.32,
   "alert_count": 2
  },
  "BOMEUSDT": {
   "grade": "C",
-  "total": -11,
+  "total": -19,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
   "pool_entry_price": 0.0008953,
@@ -1587,23 +1581,59 @@
   "low_since": 0.0008953,
   "alert_count": 2
  },
- "MINAUSDT": {
-  "grade": "B",
-  "total": 18,
+ "ENSUSDT": {
+  "grade": "C",
+  "total": -15,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 5.51,
+  "high_since": 5.51,
+  "low_since": 5.51,
+  "alert_count": 2
+ },
+ "ZAMAUSDT": {
+  "grade": "C",
+  "total": -16,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
-  "pool_entry_ts": "2026-08-21T19:32:48.834122+00:00",
-  "pool_entry_price": 0.0541,
-  "high_since": 0.0567,
-  "low_since": 0.0537,
+  "pool_entry_ts": "2026-08-30T18:35:30.987908+00:00",
+  "pool_entry_price": 0.05417,
+  "high_since": 0.05417,
+  "low_since": 0.05417,
+  "alert_count": 2
+ },
+ "AXSUSDT": {
+  "grade": "C",
+  "total": -7,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
+  "pool_entry_price": 0.922,
+  "high_since": 0.922,
+  "low_since": 0.922,
+  "alert_count": 2
+ },
+ "GOOGLBUSDT": {
+  "grade": "C",
+  "total": -25,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
+  "pool_entry_price": 337.41,
+  "high_since": 337.41,
+  "low_since": 337.41,
   "alert_count": 2
  },
  "AEROUSDT": {
   "grade": "C",
-  "total": -11,
+  "total": -17,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-28T17:14:59.480260+00:00",
   "pool_entry_price": 0.498,
@@ -1611,59 +1641,23 @@
   "low_since": 0.498,
   "alert_count": 2
  },
- "CFGUSDT": {
-  "grade": "B",
-  "total": 8,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T00:22:08.238377+00:00",
-  "pool_entry_price": 0.1229,
-  "high_since": 0.1229,
-  "low_since": 0.1229,
-  "alert_count": 2
- },
- "CVXUSDT": {
-  "grade": "B",
-  "total": 3,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-27T00:44:40.294914+00:00",
-  "pool_entry_price": 2.443,
-  "high_since": 2.443,
-  "low_since": 2.443,
-  "alert_count": 2
- },
- "KORUBUSDT": {
+ "MANTRAUSDT": {
   "grade": "C",
   "total": -10,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T21:32:54.867043+00:00",
-  "pool_entry_price": 21.24,
-  "high_since": 21.24,
-  "low_since": 20.47,
-  "alert_count": 2
- },
- "ANTFUN_USDT": {
-  "grade": "B",
-  "total": 7,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
-  "pool_entry_ts": "2026-08-27T10:37:59.640756+00:00",
-  "pool_entry_price": 0.04889,
-  "high_since": 0.04889,
-  "low_since": 0.04889,
+  "pool_entry_ts": "2026-09-01T00:45:53.367527+00:00",
+  "pool_entry_price": 0.00443,
+  "high_since": 0.00443,
+  "low_since": 0.00443,
   "alert_count": 2
  },
  "JTOUSDT": {
   "grade": "C",
-  "total": -18,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "total": -3,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-31T08:34:46.145111+00:00",
   "pool_entry_price": 0.4436,
@@ -1672,136 +1666,28 @@
   "alert_count": 2
  },
  "MUG_USDT": {
-  "grade": "B",
-  "total": 0,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "WIFUSDT": {
-  "grade": "B",
-  "total": 5,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 0.1875,
-  "high_since": 0.1875,
-  "low_since": 0.1875,
-  "alert_count": 2
- },
- "ATOMUSDT": {
   "grade": "C",
-  "total": -8,
+  "total": -15,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
-  "pool_entry_price": 1.468,
-  "high_since": 1.468,
-  "low_since": 1.468,
-  "alert_count": 2
+  "ts": "2026-09-01T18:31:59.757845+00:00"
  },
- "SEIUSDT": {
-  "grade": "B",
-  "total": 23,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 0.04358,
-  "high_since": 0.04381,
-  "low_since": 0.04358,
-  "alert_count": 2
- },
- "AXLUSDT": {
-  "grade": "C",
-  "total": -7,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
-  "pool_entry_price": 0.0428,
-  "high_since": 0.0428,
-  "low_since": 0.0428,
-  "alert_count": 2
- },
- "REUSDT": {
-  "grade": "C",
-  "total": -16,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-17T22:56:38.022888+00:00",
-  "pool_entry_price": 0.4024,
-  "high_since": 0.4024,
-  "low_since": 0.4024,
-  "alert_count": 2
- },
- "BBUSDT": {
-  "grade": "C",
-  "total": -9,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-22T21:32:27.186189+00:00",
-  "pool_entry_price": 0.00995,
-  "high_since": 0.00995,
-  "low_since": 0.00982,
-  "alert_count": 2
- },
- "SANDUSDT": {
-  "grade": "B",
-  "total": 7,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
-  "pool_entry_price": 0.03923,
-  "high_since": 0.03923,
-  "low_since": 0.03923,
-  "alert_count": 2
- },
- "HEIUSDT": {
-  "grade": "B",
-  "total": 2,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-26T18:28:05.548669+00:00",
-  "pool_entry_price": 0.1482,
-  "high_since": 0.1619,
-  "low_since": 0.1482,
-  "alert_count": 2
- },
- "ARMBUSDT": {
-  "grade": "C",
-  "total": -11,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
-  "pool_entry_price": 243.93,
-  "high_since": 243.93,
-  "low_since": 243.93,
-  "alert_count": 1
- },
- "AXSUSDT": {
+ "MINAUSDT": {
   "grade": "B",
   "total": 14,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
-  "pool_entry_price": 0.922,
-  "high_since": 0.922,
-  "low_since": 0.922,
+  "pool_entry_ts": "2026-08-21T19:32:48.834122+00:00",
+  "pool_entry_price": 0.0541,
+  "high_since": 0.0567,
+  "low_since": 0.0537,
   "alert_count": 2
  },
  "RAIN_USDT": {
   "grade": "C",
-  "total": -16,
+  "total": -19,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-25T19:26:55.510908+00:00",
   "pool_entry_price": 0.018667,
@@ -1809,401 +1695,71 @@
   "low_since": 0.018667,
   "alert_count": 2
  },
- "AUCTIONUSDT": {
+ "WIFUSDT": {
   "grade": "C",
-  "total": -18,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-30T10:41:16.613511+00:00",
-  "pool_entry_price": 3.708,
-  "high_since": 3.737,
-  "low_since": 3.708,
-  "alert_count": 1
- },
- "ZAMAUSDT": {
-  "grade": "C",
-  "total": -4,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-30T18:35:30.987908+00:00",
-  "pool_entry_price": 0.05417,
-  "high_since": 0.05417,
-  "low_since": 0.05417,
+  "total": -8,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 0.1875,
+  "high_since": 0.1875,
+  "low_since": 0.1875,
   "alert_count": 2
  },
- "TSLABUSDT": {
-  "grade": "C",
-  "total": -6,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
-  "pool_entry_price": 366.21,
-  "high_since": 366.21,
-  "low_since": 366.21,
-  "alert_count": 2
- },
- "ZKPUSDT": {
-  "grade": "C",
-  "total": -17,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-29T19:51:02.868518+00:00",
-  "pool_entry_price": 0.0482,
-  "high_since": 0.0482,
-  "low_since": 0.0482,
-  "alert_count": 2
- },
- "SNDKG_USDT": {
-  "grade": "B",
-  "total": 9,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "COTIUSDT": {
-  "grade": "B",
-  "total": 8,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-21T19:32:48.834122+00:00",
-  "pool_entry_price": 0.01239,
-  "high_since": 0.0138,
-  "low_since": 0.01239,
-  "alert_count": 2
- },
- "HUMAUSDT": {
-  "grade": "C",
-  "total": -13,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-28T04:55:29.178964+00:00",
-  "pool_entry_price": 0.02698,
-  "high_since": 0.02698,
-  "low_since": 0.02698,
-  "alert_count": 2
- },
- "SPYBUSDT": {
-  "grade": "A",
-  "total": 26,
-  "risk": 15,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_entry_price": 762.71,
-  "high_since": 762.71,
-  "low_since": 762.71,
-  "alert_count": 1
- },
- "AAPLBUSDT": {
-  "grade": "B",
-  "total": 21,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-24T14:19:55.279696+00:00",
-  "pool_entry_price": 313.03,
-  "high_since": 313.03,
-  "low_since": 311.85,
-  "alert_count": 2
- },
- "SPCXG_USDT": {
-  "grade": "B",
-  "total": 12,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
-  "pool_entry_price": 143.76,
-  "high_since": 143.76,
-  "low_since": 143.76,
-  "alert_count": 2
- },
- "NVDABUSDT": {
-  "grade": "C",
-  "total": -4,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-27T00:44:40.294914+00:00",
-  "pool_entry_price": 218.84,
-  "high_since": 224.36,
-  "low_since": 218.84,
-  "alert_count": 2
- },
- "VETUSDT": {
-  "grade": "C",
-  "total": -7,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-27T00:44:40.294914+00:00",
-  "pool_entry_price": 0.006619,
-  "high_since": 0.006619,
-  "low_since": 0.006619,
-  "alert_count": 2
- },
- "NILUSDT": {
+ "REUSDT": {
   "grade": "C",
   "total": -23,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-29T13:26:17.404761+00:00",
-  "pool_entry_price": 0.05695,
-  "high_since": 0.05695,
-  "low_since": 0.05695,
-  "alert_count": 2
- },
- "BANKUSDT": {
-  "grade": "C",
-  "total": -12,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 0.0346,
-  "high_since": 0.0346,
-  "low_since": 0.0346,
+  "pool_entry_ts": "2026-08-17T22:56:38.022888+00:00",
+  "pool_entry_price": 0.4024,
+  "high_since": 0.4024,
+  "low_since": 0.4024,
   "alert_count": 2
  },
- "REDUSDT": {
-  "grade": "B",
-  "total": 16,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 0.1097,
-  "high_since": 0.1097,
-  "low_since": 0.1097,
-  "alert_count": 2
- },
- "ANIMEUSDT": {
-  "grade": "C",
-  "total": -18,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
-  "pool_entry_price": 0.00297,
-  "high_since": 0.00297,
-  "low_since": 0.00297,
-  "alert_count": 2
- },
- "ETCUSDT": {
-  "grade": "C",
-  "total": -8,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 7.11,
-  "high_since": 7.11,
-  "low_since": 7.11,
-  "alert_count": 2
- },
- "ORDIUSDT": {
+ "CVXUSDT": {
   "grade": "C",
   "total": -1,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T21:32:54.867043+00:00",
-  "pool_entry_price": 3.966,
-  "high_since": 3.966,
-  "low_since": 3.766,
-  "alert_count": 2
- },
- "DODOUSDT": {
-  "grade": "B",
-  "total": 14,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
-  "pool_entry_price": 0.01876,
-  "high_since": 0.01876,
-  "low_since": 0.01876,
-  "alert_count": 2
- },
- "API3USDT": {
-  "grade": "B",
-  "total": 5,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 0.2293,
-  "high_since": 0.2293,
-  "low_since": 0.2293,
+  "pool_entry_ts": "2026-08-27T00:44:40.294914+00:00",
+  "pool_entry_price": 2.443,
+  "high_since": 2.443,
+  "low_since": 2.443,
   "alert_count": 2
  },
- "TSLAG_USDT": {
-  "grade": "C",
-  "total": -16,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "GALAUSDT": {
-  "grade": "B",
-  "total": 8,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-26T15:51:14.573369+00:00",
-  "pool_entry_price": 0.001743,
-  "high_since": 0.001744,
-  "low_since": 0.001725,
-  "alert_count": 2
- },
- "SUSHIUSDT": {
+ "CFGUSDT": {
   "grade": "B",
   "total": 0,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "INTCBUSDT": {
-  "grade": "B",
-  "total": 3,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 88.2,
-  "high_since": 88.2,
-  "low_since": 88.2,
+  "pool_entry_ts": "2026-08-30T00:22:08.238377+00:00",
+  "pool_entry_price": 0.1229,
+  "high_since": 0.1229,
+  "low_since": 0.1229,
   "alert_count": 2
  },
- "SPKUSDT": {
-  "grade": "B",
-  "total": 6,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-23T17:26:57.257561+00:00",
-  "pool_entry_price": 0.020802,
-  "high_since": 0.022829,
-  "low_since": 0.020802,
-  "alert_count": 2
- },
- "1MBABYDOGEUSDT": {
-  "grade": "B",
-  "total": 10,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "TNSRUSDT": {
-  "grade": "C",
-  "total": -8,
+ "DODOUSDT": {
+  "grade": "A",
+  "total": 25,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
-  "pool_entry_ts": "2026-08-30T15:02:24.381026+00:00",
-  "pool_entry_price": 0.0396,
-  "high_since": 0.0396,
-  "low_since": 0.0396,
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 0.01847,
+  "high_since": 0.01847,
+  "low_since": 0.01847,
   "alert_count": 1
- },
- "NVDAG_USDT": {
-  "grade": "C",
-  "total": -6,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "ERAUSDT": {
-  "grade": "C",
-  "total": -21,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-30T10:41:16.613511+00:00",
-  "pool_entry_price": 0.0604,
-  "high_since": 0.0621,
-  "low_since": 0.0604,
-  "alert_count": 2
- },
- "OPENUSDT": {
-  "grade": "C",
-  "total": -1,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T21:32:54.867043+00:00",
-  "pool_entry_price": 0.1467,
-  "high_since": 0.1467,
-  "low_since": 0.1324,
-  "alert_count": 2
- },
- "LAB_USDT": {
-  "grade": "C",
-  "total": -10,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-21T18:13:56.650340+00:00",
-  "pool_entry_price": 0.09132,
-  "high_since": 0.09132,
-  "low_since": 0.09132,
-  "alert_count": 2
- },
- "AMDG_USDT": {
-  "grade": "C",
-  "total": -22,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "IVVG_USDT": {
-  "grade": "C",
-  "total": -20,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "AMPUSDT": {
-  "grade": "C",
-  "total": -5,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-24T17:52:34.336145+00:00",
-  "pool_entry_price": 0.000557,
-  "high_since": 0.00056,
-  "low_since": 0.000557,
-  "alert_count": 2
- },
- "ROBOUSDT": {
-  "grade": "B",
-  "total": 3,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-29T17:20:28.737466+00:00",
-  "pool_entry_price": 0.01314,
-  "high_since": 0.01314,
-  "low_since": 0.01314,
-  "alert_count": 2
- },
- "RAYUSDT": {
-  "grade": "B",
-  "total": 1,
-  "risk": 15,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-30T15:02:24.381026+00:00",
-  "pool_entry_price": 0.8206,
-  "high_since": 0.8206,
-  "low_since": 0.8206,
-  "alert_count": 2
  },
  "SCRUSDT": {
   "grade": "C",
-  "total": -6,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "total": -3,
+  "risk": 25,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-29T22:10:22.348429+00:00",
   "pool_entry_price": 0.02293,
@@ -2211,245 +1767,317 @@
   "low_since": 0.02293,
   "alert_count": 2
  },
- "NBISBUSDT": {
+ "SANDUSDT": {
   "grade": "C",
-  "total": -23,
+  "total": -8,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 202.84,
-  "high_since": 202.84,
-  "low_since": 202.84,
-  "alert_count": 2
- },
- "AAPLG_USDT": {
-  "grade": "B",
-  "total": 21,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "HOMEUSDT": {
-  "grade": "D",
-  "total": -27,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 0.00601,
-  "high_since": 0.00601,
-  "low_since": 0.00593,
-  "alert_count": 1
- },
- "SPYG_USDT": {
-  "grade": "C",
-  "total": -12,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "NEIROUSDT": {
-  "grade": "C",
-  "total": -2,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T21:32:54.867043+00:00",
-  "pool_entry_price": 8.523e-05,
-  "high_since": 8.523e-05,
-  "low_since": 8.028e-05,
-  "alert_count": 2
- },
- "EDENUSDT": {
-  "grade": "B",
-  "total": 5,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-26T07:56:28.760624+00:00",
-  "pool_entry_price": 0.06068,
-  "high_since": 0.06068,
-  "low_since": 0.06068,
-  "alert_count": 2
- },
- "TSTUSDT": {
-  "grade": "C",
-  "total": -21,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 0.01569,
-  "high_since": 0.01569,
-  "low_since": 0.01569,
-  "alert_count": 2
- },
- "HOODG_USDT": {
-  "grade": "C",
-  "total": -12,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 107.61,
-  "high_since": 107.61,
-  "low_since": 107.61,
-  "alert_count": 2
- },
- "LITEBUSDT": {
-  "grade": "D",
-  "total": -37,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_entry_price": 868.92,
-  "high_since": 868.92,
-  "low_since": 868.92,
-  "alert_count": 1
- },
- "SNXXG_USDT": {
-  "grade": "C",
-  "total": -18,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "DRAMBUSDT": {
-  "grade": "C",
-  "total": -13,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 55.73,
-  "high_since": 55.73,
-  "low_since": 55.73,
-  "alert_count": 2
- },
- "HOLOUSDT": {
-  "grade": "C",
-  "total": -5,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 0.0626,
-  "high_since": 0.0634,
-  "low_since": 0.0626,
-  "alert_count": 2
- },
- "WMTG_USDT": {
-  "grade": "B",
-  "total": 19,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "LUNCUSDT": {
-  "grade": "B",
-  "total": 3,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 5.016e-05,
-  "high_since": 5.076e-05,
-  "low_since": 5.016e-05,
-  "alert_count": 2
- },
- "METAG_USDT": {
-  "grade": "B",
-  "total": 16,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
-  "pool_entry_price": 570.92,
-  "high_since": 570.92,
-  "low_since": 570.92,
-  "alert_count": 1
- },
- "FLOKIUSDT": {
-  "grade": "C",
-  "total": -6,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-22T02:40:38.243989+00:00",
-  "pool_entry_price": 2.998e-05,
-  "high_since": 3.064e-05,
-  "low_since": 2.998e-05,
-  "alert_count": 2
- },
- "BNSOLUSDT": {
-  "grade": "C",
-  "total": -20,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
-  "pool_entry_price": 114.5,
-  "high_since": 114.5,
-  "low_since": 114.5,
-  "alert_count": 1
- },
- "QQQG_USDT": {
-  "grade": "C",
-  "total": -16,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "APEUSDT": {
-  "grade": "B",
-  "total": 8,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-25T21:02:36.290595+00:00",
-  "pool_entry_price": 0.14,
-  "high_since": 0.14,
-  "low_since": 0.14,
-  "alert_count": 2
- },
- "SUPERUSDT": {
-  "grade": "B",
-  "total": 17,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
-  "pool_entry_price": 0.1107,
-  "high_since": 0.1107,
-  "low_since": 0.1107,
-  "alert_count": 1
+  "pool_entry_price": 0.03923,
+  "high_since": 0.03923,
+  "low_since": 0.03923,
+  "alert_count": 2
  },
- "IOSTUSDT": {
+ "ANTFUN_USDT": {
   "grade": "B",
-  "total": 20,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "total": 2,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 0.000622,
-  "high_since": 0.000622,
-  "low_since": 0.000622,
+  "pool_entry_ts": "2026-08-27T10:37:59.640756+00:00",
+  "pool_entry_price": 0.04889,
+  "high_since": 0.04889,
+  "low_since": 0.04889,
+  "alert_count": 2
+ },
+ "ARMBUSDT": {
+  "grade": "D",
+  "total": -26,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 233.75,
+  "high_since": 233.75,
+  "low_since": 233.75,
   "alert_count": 1
  },
- "GOOGLG_USDT": {
+ "ATOMUSDT": {
   "grade": "C",
   "total": -19,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
-  "pool_entry_price": 338.62,
-  "high_since": 338.62,
-  "low_since": 338.62,
+  "pool_entry_price": 1.468,
+  "high_since": 1.468,
+  "low_since": 1.468,
   "alert_count": 2
  },
- "BEBUSDT": {
-  "grade": "C",
-  "total": -13,
+ "SNDKG_USDT": {
+  "grade": "B",
+  "total": 6,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "AAPLBUSDT": {
+  "grade": "B",
+  "total": 18,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-24T14:19:55.279696+00:00",
+  "pool_entry_price": 313.03,
+  "high_since": 313.03,
+  "low_since": 311.85,
+  "alert_count": 2
+ },
+ "NVDABUSDT": {
+  "grade": "C",
+  "total": -8,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-27T00:44:40.294914+00:00",
+  "pool_entry_price": 218.84,
+  "high_since": 224.36,
+  "low_since": 218.84,
+  "alert_count": 2
+ },
+ "FLR_USDT": {
+  "grade": "C",
+  "total": -16,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "SPYBUSDT": {
+  "grade": "B",
+  "total": 20,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
+  "pool_entry_price": 762.71,
+  "high_since": 762.71,
+  "low_since": 762.71,
+  "alert_count": 2
+ },
+ "REDUSDT": {
+  "grade": "B",
+  "total": 20,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
+  "pool_entry_price": 0.1097,
+  "high_since": 0.1097,
+  "low_since": 0.1097,
+  "alert_count": 2
+ },
+ "LAUSDT": {
+  "grade": "C",
+  "total": -24,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-30T21:32:54.867043+00:00",
+  "pool_entry_price": 0.0595,
+  "high_since": 0.0595,
+  "low_since": 0.0595,
+  "alert_count": 2
+ },
+ "ROBOUSDT": {
+  "grade": "B",
+  "total": 0,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-29T17:20:28.737466+00:00",
+  "pool_entry_price": 0.01314,
+  "high_since": 0.01314,
+  "low_since": 0.01314,
+  "alert_count": 2
+ },
+ "ZKPUSDT": {
+  "grade": "C",
+  "total": -12,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-29T19:51:02.868518+00:00",
+  "pool_entry_price": 0.0482,
+  "high_since": 0.0482,
+  "low_since": 0.0482,
+  "alert_count": 2
+ },
+ "VETUSDT": {
+  "grade": "C",
+  "total": -12,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-27T00:44:40.294914+00:00",
+  "pool_entry_price": 0.006619,
+  "high_since": 0.006619,
+  "low_since": 0.006619,
+  "alert_count": 2
+ },
+ "NBISBUSDT": {
+  "grade": "D",
+  "total": -33,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 199.57,
+  "high_since": 199.57,
+  "low_since": 199.57,
+  "alert_count": 1
+ },
+ "INTCBUSDT": {
+  "grade": "C",
+  "total": -5,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 88.2,
+  "high_since": 88.2,
+  "low_since": 88.2,
+  "alert_count": 2
+ },
+ "SUSHIUSDT": {
+  "grade": "C",
+  "total": -11,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "SPCXG_USDT": {
+  "grade": "B",
+  "total": 4,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
+  "pool_entry_price": 143.76,
+  "high_since": 143.76,
+  "low_since": 143.76,
+  "alert_count": 2
+ },
+ "GALAUSDT": {
+  "grade": "B",
+  "total": 4,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-26T15:51:14.573369+00:00",
+  "pool_entry_price": 0.001743,
+  "high_since": 0.001744,
+  "low_since": 0.001725,
+  "alert_count": 2
+ },
+ "ORDIUSDT": {
+  "grade": "C",
+  "total": -8,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T21:32:54.867043+00:00",
+  "pool_entry_price": 3.966,
+  "high_since": 3.966,
+  "low_since": 3.766,
+  "alert_count": 2
+ },
+ "BBUSDT": {
+  "grade": "C",
+  "total": -16,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-22T21:32:27.186189+00:00",
+  "pool_entry_price": 0.00995,
+  "high_since": 0.00995,
+  "low_since": 0.00982,
+  "alert_count": 2
+ },
+ "SPKUSDT": {
+  "grade": "B",
+  "total": 3,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-23T17:26:57.257561+00:00",
+  "pool_entry_price": 0.020802,
+  "high_since": 0.022829,
+  "low_since": 0.020802,
+  "alert_count": 2
+ },
+ "NILUSDT": {
+  "grade": "D",
+  "total": -27,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 0.04894,
+  "high_since": 0.04894,
+  "low_since": 0.04894,
+  "alert_count": 1
+ },
+ "BANKUSDT": {
+  "grade": "C",
+  "total": -10,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 0.0346,
+  "high_since": 0.0346,
+  "low_since": 0.0346,
+  "alert_count": 2
+ },
+ "AUCTIONUSDT": {
+  "grade": "D",
+  "total": -26,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 3.2,
+  "high_since": 3.2,
+  "low_since": 3.2,
+  "alert_count": 1
+ },
+ "COTIUSDT": {
+  "grade": "C",
+  "total": -14,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-21T19:32:48.834122+00:00",
+  "pool_entry_price": 0.01239,
+  "high_since": 0.0138,
+  "low_since": 0.01239,
+  "alert_count": 2
+ },
+ "TSLAG_USDT": {
+  "grade": "C",
+  "total": -12,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "1MBABYDOGEUSDT": {
+  "grade": "B",
+  "total": 1,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "BEBUSDT": {
+  "grade": "B",
+  "total": 4,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
   "pool_entry_price": 202.44,
@@ -2457,35 +2085,215 @@
   "low_since": 202.44,
   "alert_count": 2
  },
- "BIOUSDT": {
+ "API3USDT": {
   "grade": "C",
-  "total": -22,
+  "total": -12,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T10:41:16.613511+00:00",
-  "pool_entry_price": 0.0273,
-  "high_since": 0.0273,
-  "low_since": 0.0273,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
+  "pool_entry_price": 0.2293,
+  "high_since": 0.2293,
+  "low_since": 0.2293,
   "alert_count": 2
  },
- "BELUSDT": {
-  "grade": "B",
-  "total": 6,
+ "TSLABUSDT": {
+  "grade": "C",
+  "total": -14,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
+  "pool_entry_price": 366.21,
+  "high_since": 366.21,
+  "low_since": 366.21,
+  "alert_count": 2
  },
- "LINEAUSDT": {
+ "NVDAG_USDT": {
+  "grade": "C",
+  "total": -14,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "RAYUSDT": {
+  "grade": "B",
+  "total": 0,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-30T15:02:24.381026+00:00",
+  "pool_entry_price": 0.8206,
+  "high_since": 0.8206,
+  "low_since": 0.8206,
+  "alert_count": 2
+ },
+ "LAB_USDT": {
+  "grade": "C",
+  "total": -16,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-21T18:13:56.650340+00:00",
+  "pool_entry_price": 0.09132,
+  "high_since": 0.09132,
+  "low_since": 0.09132,
+  "alert_count": 2
+ },
+ "AXLUSDT": {
+  "grade": "C",
+  "total": -16,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
+  "pool_entry_price": 0.0428,
+  "high_since": 0.0428,
+  "low_since": 0.0428,
+  "alert_count": 2
+ },
+ "OPENUSDT": {
+  "grade": "C",
+  "total": -16,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T21:32:54.867043+00:00",
+  "pool_entry_price": 0.1467,
+  "high_since": 0.1467,
+  "low_since": 0.1324,
+  "alert_count": 2
+ },
+ "IVVG_USDT": {
+  "grade": "C",
+  "total": -14,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "ETCUSDT": {
+  "grade": "C",
+  "total": -6,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 7.11,
+  "high_since": 7.11,
+  "low_since": 7.11,
+  "alert_count": 2
+ },
+ "DRAMBUSDT": {
+  "grade": "D",
+  "total": -33,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 54.95,
+  "high_since": 54.95,
+  "low_since": 54.95,
+  "alert_count": 1
+ },
+ "AMDG_USDT": {
+  "grade": "C",
+  "total": -18,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "ERAUSDT": {
+  "grade": "D",
+  "total": -31,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 0.057,
+  "high_since": 0.057,
+  "low_since": 0.057,
+  "alert_count": 1
+ },
+ "NEIROUSDT": {
+  "grade": "D",
+  "total": -26,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 8.414e-05,
+  "high_since": 8.414e-05,
+  "low_since": 8.414e-05,
+  "alert_count": 1
+ },
+ "HUMAUSDT": {
+  "grade": "C",
+  "total": -20,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-28T04:55:29.178964+00:00",
+  "pool_entry_price": 0.02698,
+  "high_since": 0.02698,
+  "low_since": 0.02698,
+  "alert_count": 2
+ },
+ "HOMEUSDT": {
+  "grade": "C",
+  "total": -20,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
+  "pool_entry_price": 0.00601,
+  "high_since": 0.00601,
+  "low_since": 0.00593,
+  "alert_count": 2
+ },
+ "TNSRUSDT": {
   "grade": "C",
   "total": -7,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-30T15:02:24.381026+00:00",
+  "pool_entry_price": 0.0396,
+  "high_since": 0.0396,
+  "low_since": 0.0396,
+  "alert_count": 1
+ },
+ "AAPLG_USDT": {
+  "grade": "B",
+  "total": 16,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "SPYG_USDT": {
+  "grade": "C",
+  "total": -17,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "SNXXG_USDT": {
+  "grade": "B",
+  "total": 7,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "HOODG_USDT": {
+  "grade": "C",
+  "total": -20,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
+  "pool_entry_price": 107.61,
+  "high_since": 107.61,
+  "low_since": 107.61,
+  "alert_count": 2
  },
  "KAITOUSDT": {
-  "grade": "B",
-  "total": 5,
+  "grade": "C",
+  "total": -1,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
   "pool_entry_price": 0.2935,
@@ -2493,71 +2301,83 @@
   "low_since": 0.2935,
   "alert_count": 2
  },
- "FARTCOIN_USDT": {
+ "BIOUSDT": {
   "grade": "C",
-  "total": -6,
+  "total": -24,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 0.17077,
-  "high_since": 0.17246,
-  "low_since": 0.17077,
+  "pool_entry_ts": "2026-08-30T10:41:16.613511+00:00",
+  "pool_entry_price": 0.0273,
+  "high_since": 0.0273,
+  "low_since": 0.0273,
   "alert_count": 2
  },
- "PGG_USDT": {
-  "grade": "C",
-  "total": -11,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 142.2,
-  "high_since": 142.2,
-  "low_since": 142.2,
-  "alert_count": 2
- },
- "AMZNG_USDT": {
-  "grade": "C",
-  "total": -16,
+ "LITEBUSDT": {
+  "grade": "D",
+  "total": -32,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
-  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
-  "pool_entry_price": 261.18,
-  "high_since": 261.18,
-  "low_since": 261.18,
+  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
+  "pool_entry_price": 868.92,
+  "high_since": 868.92,
+  "low_since": 868.92,
   "alert_count": 1
  },
- "SKHYG_USDT": {
-  "grade": "C",
-  "total": -13,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "MSFTG_USDT": {
+ "EDENUSDT": {
   "grade": "C",
   "total": -12,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "VVV_USDT": {
-  "grade": "C",
-  "total": -20,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
-  "pool_entry_ts": "2026-08-22T15:51:34.749996+00:00",
-  "pool_entry_price": 17.2407,
-  "high_since": 17.2407,
-  "low_since": 17.2407,
+  "pool_entry_ts": "2026-08-26T07:56:28.760624+00:00",
+  "pool_entry_price": 0.06068,
+  "high_since": 0.06068,
+  "low_since": 0.06068,
+  "alert_count": 2
+ },
+ "FLOKIUSDT": {
+  "grade": "C",
+  "total": -18,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-22T02:40:38.243989+00:00",
+  "pool_entry_price": 2.998e-05,
+  "high_since": 3.064e-05,
+  "low_since": 2.998e-05,
+  "alert_count": 2
+ },
+ "COINBUSDT": {
+  "grade": "B",
+  "total": 5,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
+  "pool_entry_price": 184.12,
+  "high_since": 184.12,
+  "low_since": 184.12,
+  "alert_count": 2
+ },
+ "LUNCUSDT": {
+  "grade": "C",
+  "total": -14,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 5.016e-05,
+  "high_since": 5.076e-05,
+  "low_since": 5.016e-05,
   "alert_count": 2
  },
  "CFXUSDT": {
-  "grade": "B",
-  "total": 12,
+  "grade": "C",
+  "total": -8,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-28T17:14:59.480260+00:00",
   "pool_entry_price": 0.04559,
@@ -2565,41 +2385,191 @@
   "low_since": 0.04559,
   "alert_count": 2
  },
- "DELLG_USDT": {
-  "grade": "D",
-  "total": -29,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_entry_price": 440.55,
-  "high_since": 440.55,
-  "low_since": 440.55,
-  "alert_count": 1
- },
- "ALLOUSDT": {
+ "ANIMEUSDT": {
   "grade": "C",
-  "total": -3,
+  "total": -22,
   "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-28T17:14:59.480260+00:00",
-  "pool_entry_price": 0.245,
-  "high_since": 0.245,
-  "low_since": 0.245,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
+  "pool_entry_price": 0.00297,
+  "high_since": 0.00297,
+  "low_since": 0.00297,
   "alert_count": 2
  },
- "ORCLG_USDT": {
+ "APEUSDT": {
+  "grade": "B",
+  "total": 3,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-25T21:02:36.290595+00:00",
+  "pool_entry_price": 0.14,
+  "high_since": 0.14,
+  "low_since": 0.14,
+  "alert_count": 2
+ },
+ "IOSTUSDT": {
+  "grade": "C",
+  "total": -5,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
+  "pool_entry_price": 0.000622,
+  "high_since": 0.000622,
+  "low_since": 0.000622,
+  "alert_count": 1
+ },
+ "METAG_USDT": {
+  "grade": "B",
+  "total": 5,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
+  "pool_entry_price": 570.92,
+  "high_since": 570.92,
+  "low_since": 570.92,
+  "alert_count": 1
+ },
+ "BELUSDT": {
+  "grade": "C",
+  "total": -12,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "LINEAUSDT": {
+  "grade": "C",
+  "total": -11,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "QQQG_USDT": {
+  "grade": "C",
+  "total": -14,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "TSTUSDT": {
   "grade": "C",
   "total": -19,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 0.01569,
+  "high_since": 0.01569,
+  "low_since": 0.01569,
+  "alert_count": 2
  },
- "MVLLBUSDT": {
+ "SUPERUSDT": {
+  "grade": "C",
+  "total": -7,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
+  "pool_entry_price": 0.1107,
+  "high_since": 0.1107,
+  "low_since": 0.1107,
+  "alert_count": 1
+ },
+ "GPSUSDT": {
+  "grade": "B",
+  "total": 16,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-25T21:39:01.240048+00:00",
+  "pool_entry_price": 0.01101,
+  "high_since": 0.01101,
+  "low_since": 0.01101,
+  "alert_count": 2
+ },
+ "AMZNG_USDT": {
+  "grade": "C",
+  "total": -18,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
+  "pool_entry_price": 261.18,
+  "high_since": 261.18,
+  "low_since": 261.18,
+  "alert_count": 1
+ },
+ "OPNUSDT": {
   "grade": "B",
   "total": 9,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
+  "pool_entry_price": 0.0518,
+  "high_since": 0.0518,
+  "low_since": 0.0518,
+  "alert_count": 2
+ },
+ "VVV_USDT": {
+  "grade": "C",
+  "total": -20,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-22T15:51:34.749996+00:00",
+  "pool_entry_price": 17.2407,
+  "high_since": 17.2407,
+  "low_since": 17.2407,
+  "alert_count": 2
+ },
+ "BABABUSDT": {
+  "grade": "D",
+  "total": -27,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 112.78,
+  "high_since": 112.78,
+  "low_since": 112.78,
+  "alert_count": 1
+ },
+ "FARTCOIN_USDT": {
+  "grade": "C",
+  "total": -18,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 0.17077,
+  "high_since": 0.17246,
+  "low_since": 0.17077,
+  "alert_count": 2
+ },
+ "WMTG_USDT": {
+  "grade": "B",
+  "total": 13,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "ORCLG_USDT": {
+  "grade": "D",
+  "total": -26,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 140.56,
+  "high_since": 140.56,
+  "low_since": 140.56,
+  "alert_count": 1
+ },
+ "MVLLBUSDT": {
+  "grade": "B",
+  "total": 5,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
   "pool_entry_price": 23.65,
@@ -2607,41 +2577,59 @@
   "low_since": 23.65,
   "alert_count": 1
  },
- "MOVRUSDT": {
+ "GOOGLG_USDT": {
   "grade": "C",
-  "total": -18,
+  "total": -20,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-22T02:40:38.243989+00:00",
-  "pool_entry_price": 0.835,
-  "high_since": 0.835,
-  "low_since": 0.835,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
+  "pool_entry_price": 338.62,
+  "high_since": 338.62,
+  "low_since": 338.62,
   "alert_count": 2
  },
- "MEGAUSDT": {
+ "UAI_USDT": {
+  "grade": "B",
+  "total": 22,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "FORMUSDT": {
+  "grade": "B",
+  "total": 20,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-26T05:25:41.188965+00:00",
+  "pool_entry_price": 0.2393,
+  "high_since": 0.2393,
+  "low_since": 0.2393,
+  "alert_count": 2
+ },
+ "MSFTG_USDT": {
   "grade": "C",
   "total": -10,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-23T16:31:41.555417+00:00",
-  "pool_entry_price": 0.04425,
-  "high_since": 0.04425,
-  "low_since": 0.04425,
-  "alert_count": 2
+  "ts": "2026-09-01T18:31:59.757845+00:00"
  },
- "AVGOG_USDT": {
+ "PGG_USDT": {
   "grade": "C",
-  "total": -13,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
+  "total": -4,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
+  "pool_entry_price": 142.2,
+  "high_since": 142.2,
+  "low_since": 142.2,
+  "alert_count": 2
  },
  "KAS_USDT": {
   "grade": "C",
-  "total": -21,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "total": -14,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-22T03:26:22.086604+00:00",
   "pool_entry_price": 0.03168,
@@ -2649,83 +2637,11 @@
   "low_since": 0.03168,
   "alert_count": 2
  },
- "INTCG_USDT": {
-  "grade": "C",
-  "total": -12,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "MUBARAKUSDT": {
-  "grade": "C",
-  "total": -5,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-26T09:41:47.326449+00:00",
-  "pool_entry_price": 0.01971,
-  "high_since": 0.01971,
-  "low_since": 0.01971,
-  "alert_count": 2
- },
- "BMNRBUSDT": {
-  "grade": "C",
-  "total": -16,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
-  "pool_entry_price": 23.69,
-  "high_since": 23.69,
-  "low_since": 23.69,
-  "alert_count": 1
- },
- "PORTALUSDT": {
-  "grade": "C",
-  "total": -17,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-26T05:25:41.188965+00:00",
-  "pool_entry_price": 0.02013,
-  "high_since": 0.0213,
-  "low_since": 0.02013,
-  "alert_count": 2
- },
- "1INCHUSDT": {
-  "grade": "C",
-  "total": -3,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "BABYUSDT": {
-  "grade": "C",
-  "total": -17,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 0.01202,
-  "high_since": 0.01202,
-  "low_since": 0.01202,
-  "alert_count": 1
- },
- "SKYAI_USDT": {
-  "grade": "C",
-  "total": -17,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-23T16:31:41.555417+00:00",
-  "pool_entry_price": 0.06208,
-  "high_since": 0.06208,
-  "low_since": 0.06208,
-  "alert_count": 2
- },
  "PEOPLEUSDT": {
-  "grade": "C",
-  "total": -6,
+  "grade": "B",
+  "total": 1,
   "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
   "pool_entry_price": 0.00788,
@@ -2733,23 +2649,77 @@
   "low_since": 0.00788,
   "alert_count": 2
  },
- "BARDUSDT": {
+ "MEGAUSDT": {
   "grade": "C",
-  "total": -18,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "total": -16,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
-  "pool_entry_ts": "2026-08-31T08:34:46.145111+00:00",
-  "pool_entry_price": 0.1314,
-  "high_since": 0.1314,
-  "low_since": 0.1314,
+  "pool_entry_ts": "2026-08-23T16:31:41.555417+00:00",
+  "pool_entry_price": 0.04425,
+  "high_since": 0.04425,
+  "low_since": 0.04425,
   "alert_count": 2
  },
- "ESPUSDT": {
-  "grade": "B",
-  "total": 15,
+ "DELLG_USDT": {
+  "grade": "D",
+  "total": -35,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
+  "pool_entry_price": 440.55,
+  "high_since": 440.55,
+  "low_since": 428.9,
+  "alert_count": 1
+ },
+ "WUSDT": {
+  "grade": "B",
+  "total": 10,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-28T04:55:29.178964+00:00",
+  "pool_entry_price": 0.00944,
+  "high_since": 0.00944,
+  "low_since": 0.00944,
+  "alert_count": 2
+ },
+ "BNSOLUSDT": {
+  "grade": "C",
+  "total": -24,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
+  "pool_entry_price": 114.5,
+  "high_since": 114.5,
+  "low_since": 114.5,
+  "alert_count": 1
+ },
+ "SKHYG_USDT": {
+  "grade": "C",
+  "total": -19,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "MOVRUSDT": {
+  "grade": "D",
+  "total": -29,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 0.772,
+  "high_since": 0.772,
+  "low_since": 0.772,
+  "alert_count": 1
+ },
+ "ESPUSDT": {
+  "grade": "C",
+  "total": -6,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-30T05:38:20.977671+00:00",
   "pool_entry_price": 0.08037,
@@ -2757,29 +2727,143 @@
   "low_since": 0.08037,
   "alert_count": 2
  },
+ "XAIUSDT": {
+  "grade": "C",
+  "total": -1,
+  "risk": 25,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "AVGOG_USDT": {
+  "grade": "C",
+  "total": -9,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
  "TREEUSDT": {
   "grade": "D",
-  "total": -29,
+  "total": -31,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
   "pool_entry_price": 0.0388,
   "high_since": 0.0388,
-  "low_since": 0.0388,
+  "low_since": 0.0385,
   "alert_count": 1
  },
- "CSCOG_USDT": {
+ "BABYUSDT": {
   "grade": "C",
-  "total": -15,
+  "total": -21,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 0.01202,
+  "high_since": 0.01202,
+  "low_since": 0.01202,
+  "alert_count": 1
+ },
+ "INTCG_USDT": {
+  "grade": "C",
+  "total": -2,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "1INCHUSDT": {
+  "grade": "C",
+  "total": -13,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "BMNRBUSDT": {
+  "grade": "D",
+  "total": -46,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 23.33,
+  "high_since": 23.33,
+  "low_since": 23.33,
+  "alert_count": 1
+ },
+ "ALLOUSDT": {
+  "grade": "C",
+  "total": -10,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-28T17:14:59.480260+00:00",
+  "pool_entry_price": 0.245,
+  "high_since": 0.245,
+  "low_since": 0.245,
+  "alert_count": 2
+ },
+ "MMTUSDT": {
+  "grade": "B",
+  "total": 7,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 0.154,
+  "high_since": 0.154,
+  "low_since": 0.154,
+  "alert_count": 2
+ },
+ "MRVLG_USDT": {
+  "grade": "B",
+  "total": 0,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
+  "pool_entry_price": 210.35,
+  "high_since": 210.35,
+  "low_since": 210.35,
+  "alert_count": 1
+ },
+ "ZBTUSDT": {
+  "grade": "C",
+  "total": -10,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-30T10:41:16.613511+00:00",
+  "pool_entry_price": 0.0851,
+  "high_since": 0.0851,
+  "low_since": 0.0851,
+  "alert_count": 2
+ },
+ "SUSDT": {
+  "grade": "C",
+  "total": -22,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 0.02729,
+  "high_since": 0.02729,
+  "low_since": 0.02729,
+  "alert_count": 2
+ },
+ "BARDUSDT": {
+  "grade": "C",
+  "total": -24,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-31T08:34:46.145111+00:00",
+  "pool_entry_price": 0.1314,
+  "high_since": 0.1314,
+  "low_since": 0.1314,
+  "alert_count": 2
  },
  "NFLXG_USDT": {
   "grade": "C",
-  "total": -7,
+  "total": -11,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
   "pool_entry_price": 80.98,
@@ -2787,11 +2871,35 @@
   "low_since": 80.75,
   "alert_count": 2
  },
+ "LITEG_USDT": {
+  "grade": "C",
+  "total": -20,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "BEG_USDT": {
+  "grade": "B",
+  "total": 10,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "SKYAI_USDT": {
+  "grade": "C",
+  "total": -12,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-23T16:31:41.555417+00:00",
+  "pool_entry_price": 0.06208,
+  "high_since": 0.06208,
+  "low_since": 0.06208,
+  "alert_count": 2
+ },
  "PROVEUSDT": {
   "grade": "C",
-  "total": -9,
+  "total": -21,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
   "pool_entry_price": 0.1854,
@@ -2801,9 +2909,9 @@
  },
  "MON_USDT": {
   "grade": "C",
-  "total": -19,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "total": -20,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-20T15:55:34.951372+00:00",
   "pool_entry_price": 0.02678,
@@ -2811,203 +2919,95 @@
   "low_since": 0.02678,
   "alert_count": 2
  },
- "BABABUSDT": {
+ "AMPUSDT": {
   "grade": "C",
-  "total": -7,
+  "total": -9,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
-  "pool_entry_price": 114.93,
-  "high_since": 114.93,
-  "low_since": 114.93,
-  "alert_count": 1
- },
- "LITEG_USDT": {
-  "grade": "C",
-  "total": -23,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "COINBUSDT": {
-  "grade": "C",
-  "total": -1,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 184.12,
-  "high_since": 184.12,
-  "low_since": 184.12,
-  "alert_count": 2
- },
- "MRVLG_USDT": {
-  "grade": "C",
-  "total": -5,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
-  "pool_entry_price": 210.35,
-  "high_since": 210.35,
-  "low_since": 210.35,
-  "alert_count": 1
- },
- "BEG_USDT": {
-  "grade": "C",
-  "total": -7,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "WALUSDT": {
-  "grade": "B",
-  "total": 8,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
-  "pool_entry_price": 0.0253,
-  "high_since": 0.0253,
-  "low_since": 0.0253,
+  "pool_entry_ts": "2026-08-24T17:52:34.336145+00:00",
+  "pool_entry_price": 0.000557,
+  "high_since": 0.00056,
+  "low_since": 0.000557,
   "alert_count": 2
  },
- "FORMUSDT": {
+ "QNTUSDT": {
   "grade": "B",
-  "total": 0,
+  "total": 19,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-26T05:25:41.188965+00:00",
-  "pool_entry_price": 0.2393,
-  "high_since": 0.2393,
-  "low_since": 0.2393,
-  "alert_count": 2
- },
- "HMSTRUSDT": {
-  "grade": "C",
-  "total": -20,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 0.0001683,
-  "high_since": 0.0001715,
-  "low_since": 0.0001683,
-  "alert_count": 2
- },
- "WUSDT": {
-  "grade": "B",
-  "total": 20,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-28T04:55:29.178964+00:00",
-  "pool_entry_price": 0.00944,
-  "high_since": 0.00944,
-  "low_since": 0.00944,
-  "alert_count": 2
- },
- "GT_USDT": {
-  "grade": "C",
-  "total": -14,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 8.07,
-  "high_since": 8.07,
-  "low_since": 8.07,
-  "alert_count": 2
- },
- "JPMG_USDT": {
-  "grade": "A",
-  "total": 31,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_entry_price": 357.88,
-  "high_since": 357.88,
-  "low_since": 357.88,
-  "alert_count": 1
+  "pool_entry_price": 63.22,
+  "high_since": 63.22,
+  "low_since": 63.22,
+  "alert_count": 2
  },
- "MMTUSDT": {
+ "CSCOG_USDT": {
   "grade": "C",
-  "total": -15,
+  "total": -16,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "MUBARAKUSDT": {
+  "grade": "D",
+  "total": -32,
   "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 0.154,
-  "high_since": 0.154,
-  "low_since": 0.154,
-  "alert_count": 2
- },
- "AMATG_USDT": {
-  "grade": "C",
-  "total": -15,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "SUSDT": {
-  "grade": "C",
-  "total": -2,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 0.02729,
-  "high_since": 0.02729,
-  "low_since": 0.02729,
-  "alert_count": 2
- },
- "PLTRG_USDT": {
-  "grade": "C",
-  "total": -13,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "VELODROMEUSDT": {
-  "grade": "C",
-  "total": -1,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "XAIUSDT": {
-  "grade": "B",
-  "total": 3,
-  "risk": 25,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "WDCG_USDT": {
-  "grade": "B",
-  "total": 10,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 441.92,
-  "high_since": 441.92,
-  "low_since": 441.92,
-  "alert_count": 2
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 0.02055,
+  "high_since": 0.02055,
+  "low_since": 0.02055,
+  "alert_count": 1
  },
  "QCOMG_USDT": {
   "grade": "C",
-  "total": -10,
+  "total": -18,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
+  "ts": "2026-09-01T18:31:59.757845+00:00"
  },
- "LLYG_USDT": {
+ "PLTRG_USDT": {
+  "grade": "C",
+  "total": -24,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "DYDXUSDT": {
   "grade": "B",
   "total": 9,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "AMATG_USDT": {
+  "grade": "C",
+  "total": -23,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "HOLOUSDT": {
+  "grade": "C",
+  "total": -17,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 0.0626,
+  "high_since": 0.0634,
+  "low_since": 0.0626,
+  "alert_count": 2
+ },
+ "LLYG_USDT": {
+  "grade": "B",
+  "total": 3,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
  },
  "CVXG_USDT": {
   "grade": "B",
-  "total": 11,
+  "total": 21,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
   "pool_entry_price": 207.86,
@@ -3015,35 +3015,11 @@
   "low_since": 207.86,
   "alert_count": 2
  },
- "ARMG_USDT": {
-  "grade": "C",
-  "total": -11,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "KOG_USDT": {
-  "grade": "C",
-  "total": -10,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "SAHARAUSDT": {
-  "grade": "C",
-  "total": -18,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-27T00:44:40.294914+00:00",
-  "pool_entry_price": 0.00842,
-  "high_since": 0.00842,
-  "low_since": 0.00842,
-  "alert_count": 2
- },
  "GLWG_USDT": {
   "grade": "C",
-  "total": -19,
+  "total": -14,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
   "pool_entry_price": 145.52,
@@ -3051,35 +3027,65 @@
   "low_since": 145.52,
   "alert_count": 2
  },
- "ZBTUSDT": {
+ "WALUSDT": {
   "grade": "C",
-  "total": -12,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "total": -9,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
-  "pool_entry_ts": "2026-08-30T10:41:16.613511+00:00",
-  "pool_entry_price": 0.0851,
-  "high_since": 0.0851,
-  "low_since": 0.0851,
+  "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
+  "pool_entry_price": 0.0253,
+  "high_since": 0.0253,
+  "low_since": 0.0253,
+  "alert_count": 2
+ },
+ "ARMG_USDT": {
+  "grade": "C",
+  "total": -16,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "JPMG_USDT": {
+  "grade": "B",
+  "total": 10,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
+  "pool_entry_price": 357.88,
+  "high_since": 357.88,
+  "low_since": 357.88,
   "alert_count": 2
  },
  "VG_USDT": {
   "grade": "C",
-  "total": -13,
+  "total": -18,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "MSTRG_USDT": {
+  "grade": "D",
+  "total": -27,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 125.0,
+  "high_since": 125.0,
+  "low_since": 125.0,
+  "alert_count": 1
  },
  "HYPERUSDT": {
   "grade": "C",
-  "total": -13,
+  "total": -23,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
+  "ts": "2026-09-01T18:31:59.757845+00:00"
  },
  "ADXUSDT": {
   "grade": "C",
-  "total": -3,
+  "total": -18,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
   "pool_entry_price": 0.062,
@@ -3087,197 +3093,11 @@
   "low_since": 0.062,
   "alert_count": 2
  },
- "MSTRG_USDT": {
-  "grade": "C",
-  "total": -20,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "UAI_USDT": {
-  "grade": "B",
-  "total": 23,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "COSTG_USDT": {
-  "grade": "B",
-  "total": 8,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "UNHG_USDT": {
-  "grade": "B",
-  "total": 9,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "EULUSDT": {
-  "grade": "C",
-  "total": -7,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 1.272,
-  "high_since": 1.272,
-  "low_since": 1.239,
-  "alert_count": 2
- },
- "AMZNBUSDT": {
-  "grade": "C",
-  "total": -6,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "OGUSDT": {
-  "grade": "B",
-  "total": 8,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
-  "pool_entry_price": 2.8,
-  "high_since": 2.8,
-  "low_since": 2.8,
-  "alert_count": 1
- },
- "NIGHTUSDT": {
-  "grade": "C",
-  "total": -1,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 0.01817,
-  "high_since": 0.01831,
-  "low_since": 0.01817,
-  "alert_count": 2
- },
- "TSLAX_USDT": {
-  "grade": "C",
-  "total": -12,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
-  "pool_entry_price": 366.04,
-  "high_since": 366.04,
-  "low_since": 366.04,
-  "alert_count": 1
- },
- "AAOIBUSDT": {
-  "grade": "D",
-  "total": -33,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 104.88,
-  "high_since": 104.88,
-  "low_since": 103.41,
-  "alert_count": 1
- },
- "GSG_USDT": {
-  "grade": "C",
-  "total": -7,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "VELVET_USDT": {
-  "grade": "C",
-  "total": -4,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-24T10:00:16.791935+00:00",
-  "pool_entry_price": 0.89471,
-  "high_since": 0.89471,
-  "low_since": 0.89471,
-  "alert_count": 1
- },
- "BEAMXUSDT": {
-  "grade": "C",
-  "total": -10,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-27T10:37:59.640756+00:00",
-  "pool_entry_price": 0.001955,
-  "high_since": 0.001955,
-  "low_since": 0.001955,
-  "alert_count": 1
- },
- "SIGNUSDT": {
-  "grade": "B",
-  "total": 23,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-26T10:19:04.356916+00:00",
-  "pool_entry_price": 0.00793,
-  "high_since": 0.00815,
-  "low_since": 0.00793,
-  "alert_count": 2
- },
- "JUP_USDT": {
-  "grade": "B",
-  "total": 11,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-25T05:40:05.536447+00:00",
-  "pool_entry_price": 0.22797,
-  "high_since": 0.22797,
-  "low_since": 0.22797,
-  "alert_count": 2
- },
- "OPNUSDT": {
-  "grade": "B",
-  "total": 14,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
-  "pool_entry_price": 0.0518,
-  "high_since": 0.0518,
-  "low_since": 0.0518,
-  "alert_count": 2
- },
- "DYDXUSDT": {
-  "grade": "B",
-  "total": 23,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "QNTUSDT": {
-  "grade": "A",
-  "total": 25,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_entry_price": 63.22,
-  "high_since": 63.22,
-  "low_since": 63.22,
-  "alert_count": 1
- },
- "NBISG_USDT": {
-  "grade": "C",
-  "total": -20,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "CRCLX_USDT": {
-  "grade": "C",
-  "total": -18,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
  "CHZUSDT": {
   "grade": "B",
-  "total": 12,
+  "total": 0,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-22T02:40:38.243989+00:00",
   "pool_entry_price": 0.01487,
@@ -3285,383 +3105,137 @@
   "low_since": 0.01487,
   "alert_count": 2
  },
- "GPSUSDT": {
-  "grade": "B",
-  "total": 11,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+ "AAOIBUSDT": {
+  "grade": "C",
+  "total": -7,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
-  "pool_entry_ts": "2026-08-25T21:39:01.240048+00:00",
-  "pool_entry_price": 0.01101,
-  "high_since": 0.01101,
-  "low_since": 0.01101,
-  "alert_count": 2
- },
- "CRCLG_USDT": {
-  "grade": "B",
-  "total": 6,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "AVNTUSDT": {
-  "grade": "B",
-  "total": 9,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "SYNUSDT": {
-  "grade": "C",
-  "total": -12,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-31T08:34:46.145111+00:00",
-  "pool_entry_price": 0.09591,
-  "high_since": 0.09591,
-  "low_since": 0.09322,
-  "alert_count": 2
- },
- "POND_USDT": {
-  "grade": "B",
-  "total": 20,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "IBMG_USDT": {
-  "grade": "C",
-  "total": -9,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "AXTIBUSDT": {
-  "grade": "C",
-  "total": -22,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "SAPIENUSDT": {
-  "grade": "C",
-  "total": -23,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 0.077,
-  "high_since": 0.077,
-  "low_since": 0.077,
-  "alert_count": 2
- },
- "XOMG_USDT": {
-  "grade": "B",
-  "total": 17,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
   "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 162.42,
-  "high_since": 162.42,
-  "low_since": 162.42,
+  "pool_entry_price": 104.88,
+  "high_since": 104.88,
+  "low_since": 103.41,
   "alert_count": 2
  },
- "SXTUSDT": {
+ "MUUBUSDT": {
   "grade": "D",
-  "total": -27,
+  "total": -49,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_entry_price": 0.00849,
-  "high_since": 0.00849,
-  "low_since": 0.00849,
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 29.04,
+  "high_since": 29.04,
+  "low_since": 29.04,
   "alert_count": 1
  },
- "GEG_USDT": {
-  "grade": "C",
-  "total": -15,
+ "WDCG_USDT": {
+  "grade": "B",
+  "total": 11,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "METUSDT": {
-  "grade": "C",
-  "total": -3,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T10:41:16.613511+00:00",
-  "pool_entry_price": 0.1961,
-  "high_since": 0.1961,
-  "low_since": 0.1961,
+  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
+  "pool_entry_price": 441.92,
+  "high_since": 441.92,
+  "low_since": 441.92,
   "alert_count": 2
  },
- "EGLDUSDT": {
-  "grade": "A",
-  "total": 31,
+ "EULUSDT": {
+  "grade": "B",
+  "total": 5,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 1.272,
+  "high_since": 1.272,
+  "low_since": 1.239,
+  "alert_count": 2
+ },
+ "KOG_USDT": {
+  "grade": "C",
+  "total": -13,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "PORTALUSDT": {
+  "grade": "B",
+  "total": 0,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-26T05:25:41.188965+00:00",
+  "pool_entry_price": 0.02013,
+  "high_since": 0.0213,
+  "low_since": 0.02013,
+  "alert_count": 2
+ },
+ "UNHG_USDT": {
+  "grade": "B",
+  "total": 13,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "CRCLX_USDT": {
+  "grade": "C",
+  "total": -24,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "EGLDUSDT": {
+  "grade": "C",
+  "total": -2,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
   "pool_entry_price": 3.994,
   "high_since": 3.994,
   "low_since": 3.994,
-  "alert_count": 1
- },
- "ZIG_USDT": {
-  "grade": "D",
-  "total": -44,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_entry_price": 0.04061,
-  "high_since": 0.04061,
-  "low_since": 0.04061,
-  "alert_count": 1
- },
- "KATUSDT": {
-  "grade": "C",
-  "total": -3,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-31T08:34:46.145111+00:00",
-  "pool_entry_price": 0.00476,
-  "high_since": 0.00476,
-  "low_since": 0.00476,
   "alert_count": 2
  },
- "SNXUSDT": {
-  "grade": "C",
-  "total": -4,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "SSVUSDT": {
+ "SIGNUSDT": {
   "grade": "B",
-  "total": 4,
+  "total": 11,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
-  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
-  "pool_entry_price": 2.744,
-  "high_since": 2.744,
-  "low_since": 2.744,
-  "alert_count": 1
- },
- "SAGAUSDT": {
-  "grade": "C",
-  "total": -19,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-30T10:41:16.613511+00:00",
-  "pool_entry_price": 0.01586,
-  "high_since": 0.01586,
-  "low_since": 0.01586,
+  "pool_entry_ts": "2026-08-26T10:19:04.356916+00:00",
+  "pool_entry_price": 0.00793,
+  "high_since": 0.00815,
+  "low_since": 0.00793,
   "alert_count": 2
  },
- "ZILUSDT": {
-  "grade": "A",
-  "total": 26,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_entry_price": 0.002683,
-  "high_since": 0.002683,
-  "low_since": 0.002683,
-  "alert_count": 0
- },
- "ROSEUSDT": {
-  "grade": "C",
-  "total": -14,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "COMPUSDT": {
-  "grade": "B",
-  "total": 1,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "LRCXG_USDT": {
-  "grade": "C",
-  "total": -6,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "KAIAUSDT": {
-  "grade": "C",
-  "total": -14,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
-  "pool_entry_price": 0.0283,
-  "high_since": 0.0283,
-  "low_since": 0.0283,
-  "alert_count": 2
- },
- "CBRSBUSDT": {
-  "grade": "D",
-  "total": -40,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_entry_price": 175.21,
-  "high_since": 175.21,
-  "low_since": 175.21,
-  "alert_count": 1
- },
- "OPGUSDT": {
+ "BEAMXUSDT": {
   "grade": "B",
   "total": 6,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-22T20:44:48.780570+00:00",
-  "pool_entry_price": 0.0972,
-  "high_since": 0.0972,
-  "low_since": 0.0952,
-  "alert_count": 2
- },
- "TURBOUSDT": {
-  "grade": "C",
-  "total": -1,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T21:32:54.867043+00:00",
-  "pool_entry_price": 0.000979,
-  "high_since": 0.000979,
-  "low_since": 0.000923,
-  "alert_count": 2
- },
- "GASUSDT": {
-  "grade": "B",
-  "total": 4,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 1.215,
-  "high_since": 1.215,
-  "low_since": 1.215,
-  "alert_count": 2
- },
- "BACG_USDT": {
-  "grade": "B",
-  "total": 3,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "CC_USDT": {
-  "grade": "C",
-  "total": -18,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
-  "pool_entry_ts": "2026-08-29T19:51:02.868518+00:00",
-  "pool_entry_price": 0.11829,
-  "high_since": 0.11829,
-  "low_since": 0.11829,
-  "alert_count": 2
- },
- "DRV_USDT": {
-  "grade": "B",
-  "total": 13,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-26T11:37:12.976793+00:00",
-  "pool_entry_price": 0.17681,
-  "high_since": 0.17681,
-  "low_since": 0.17325,
-  "alert_count": 2
- },
- "BROCCOLI714USDT": {
-  "grade": "C",
-  "total": -14,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-29T17:20:28.737466+00:00",
-  "pool_entry_price": 0.01991,
-  "high_since": 0.01991,
-  "low_since": 0.01988,
-  "alert_count": 2
- },
- "NEXOUSDT": {
-  "grade": "C",
-  "total": -9,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
-  "pool_entry_price": 0.856,
-  "high_since": 0.856,
-  "low_since": 0.856,
-  "alert_count": 2
- },
- "PIPEDOG_USDT": {
-  "grade": "C",
-  "total": -21,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-30T10:41:16.613511+00:00",
-  "pool_entry_price": 0.003175,
-  "high_since": 0.003175,
-  "low_since": 0.003175,
+  "pool_entry_ts": "2026-08-27T10:37:59.640756+00:00",
+  "pool_entry_price": 0.001955,
+  "high_since": 0.001955,
+  "low_since": 0.001955,
   "alert_count": 1
  },
- "DIAUSDT": {
+ "SAHARAUSDT": {
   "grade": "C",
   "total": -20,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 0.1334,
-  "high_since": 0.1334,
-  "low_since": 0.1334,
-  "alert_count": 2
- },
- "SHELLUSDT": {
-  "grade": "C",
-  "total": -24,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 0.0221,
-  "high_since": 0.0221,
-  "low_since": 0.0221,
-  "alert_count": 2
- },
- "MAGICUSDT": {
-  "grade": "C",
-  "total": -20,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
-  "pool_entry_ts": "2026-08-30T10:41:16.613511+00:00",
-  "pool_entry_price": 0.05,
-  "high_since": 0.05,
-  "low_since": 0.05,
+  "pool_entry_ts": "2026-08-27T00:44:40.294914+00:00",
+  "pool_entry_price": 0.00842,
+  "high_since": 0.00842,
+  "low_since": 0.00842,
   "alert_count": 2
- },
- "CBRSG_USDT": {
-  "grade": "C",
-  "total": -15,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
  },
  "AIXBTUSDT": {
-  "grade": "C",
-  "total": -20,
+  "grade": "B",
+  "total": 2,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-30T00:22:08.238377+00:00",
   "pool_entry_price": 0.02083,
@@ -3669,149 +3243,239 @@
   "low_since": 0.02083,
   "alert_count": 2
  },
- "WBETHUSDT": {
-  "grade": "C",
-  "total": -12,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-31T21:32:29.418047+00:00",
-  "pool_entry_price": 2736.39,
-  "high_since": 2736.39,
-  "low_since": 2736.39,
-  "alert_count": 2
- },
- "KORUG_USDT": {
-  "grade": "C",
-  "total": -16,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 20.211,
-  "high_since": 20.211,
-  "low_since": 20.211,
-  "alert_count": 2
- },
- "AVGOBUSDT": {
-  "grade": "C",
-  "total": -6,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
-  "pool_entry_price": 372.22,
-  "high_since": 372.22,
-  "low_since": 372.22,
-  "alert_count": 2
- },
- "IOUSDT": {
-  "grade": "C",
-  "total": -10,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-25T19:26:55.510908+00:00",
-  "pool_entry_price": 0.1406,
-  "high_since": 0.1406,
-  "low_since": 0.137,
-  "alert_count": 2
- },
- "SOXLG_USDT": {
-  "grade": "C",
-  "total": -17,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "EWYBUSDT": {
-  "grade": "C",
-  "total": -3,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 179.16,
-  "high_since": 179.16,
-  "low_since": 179.16,
-  "alert_count": 2
- },
- "COING_USDT": {
-  "grade": "C",
-  "total": -20,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "CATG_USDT": {
-  "grade": "C",
-  "total": -15,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "ARKMUSDT": {
+ "AVNTUSDT": {
   "grade": "B",
-  "total": 10,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "PUBLIC_USDT": {
-  "grade": "C",
-  "total": -15,
-  "risk": 45,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "AEVOUSDT": {
-  "grade": "B",
-  "total": 17,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "CRWVG_USDT": {
-  "grade": "C",
-  "total": -14,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "OKB_USDT": {
-  "grade": "C",
-  "total": -18,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-22T04:07:54.384396+00:00",
-  "pool_entry_price": 117.81,
-  "high_since": 117.81,
-  "low_since": 117.81,
-  "alert_count": 2
- },
- "EWYG_USDT": {
-  "grade": "C",
-  "total": -16,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "LUNAUSDT": {
-  "grade": "C",
-  "total": -12,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
+  "total": 3,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
  },
  "GMTUSDT": {
-  "grade": "A",
-  "total": 25,
+  "grade": "B",
+  "total": 6,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
   "pool_entry_price": 0.00733,
   "high_since": 0.00733,
   "low_since": 0.00733,
+  "alert_count": 2
+ },
+ "GT_USDT": {
+  "grade": "C",
+  "total": -6,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
+  "pool_entry_price": 8.07,
+  "high_since": 8.07,
+  "low_since": 8.07,
+  "alert_count": 2
+ },
+ "SNXUSDT": {
+  "grade": "B",
+  "total": 3,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "CBRSBUSDT": {
+  "grade": "D",
+  "total": -48,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
+  "pool_entry_price": 175.21,
+  "high_since": 175.21,
+  "low_since": 174.89,
   "alert_count": 1
  },
- "PNUTUSDT": {
-  "grade": "B",
-  "total": 5,
+ "COSTG_USDT": {
+  "grade": "C",
+  "total": -5,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "EWYBUSDT": {
+  "grade": "D",
+  "total": -41,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 175.69,
+  "high_since": 175.69,
+  "low_since": 175.69,
+  "alert_count": 1
+ },
+ "SYNUSDT": {
+  "grade": "C",
+  "total": -17,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-31T08:34:46.145111+00:00",
+  "pool_entry_price": 0.09591,
+  "high_since": 0.09591,
+  "low_since": 0.09322,
+  "alert_count": 2
+ },
+ "VELVET_USDT": {
+  "grade": "B",
+  "total": 9,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-24T10:00:16.791935+00:00",
+  "pool_entry_price": 0.89471,
+  "high_since": 0.89471,
+  "low_since": 0.89471,
+  "alert_count": 1
+ },
+ "OGUSDT": {
+  "grade": "B",
+  "total": 2,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
+  "pool_entry_price": 2.8,
+  "high_since": 2.8,
+  "low_since": 2.8,
+  "alert_count": 1
+ },
+ "JUP_USDT": {
+  "grade": "C",
+  "total": -18,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-25T05:40:05.536447+00:00",
+  "pool_entry_price": 0.22797,
+  "high_since": 0.22797,
+  "low_since": 0.22797,
+  "alert_count": 2
+ },
+ "HMSTRUSDT": {
+  "grade": "C",
+  "total": -20,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 0.0001683,
+  "high_since": 0.0001715,
+  "low_since": 0.0001683,
+  "alert_count": 2
+ },
+ "NBISG_USDT": {
+  "grade": "C",
+  "total": -25,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "TSLAX_USDT": {
+  "grade": "C",
+  "total": -17,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
+  "pool_entry_price": 366.04,
+  "high_since": 366.04,
+  "low_since": 366.04,
+  "alert_count": 1
+ },
+ "CRCLG_USDT": {
+  "grade": "C",
+  "total": -1,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "KATUSDT": {
+  "grade": "D",
+  "total": -26,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 0.00446,
+  "high_since": 0.00446,
+  "low_since": 0.00446,
+  "alert_count": 1
+ },
+ "GSG_USDT": {
+  "grade": "C",
+  "total": -25,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "CC_USDT": {
+  "grade": "D",
+  "total": -27,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 0.1144,
+  "high_since": 0.1144,
+  "low_since": 0.1144,
+  "alert_count": 1
+ },
+ "ZILUSDT": {
+  "grade": "B",
+  "total": 2,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
+  "pool_entry_price": 0.002683,
+  "high_since": 0.002683,
+  "low_since": 0.002683,
+  "alert_count": 1
+ },
+ "NIGHTUSDT": {
+  "grade": "C",
+  "total": -13,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 0.01817,
+  "high_since": 0.01831,
+  "low_since": 0.01817,
+  "alert_count": 2
+ },
+ "DIAUSDT": {
+  "grade": "C",
+  "total": -13,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
+  "pool_entry_price": 0.1334,
+  "high_since": 0.1334,
+  "low_since": 0.1334,
+  "alert_count": 2
+ },
+ "NEXOUSDT": {
+  "grade": "C",
+  "total": -16,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
+  "pool_entry_price": 0.856,
+  "high_since": 0.856,
+  "low_since": 0.856,
+  "alert_count": 2
+ },
+ "PNUTUSDT": {
+  "grade": "C",
+  "total": -21,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-30T21:32:54.867043+00:00",
   "pool_entry_price": 0.05,
@@ -3819,17 +3483,179 @@
   "low_since": 0.0474,
   "alert_count": 2
  },
- "C98USDT": {
+ "DRV_USDT": {
   "grade": "C",
-  "total": -7,
+  "total": -13,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-26T11:37:12.976793+00:00",
+  "pool_entry_price": 0.17681,
+  "high_since": 0.17681,
+  "low_since": 0.17325,
+  "alert_count": 2
+ },
+ "MLN_USDT": {
+  "grade": "B",
+  "total": 12,
+  "risk": 45,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
+  "pool_entry_price": 2.111,
+  "high_since": 2.111,
+  "low_since": 2.111,
+  "alert_count": 1
+ },
+ "GEG_USDT": {
+  "grade": "C",
+  "total": -12,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "CATG_USDT": {
+  "grade": "C",
+  "total": -21,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "IBMG_USDT": {
+  "grade": "C",
+  "total": -12,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "COMPUSDT": {
+  "grade": "C",
+  "total": -9,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "KAIAUSDT": {
+  "grade": "C",
+  "total": -14,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
+  "pool_entry_price": 0.0283,
+  "high_since": 0.0283,
+  "low_since": 0.0283,
+  "alert_count": 2
+ },
+ "GASUSDT": {
+  "grade": "C",
+  "total": -16,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 1.215,
+  "high_since": 1.215,
+  "low_since": 1.215,
+  "alert_count": 2
+ },
+ "AXTIBUSDT": {
+  "grade": "C",
+  "total": -21,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "BACG_USDT": {
+  "grade": "C",
+  "total": -8,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "XOMG_USDT": {
+  "grade": "B",
+  "total": 16,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
+  "pool_entry_price": 162.42,
+  "high_since": 162.42,
+  "low_since": 162.42,
+  "alert_count": 2
+ },
+ "OPGUSDT": {
+  "grade": "C",
+  "total": -15,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-22T20:44:48.780570+00:00",
+  "pool_entry_price": 0.0972,
+  "high_since": 0.0972,
+  "low_since": 0.0952,
+  "alert_count": 2
+ },
+ "2ZUSDT": {
+  "grade": "C",
+  "total": -3,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "SUNUSDT": {
+  "grade": "C",
+  "total": -13,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "AEVOUSDT": {
+  "grade": "C",
+  "total": -12,
+  "risk": 25,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "LRCXG_USDT": {
+  "grade": "C",
+  "total": -25,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "BROCCOLI714USDT": {
+  "grade": "C",
+  "total": -24,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-29T17:20:28.737466+00:00",
+  "pool_entry_price": 0.01991,
+  "high_since": 0.01991,
+  "low_since": 0.01988,
+  "alert_count": 2
+ },
+ "ALICEUSDT": {
+  "grade": "B",
+  "total": 21,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T21:32:54.867043+00:00",
+  "pool_entry_price": 0.1375,
+  "high_since": 0.1375,
+  "low_since": 0.1375,
+  "alert_count": 2
+ },
+ "AVGOBUSDT": {
+  "grade": "B",
+  "total": 8,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
+  "pool_entry_price": 372.22,
+  "high_since": 372.22,
+  "low_since": 372.22,
+  "alert_count": 2
  },
  "RADUSDT": {
-  "grade": "C",
-  "total": -7,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "grade": "B",
+  "total": 17,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
   "pool_entry_price": 0.235,
@@ -3837,11 +3663,59 @@
   "low_since": 0.235,
   "alert_count": 1
  },
+ "VELODROMEUSDT": {
+  "grade": "C",
+  "total": -8,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "C98USDT": {
+  "grade": "C",
+  "total": -11,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "TURBOUSDT": {
+  "grade": "C",
+  "total": -10,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T21:32:54.867043+00:00",
+  "pool_entry_price": 0.000979,
+  "high_since": 0.000979,
+  "low_since": 0.000923,
+  "alert_count": 2
+ },
+ "IOUSDT": {
+  "grade": "C",
+  "total": -13,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-25T19:26:55.510908+00:00",
+  "pool_entry_price": 0.1406,
+  "high_since": 0.1406,
+  "low_since": 0.137,
+  "alert_count": 2
+ },
+ "METUSDT": {
+  "grade": "C",
+  "total": -15,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T10:41:16.613511+00:00",
+  "pool_entry_price": 0.1961,
+  "high_since": 0.1961,
+  "low_since": 0.1961,
+  "alert_count": 2
+ },
  "PARTIUSDT": {
   "grade": "C",
-  "total": -9,
+  "total": -22,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-28T17:14:59.480260+00:00",
   "pool_entry_price": 0.024,
@@ -3849,23 +3723,203 @@
   "low_since": 0.024,
   "alert_count": 2
  },
+ "SOXLG_USDT": {
+  "grade": "C",
+  "total": -17,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "SAGAUSDT": {
+  "grade": "C",
+  "total": -15,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-30T10:41:16.613511+00:00",
+  "pool_entry_price": 0.01586,
+  "high_since": 0.01586,
+  "low_since": 0.01586,
+  "alert_count": 2
+ },
+ "CBRSG_USDT": {
+  "grade": "C",
+  "total": -9,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "LUNAUSDT": {
+  "grade": "C",
+  "total": -15,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "CRWVG_USDT": {
+  "grade": "C",
+  "total": -22,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "PUBLIC_USDT": {
+  "grade": "C",
+  "total": -19,
+  "risk": 25,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "ARKMUSDT": {
+  "grade": "C",
+  "total": -4,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "COING_USDT": {
+  "grade": "D",
+  "total": -26,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 176.5,
+  "high_since": 176.5,
+  "low_since": 176.5,
+  "alert_count": 1
+ },
+ "SOXSBUSDT": {
+  "grade": "S",
+  "total": 63,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
+  "pool_entry_price": 51.95,
+  "high_since": 53.0,
+  "low_since": 51.95,
+  "alert_count": 1
+ },
  "QNTG_USDT": {
   "grade": "B",
-  "total": 23,
+  "total": 10,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
+  "ts": "2026-09-01T18:31:59.757845+00:00"
  },
- "2ZUSDT": {
-  "grade": "B",
-  "total": 16,
+ "EWYG_USDT": {
+  "grade": "D",
+  "total": -27,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 175.6,
+  "high_since": 175.6,
+  "low_since": 175.6,
+  "alert_count": 1
  },
- "BSV_USDT": {
+ "SENTUSDT": {
+  "grade": "C",
+  "total": -22,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "SAPIENUSDT": {
+  "grade": "C",
+  "total": -23,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 0.077,
+  "high_since": 0.077,
+  "low_since": 0.077,
+  "alert_count": 2
+ },
+ "SSVUSDT": {
   "grade": "B",
   "total": 4,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
+  "pool_entry_price": 2.744,
+  "high_since": 2.744,
+  "low_since": 2.744,
+  "alert_count": 1
+ },
+ "ALIGN_USDT": {
+  "grade": "C",
+  "total": -8,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "ROSEUSDT": {
+  "grade": "C",
+  "total": -21,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "NEOUSDT": {
+  "grade": "C",
+  "total": -19,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "FLOWUSDT": {
+  "grade": "C",
+  "total": -17,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-31T08:34:46.145111+00:00",
+  "pool_entry_price": 0.02628,
+  "high_since": 0.02628,
+  "low_since": 0.02628,
+  "alert_count": 2
+ },
+ "KORUG_USDT": {
+  "grade": "C",
+  "total": -25,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
+  "pool_entry_price": 20.211,
+  "high_since": 20.211,
+  "low_since": 20.211,
+  "alert_count": 2
+ },
+ "MAVUSDT": {
+  "grade": "C",
+  "total": -10,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "KMNOUSDT": {
+  "grade": "C",
+  "total": -20,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "SPX_USDT": {
+  "grade": "C",
+  "total": -8,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "COHRBUSDT": {
+  "grade": "C",
+  "total": -20,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
+  "pool_entry_price": 271.42,
+  "high_since": 271.42,
+  "low_since": 271.42,
+  "alert_count": 2
+ },
+ "BSV_USDT": {
+  "grade": "C",
+  "total": -18,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
   "pool_entry_price": 15.97,
@@ -3874,442 +3928,34 @@
   "alert_count": 1
  },
  "MSTRX_USDT": {
-  "grade": "C",
-  "total": -12,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-31T21:32:29.418047+00:00",
-  "pool_entry_price": 133.25,
-  "high_since": 133.25,
-  "low_since": 133.25,
-  "alert_count": 2
- },
- "FLOWUSDT": {
-  "grade": "B",
-  "total": 4,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-31T08:34:46.145111+00:00",
-  "pool_entry_price": 0.02628,
-  "high_since": 0.02628,
-  "low_since": 0.02628,
-  "alert_count": 2
- },
- "ALICEUSDT": {
-  "grade": "B",
-  "total": 13,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T21:32:54.867043+00:00",
-  "pool_entry_price": 0.1375,
-  "high_since": 0.1375,
-  "low_since": 0.1375,
-  "alert_count": 2
- },
- "INITUSDT": {
-  "grade": "C",
-  "total": -12,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 0.05376,
-  "high_since": 0.05376,
-  "low_since": 0.05376,
-  "alert_count": 2
- },
- "KMNOUSDT": {
-  "grade": "C",
-  "total": -11,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "STOUSDT": {
-  "grade": "C",
-  "total": -15,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "SOXSBUSDT": {
-  "grade": "S",
-  "total": 56,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_entry_price": 51.95,
-  "high_since": 51.95,
-  "low_since": 51.95,
-  "alert_count": 1
- },
- "SENTUSDT": {
-  "grade": "C",
-  "total": -8,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "SLVON_USDT": {
   "grade": "D",
-  "total": -27,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "total": -32,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_entry_price": 58.57,
-  "high_since": 58.57,
-  "low_since": 58.57,
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 125.11,
+  "high_since": 125.11,
+  "low_since": 125.11,
   "alert_count": 1
  },
- "IRENBUSDT": {
-  "grade": "C",
-  "total": -11,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "CRCLON_USDT": {
-  "grade": "C",
-  "total": -17,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "MVLLG_USDT": {
-  "grade": "C",
-  "total": -2,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
-  "pool_entry_price": 23.88,
-  "high_since": 23.88,
-  "low_since": 23.88,
-  "alert_count": 2
- },
- "MUUBUSDT": {
-  "grade": "B",
-  "total": 4,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "SUNUSDT": {
-  "grade": "C",
-  "total": -20,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "IOTAUSDT": {
-  "grade": "C",
-  "total": -6,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-29T22:10:22.348429+00:00",
-  "pool_entry_price": 0.0394,
-  "high_since": 0.0397,
-  "low_since": 0.0394,
-  "alert_count": 2
- },
- "MEMEUSDT": {
-  "grade": "C",
-  "total": -11,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "PI_USDT": {
-  "grade": "A",
-  "total": 27,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_entry_price": 0.09172,
-  "high_since": 0.09172,
-  "low_since": 0.09172,
-  "alert_count": 1
- },
- "BTTCUSDT": {
-  "grade": "B",
-  "total": 13,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "GMXUSDT": {
-  "grade": "C",
-  "total": -20,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "SPCX_USDT": {
-  "grade": "B",
-  "total": 6,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "JNJG_USDT": {
-  "grade": "B",
-  "total": 10,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "CKBUSDT": {
-  "grade": "C",
-  "total": -14,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "GLMRUSDT": {
-  "grade": "C",
-  "total": -3,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 0.006687,
-  "high_since": 0.006687,
-  "low_since": 0.006687,
-  "alert_count": 1
- },
- "ALIGN_USDT": {
-  "grade": "C",
-  "total": -17,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "MLN_USDT": {
-  "grade": "A",
-  "total": 30,
-  "risk": 25,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_entry_price": 2.111,
-  "high_since": 2.111,
-  "low_since": 2.111,
-  "alert_count": 0
- },
- "NEOUSDT": {
-  "grade": "B",
-  "total": 9,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "STORJUSDT": {
-  "grade": "C",
-  "total": -12,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "NEWTUSDT": {
-  "grade": "C",
-  "total": -12,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-30T10:41:16.613511+00:00",
-  "pool_entry_price": 0.04268,
-  "high_since": 0.04268,
-  "low_since": 0.04268,
-  "alert_count": 2
- },
- "GRTUSDT": {
-  "grade": "C",
-  "total": -1,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "MBLUSDT": {
-  "grade": "B",
-  "total": 2,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "MSTRON_USDT": {
+ "PIPEDOG_USDT": {
   "grade": "C",
   "total": -25,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "DCRUSDT": {
-  "grade": "C",
-  "total": -5,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
-  "pool_entry_ts": "2026-08-31T08:34:46.145111+00:00",
-  "pool_entry_price": 14.28,
-  "high_since": 14.28,
-  "low_since": 14.28,
+  "pool_entry_ts": "2026-08-30T10:41:16.613511+00:00",
+  "pool_entry_price": 0.003175,
+  "high_since": 0.003175,
+  "low_since": 0.003175,
   "alert_count": 1
- },
- "MOVEUSDT": {
-  "grade": "B",
-  "total": 3,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "H_USDT": {
-  "grade": "C",
-  "total": -8,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-25T10:46:37.145839+00:00",
-  "pool_entry_price": 0.07913,
-  "high_since": 0.07967,
-  "low_since": 0.07913,
-  "alert_count": 2
- },
- "1000SATSUSDT": {
-  "grade": "C",
-  "total": -6,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
-  "pool_entry_price": 1.071e-05,
-  "high_since": 1.071e-05,
-  "low_since": 1.071e-05,
-  "alert_count": 2
- },
- "HOODON_USDT": {
-  "grade": "C",
-  "total": -6,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "TRBUSDT": {
-  "grade": "C",
-  "total": -19,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-30T15:02:24.381026+00:00",
-  "pool_entry_price": 17.16,
-  "high_since": 17.16,
-  "low_since": 17.16,
-  "alert_count": 2
- },
- "KAVAUSDT": {
-  "grade": "C",
-  "total": -4,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
-  "pool_entry_price": 0.0471,
-  "high_since": 0.0471,
-  "low_since": 0.0471,
-  "alert_count": 2
- },
- "GRASS_USDT": {
-  "grade": "D",
-  "total": -26,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_entry_price": 0.3425,
-  "high_since": 0.3425,
-  "low_since": 0.3425,
-  "alert_count": 0
- },
- "ABBVG_USDT": {
-  "grade": "B",
-  "total": 13,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "long",
-  "pool_entry_ts": "2026-08-31T21:32:29.418047+00:00",
-  "pool_entry_price": 257.74,
-  "high_since": 257.74,
-  "low_since": 257.74,
-  "alert_count": 1
- },
- "VANAUSDT": {
-  "grade": "C",
-  "total": -5,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "1000CHEEMSUSDT": {
-  "grade": "C",
-  "total": -12,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "BTW_USDT": {
-  "grade": "C",
-  "total": -6,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "RVNUSDT": {
-  "grade": "B",
-  "total": 19,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 0.00293,
-  "high_since": 0.00293,
-  "low_since": 0.00293,
-  "alert_count": 2
- },
- "RSRUSDT": {
-  "grade": "B",
-  "total": 4,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "RIFUSDT": {
-  "grade": "C",
-  "total": -5,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
-  "pool_entry_price": 0.0673,
-  "high_since": 0.0673,
-  "low_since": 0.0673,
-  "alert_count": 2
- },
- "BLUE_USDT": {
-  "grade": "C",
-  "total": -12,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "COHRBUSDT": {
-  "grade": "D",
-  "total": -34,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_entry_price": 271.42,
-  "high_since": 271.42,
-  "low_since": 271.42,
-  "alert_count": 1
- },
- "XVGUSDT": {
-  "grade": "C",
-  "total": -14,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "DUSKUSDT": {
-  "grade": "B",
-  "total": 8,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
  },
  "THETAUSDT": {
-  "grade": "B",
-  "total": 7,
+  "grade": "C",
+  "total": -1,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-28T17:14:59.480260+00:00",
   "pool_entry_price": 0.1721,
@@ -4317,47 +3963,413 @@
   "low_since": 0.1721,
   "alert_count": 2
  },
- "YBUSDT": {
-  "grade": "C",
-  "total": -22,
+ "MAGICUSDT": {
+  "grade": "D",
+  "total": -37,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "METISUSDT": {
-  "grade": "B",
-  "total": 14,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "EPICUSDT": {
-  "grade": "C",
-  "total": -8,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
-  "pool_entry_ts": "2026-08-30T21:32:54.867043+00:00",
-  "pool_entry_price": 0.3371,
-  "high_since": 0.3371,
-  "low_since": 0.3274,
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 0.0443,
+  "high_since": 0.0443,
+  "low_since": 0.0443,
+  "alert_count": 1
+ },
+ "TRBUSDT": {
+  "grade": "C",
+  "total": -11,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-30T15:02:24.381026+00:00",
+  "pool_entry_price": 17.16,
+  "high_since": 17.16,
+  "low_since": 17.16,
   "alert_count": 2
  },
- "ALTUSDT": {
+ "STOUSDT": {
   "grade": "C",
   "total": -15,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-08-22T21:54:07.270156+00:00",
-  "pool_entry_price": 0.00645,
-  "high_since": 0.00645,
-  "low_since": 0.00645,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "JNJG_USDT": {
+  "grade": "B",
+  "total": 20,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "BTTCUSDT": {
+  "grade": "B",
+  "total": 0,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "IOTAUSDT": {
+  "grade": "C",
+  "total": -3,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-29T22:10:22.348429+00:00",
+  "pool_entry_price": 0.0394,
+  "high_since": 0.0397,
+  "low_since": 0.0394,
   "alert_count": 2
+ },
+ "GMXUSDT": {
+  "grade": "C",
+  "total": -16,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "CRCLON_USDT": {
+  "grade": "C",
+  "total": -25,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "PI_USDT": {
+  "grade": "C",
+  "total": -9,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
+  "pool_entry_price": 0.09172,
+  "high_since": 0.09172,
+  "low_since": 0.09172,
+  "alert_count": 2
+ },
+ "TOWNSUSDT": {
+  "grade": "D",
+  "total": -56,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 0.00236,
+  "high_since": 0.00236,
+  "low_since": 0.00236,
+  "alert_count": 0
+ },
+ "STORJUSDT": {
+  "grade": "C",
+  "total": -9,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "SLVON_USDT": {
+  "grade": "C",
+  "total": -17,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
+  "pool_entry_price": 58.57,
+  "high_since": 58.57,
+  "low_since": 58.57,
+  "alert_count": 2
+ },
+ "POND_USDT": {
+  "grade": "C",
+  "total": -5,
+  "risk": 25,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "IRENBUSDT": {
+  "grade": "B",
+  "total": 2,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "SPCX_USDT": {
+  "grade": "C",
+  "total": -2,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "NEWTUSDT": {
+  "grade": "C",
+  "total": -23,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-30T10:41:16.613511+00:00",
+  "pool_entry_price": 0.04268,
+  "high_since": 0.04268,
+  "low_since": 0.04268,
+  "alert_count": 2
+ },
+ "KAVAUSDT": {
+  "grade": "B",
+  "total": 1,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
+  "pool_entry_price": 0.0471,
+  "high_since": 0.0471,
+  "low_since": 0.0471,
+  "alert_count": 2
+ },
+ "H_USDT": {
+  "grade": "C",
+  "total": -16,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-25T10:46:37.145839+00:00",
+  "pool_entry_price": 0.07913,
+  "high_since": 0.07967,
+  "low_since": 0.07913,
+  "alert_count": 2
+ },
+ "1000CHEEMSUSDT": {
+  "grade": "C",
+  "total": -14,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "MEMEUSDT": {
+  "grade": "C",
+  "total": -18,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "BTW_USDT": {
+  "grade": "B",
+  "total": 17,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "RSRUSDT": {
+  "grade": "C",
+  "total": -14,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "GLMRUSDT": {
+  "grade": "C",
+  "total": -8,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
+  "pool_entry_price": 0.006687,
+  "high_since": 0.006687,
+  "low_since": 0.006687,
+  "alert_count": 1
+ },
+ "MBLUSDT": {
+  "grade": "B",
+  "total": 0,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "ORCAUSDT": {
+  "grade": "D",
+  "total": -39,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 1.202,
+  "high_since": 1.202,
+  "low_since": 1.202,
+  "alert_count": 1
+ },
+ "MSTRON_USDT": {
+  "grade": "D",
+  "total": -42,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 124.99,
+  "high_since": 124.99,
+  "low_since": 124.99,
+  "alert_count": 1
+ },
+ "MVLLG_USDT": {
+  "grade": "B",
+  "total": 24,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T05:45:06.936617+00:00",
+  "pool_entry_price": 23.88,
+  "high_since": 23.88,
+  "low_since": 23.88,
+  "alert_count": 2
+ },
+ "GRTUSDT": {
+  "grade": "C",
+  "total": -9,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "HOODON_USDT": {
+  "grade": "C",
+  "total": -20,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "1000SATSUSDT": {
+  "grade": "C",
+  "total": -20,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-31T01:58:42.207629+00:00",
+  "pool_entry_price": 1.071e-05,
+  "high_since": 1.071e-05,
+  "low_since": 1.071e-05,
+  "alert_count": 2
+ },
+ "GRASS_USDT": {
+  "grade": "C",
+  "total": -5,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
+  "pool_entry_price": 0.3425,
+  "high_since": 0.3425,
+  "low_since": 0.3425,
+  "alert_count": 1
+ },
+ "YBUSDT": {
+  "grade": "D",
+  "total": -29,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 0.0899,
+  "high_since": 0.0899,
+  "low_since": 0.0899,
+  "alert_count": 1
+ },
+ "ZKJ_USDT": {
+  "grade": "B",
+  "total": 0,
+  "risk": 45,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "AMZNBUSDT": {
+  "grade": "D",
+  "total": -57,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 255.21,
+  "high_since": 255.21,
+  "low_since": 255.21,
+  "alert_count": 1
+ },
+ "MOVEUSDT": {
+  "grade": "B",
+  "total": 13,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "AIGENSYNUSDT": {
+  "grade": "C",
+  "total": -1,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "NVDAX_USDT": {
+  "grade": "C",
+  "total": -15,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "VSN_USDT": {
+  "grade": "B",
+  "total": 4,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "SXTUSDT": {
+  "grade": "D",
+  "total": -27,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
+  "pool_entry_price": 0.00849,
+  "high_since": 0.00849,
+  "low_since": 0.00836,
+  "alert_count": 1
+ },
+ "ACHUSDT": {
+  "grade": "C",
+  "total": -12,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "AAPLX_USDT": {
+  "grade": "B",
+  "total": 14,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "WDCBUSDT": {
+  "grade": "D",
+  "total": -28,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 453.28,
+  "high_since": 453.28,
+  "low_since": 453.28,
+  "alert_count": 1
+ },
+ "METISUSDT": {
+  "grade": "B",
+  "total": 21,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "CKBUSDT": {
+  "grade": "C",
+  "total": -25,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "TQQQBUSDT": {
+  "grade": "D",
+  "total": -38,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 68.89,
+  "high_since": 68.89,
+  "low_since": 68.89,
+  "alert_count": 0
+ },
+ "ZRXUSDT": {
+  "grade": "B",
+  "total": 5,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
+  "pool_entry_price": 0.0998,
+  "high_since": 0.0998,
+  "low_since": 0.0998,
+  "alert_count": 1
  },
  "NOMUSDT": {
   "grade": "C",
-  "total": -22,
+  "total": -24,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
   "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
   "pool_entry_price": 0.00148,
@@ -4365,167 +4377,191 @@
   "low_since": 0.00148,
   "alert_count": 2
  },
- "AIGENSYNUSDT": {
+ "ALTUSDT": {
+  "grade": "C",
+  "total": -21,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-22T21:54:07.270156+00:00",
+  "pool_entry_price": 0.00645,
+  "high_since": 0.00645,
+  "low_since": 0.00645,
+  "alert_count": 2
+ },
+ "VELO_USDT": {
   "grade": "B",
-  "total": 5,
+  "total": 6,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
+  "ts": "2026-09-01T18:31:59.757845+00:00"
  },
- "BOB_USDT": {
+ "HDG_USDT": {
   "grade": "C",
-  "total": -10,
+  "total": -7,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
+  "ts": "2026-09-01T18:31:59.757845+00:00"
  },
- "ORCAUSDT": {
+ "SHELLUSDT": {
+  "grade": "D",
+  "total": -33,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 0.0218,
+  "high_since": 0.0218,
+  "low_since": 0.0218,
+  "alert_count": 1
+ },
+ "RKLBBUSDT": {
+  "grade": "D",
+  "total": -31,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 62.37,
+  "high_since": 62.37,
+  "low_since": 62.37,
+  "alert_count": 1
+ },
+ "INITUSDT": {
   "grade": "C",
-  "total": -16,
+  "total": -18,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 0.05376,
+  "high_since": 0.05376,
+  "low_since": 0.05376,
+  "alert_count": 2
  },
- "ZRXUSDT": {
-  "grade": "A",
-  "total": 25,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+ "ABBVG_USDT": {
+  "grade": "B",
+  "total": 13,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
-  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_entry_price": 0.0998,
-  "high_since": 0.0998,
-  "low_since": 0.0998,
+  "pool_entry_ts": "2026-08-31T21:32:29.418047+00:00",
+  "pool_entry_price": 257.74,
+  "high_since": 257.74,
+  "low_since": 257.74,
+  "alert_count": 1
+ },
+ "TQQQG_USDT": {
+  "grade": "D",
+  "total": -66,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 69.02,
+  "high_since": 69.02,
+  "low_since": 69.02,
   "alert_count": 0
+ },
+ "ZIG_USDT": {
+  "grade": "C",
+  "total": -23,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T15:09:31.003958+00:00",
+  "pool_entry_price": 0.04061,
+  "high_since": 0.04061,
+  "low_since": 0.04061,
+  "alert_count": 2
+ },
+ "RVNUSDT": {
+  "grade": "C",
+  "total": -5,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
+  "pool_entry_price": 0.00293,
+  "high_since": 0.00293,
+  "low_since": 0.00293,
+  "alert_count": 2
+ },
+ "EPICUSDT": {
+  "grade": "B",
+  "total": 3,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T21:32:54.867043+00:00",
+  "pool_entry_price": 0.3371,
+  "high_since": 0.3371,
+  "low_since": 0.3274,
+  "alert_count": 2
+ },
+ "VANAUSDT": {
+  "grade": "C",
+  "total": -18,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "FOGOUSDT": {
+  "grade": "C",
+  "total": -14,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
  },
  "WXT_USDT": {
   "grade": "B",
   "total": 19,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
+  "ts": "2026-09-01T18:31:59.757845+00:00"
  },
- "SPX_USDT": {
-  "grade": "B",
-  "total": 4,
+ "SPCXX_USDT": {
+  "grade": "D",
+  "total": -33,
   "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "ACHUSDT": {
-  "grade": "B",
-  "total": 11,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "GUNUSDT": {
-  "grade": "C",
-  "total": -16,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
-  "pool_entry_ts": "2026-08-29T22:10:22.348429+00:00",
-  "pool_entry_price": 0.00301,
-  "high_since": 0.00301,
-  "low_since": 0.00301,
-  "alert_count": 2
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 143.11,
+  "high_since": 143.11,
+  "low_since": 143.11,
+  "alert_count": 0
  },
- "DGBUSDT": {
-  "grade": "C",
-  "total": -2,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "FLUXUSDT": {
-  "grade": "B",
-  "total": 1,
-  "risk": 45,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "METABUSDT": {
-  "grade": "B",
-  "total": 18,
+ "WCTUSDT": {
+  "grade": "D",
+  "total": -29,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "DOS_USDT": {
-  "grade": "C",
-  "total": -17,
-  "risk": 25,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "short",
-  "pool_entry_ts": "2026-08-31T16:21:56.604611+00:00",
-  "pool_entry_price": 0.2744,
-  "high_since": 0.2744,
-  "low_since": 0.2744,
-  "alert_count": 2
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 0.03608,
+  "high_since": 0.03608,
+  "low_since": 0.03608,
+  "alert_count": 0
  },
- "FOGOUSDT": {
+ "YGGUSDT": {
   "grade": "C",
-  "total": -9,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
+  "total": -10,
+  "risk": 40,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
  },
- "AAPLX_USDT": {
-  "grade": "B",
-  "total": 10,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "DOLOUSDT": {
+ "OKB_USDT": {
   "grade": "C",
   "total": -22,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "VSN_USDT": {
-  "grade": "C",
-  "total": -11,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "HDG_USDT": {
-  "grade": "C",
-  "total": -5,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "LIGHT_USDT": {
-  "grade": "B",
-  "total": 3,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "TSLAON_USDT": {
-  "grade": "C",
-  "total": -19,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "HIVEUSDT": {
-  "grade": "B",
-  "total": 11,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "NVDAX_USDT": {
-  "grade": "C",
-  "total": -8,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "GNOUSDT": {
-  "grade": "C",
-  "total": -16,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
- },
- "YGGUSDT": {
-  "grade": "B",
-  "total": 12,
-  "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-08-22T04:07:54.384396+00:00",
+  "pool_entry_price": 117.81,
+  "high_since": 117.81,
+  "low_since": 117.81,
+  "alert_count": 2
  },
  "LPTUSDT": {
   "grade": "C",
-  "total": -9,
+  "total": -16,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
+  "ts": "2026-09-01T18:31:59.757845+00:00",
   "pool_direction": "long",
   "pool_entry_ts": "2026-08-30T18:35:30.987908+00:00",
   "pool_entry_price": 1.411,
@@ -4533,22 +4569,112 @@
   "low_since": 1.411,
   "alert_count": 1
  },
- "WDCBUSDT": {
+ "DUSKUSDT": {
   "grade": "C",
-  "total": -17,
-  "risk": 20,
-  "ts": "2026-09-01T15:09:31.003958+00:00",
-  "pool_direction": "short",
-  "pool_entry_ts": "2026-09-01T10:32:23.937926+00:00",
-  "pool_entry_price": 442.14,
-  "high_since": 442.14,
-  "low_since": 442.14,
-  "alert_count": 1
- },
- "RKLBBUSDT": {
-  "grade": "C",
-  "total": -14,
+  "total": -16,
   "risk": 0,
-  "ts": "2026-09-01T15:09:31.003958+00:00"
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "MASKUSDT": {
+  "grade": "A",
+  "total": 26,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "long",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 0.435,
+  "high_since": 0.435,
+  "low_since": 0.435,
+  "alert_count": 0
+ },
+ "FLUXUSDT": {
+  "grade": "C",
+  "total": -15,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "HIVEUSDT": {
+  "grade": "C",
+  "total": -11,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "UP_USDT": {
+  "grade": "C",
+  "total": -20,
+  "risk": 25,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "TSLAON_USDT": {
+  "grade": "C",
+  "total": -18,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "LISTAUSDT": {
+  "grade": "D",
+  "total": -26,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_entry_price": 0.0672,
+  "high_since": 0.0672,
+  "low_since": 0.0672,
+  "alert_count": 0
+ },
+ "MEUSDT": {
+  "grade": "C",
+  "total": -9,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "SKHYON_USDT": {
+  "grade": "C",
+  "total": -11,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "RIFUSDT": {
+  "grade": "C",
+  "total": -11,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00",
+  "pool_direction": "short",
+  "pool_entry_ts": "2026-08-30T23:48:57.750726+00:00",
+  "pool_entry_price": 0.0673,
+  "high_since": 0.0673,
+  "low_since": 0.0673,
+  "alert_count": 2
+ },
+ "O_USDT": {
+  "grade": "C",
+  "total": -13,
+  "risk": 20,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "AMZNON_USDT": {
+  "grade": "C",
+  "total": -24,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "LIGHT_USDT": {
+  "grade": "C",
+  "total": -15,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "IDUSDT": {
+  "grade": "C",
+  "total": -15,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
+ },
+ "BOB_USDT": {
+  "grade": "C",
+  "total": -9,
+  "risk": 0,
+  "ts": "2026-09-01T18:31:59.757845+00:00"
  }
 }
